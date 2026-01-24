@@ -26,12 +26,15 @@ public class StartupApplicationRunner implements ApplicationRunner {
 
 	@Override
 	public void run(ApplicationArguments args) throws Exception {
-		traceManager.put();
 		if (instanceStartupList == null) {
 			return;
 		}
-		instanceStartupList.forEach(InstanceStartup::startup);
-		traceManager.remove();
+        try {
+            traceManager.put();
+            instanceStartupList.forEach(InstanceStartup::startup);
+        } finally {
+            traceManager.remove();
+        }
 	}
 
 }

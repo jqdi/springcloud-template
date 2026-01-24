@@ -1,4 +1,4 @@
-package com.company.gateway.trace.impl;
+package com.company.gateway.trace.provider;
 
 import com.company.gateway.trace.TraceIdProvider;
 

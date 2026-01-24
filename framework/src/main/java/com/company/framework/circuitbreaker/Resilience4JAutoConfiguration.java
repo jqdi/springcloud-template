@@ -14,16 +14,14 @@
  * limitations under the License.
  */
 
-package com.company.framework.feign;
+package com.company.framework.circuitbreaker;
 
-import com.company.framework.threadpool.ThreadPoolAutoConfiguration;
-import com.company.framework.threadpool.ThreadPoolProperties;
-import com.company.framework.threadpool.TraceThreadPoolExecutor;
-import com.company.framework.trace.TraceManager;
-import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry;
-import io.github.resilience4j.timelimiter.TimeLimiterRegistry;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.TimeUnit;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cloud.circuitbreaker.resilience4j.Resilience4JCircuitBreakerFactory;
@@ -31,11 +29,14 @@ import org.springframework.cloud.circuitbreaker.resilience4j.Resilience4JConfigu
 import org.springframework.cloud.circuitbreaker.resilience4j.Resilience4jBulkheadProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.task.TaskDecorator;
 
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.TimeUnit;
+import com.company.framework.threadpool.TaskDecoratorThreadPoolExecutor;
+import com.company.framework.threadpool.ThreadPoolAutoConfiguration;
+import com.company.framework.threadpool.ThreadPoolProperties;
+
+import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry;
+import io.github.resilience4j.timelimiter.TimeLimiterRegistry;
 
 /**
  * copy from org.springframework.cloud.circuitbreaker.resilience4j.Resilience4JAutoConfiguration
@@ -55,7 +56,7 @@ public class Resilience4JAutoConfiguration {
             CircuitBreakerRegistry circuitBreakerRegistry, TimeLimiterRegistry timeLimiterRegistry,
             @Autowired(required = false) Resilience4jBulkheadProvider bulkheadProvider,
             Resilience4JConfigurationProperties resilience4JConfigurationProperties,
-            ThreadPoolProperties properties, TraceManager traceManager) {
+            ThreadPoolProperties properties, TaskDecorator taskDecorator) {
         Resilience4JCircuitBreakerFactory factory = new Resilience4JCircuitBreakerFactory(circuitBreakerRegistry,
                 timeLimiterRegistry, bulkheadProvider, resilience4JConfigurationProperties);
 
@@ -63,8 +64,8 @@ public class Resilience4JAutoConfiguration {
         int maximumPoolSize = properties.getMaxPoolSize();
         long keepAliveTime = properties.getKeepAliveSeconds();
         BlockingQueue<Runnable> workQueue = new ArrayBlockingQueue<>(properties.getQueueCapacity());
-        ExecutorService executor = new TraceThreadPoolExecutor(corePoolSize, maximumPoolSize,
-                keepAliveTime, TimeUnit.SECONDS, workQueue, new ThreadPoolAutoConfiguration.CustomDefaultThreadFactory(), new ThreadPoolAutoConfiguration.CustomCallerRunsPolicy(), traceManager);
+        ExecutorService executor = new TaskDecoratorThreadPoolExecutor(corePoolSize, maximumPoolSize,
+                keepAliveTime, TimeUnit.SECONDS, workQueue, new ThreadPoolAutoConfiguration.CustomDefaultThreadFactory(), new ThreadPoolAutoConfiguration.CustomCallerRunsPolicy(), taskDecorator);
 
         factory.configureExecutorService(executor);// 自定义线程池传递日志ID
         return factory;

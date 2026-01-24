@@ -3,6 +3,7 @@ package com.company.framework.feign.resttemplate;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.company.framework.trace.resttemplate.TraceHeaderClientHttpRequestInterceptor;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.config.Registry;

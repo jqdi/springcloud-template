@@ -1,4 +1,4 @@
-package com.company.framework.feign;
+package com.company.framework.trace.feign;
 
 import com.company.framework.trace.TraceManager;
 import feign.RequestInterceptor;

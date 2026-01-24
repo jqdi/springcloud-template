@@ -1,4 +1,4 @@
-package com.company.framework.feign.resttemplate;
+package com.company.framework.trace.resttemplate;
 
 import java.io.IOException;
 import java.util.List;
