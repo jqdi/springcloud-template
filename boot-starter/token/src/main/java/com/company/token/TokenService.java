@@ -25,4 +25,11 @@ public interface TokenService {
      * @return 账号id
      */
     String checkAndGet(String token);
+
+    /**
+     * 获取token名称
+     *
+     * @return token名称
+     */
+    String getTokenName();
 }

@@ -2,9 +2,13 @@ spring:
   config:
     import: classpath:bootstrap.yml # 在Spring Boot 2.7.x版本中，默认情况下，bootstrap.yml件不再被自动加载
   profiles:
-    include: gracefulresponse,feign,resilience4j,sentinel,redis,rabbitmq,rocketmq,cachemanager,xxljob
+    include: gracefulresponse,developer,feign,resilience4j,sentinel,redis,rabbitmq,rocketmq,cachemanager,xxljob
   main:
     allow-bean-definition-overriding: true
+  cloud:
+    loadbalancer:
+      eager-load: # spring-cloud-commons-3.1.8 没有eager-load，参考spring cloud高版本实现饥饿加载
+        clients: template-tool, template-system, template-user, template-order
 
 template:
   sequence:

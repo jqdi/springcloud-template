@@ -1,15 +1,17 @@
 package com.company.web.controller;
 
+import java.util.Collections;
 import java.util.Map;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.bind.annotation.*;
 
-import com.company.framework.annotation.RequireLogin;
+import com.company.token.TokenService;
+import com.company.token.accesscontrol.annotation.RequireLogin;
 
 import cn.dev33.satoken.stp.SaTokenInfo;
 import cn.dev33.satoken.stp.StpUtil;
@@ -21,7 +23,45 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequestMapping("/sa-token")
 public class SaTokenController {
-	
+
+    @Value("${token.name}")
+    private String headerToken;
+
+//    @Value("${token.prefix:}")
+//    private String tokenPrefix;
+
+    @Autowired
+    private TokenService tokenService;
+
+    @GetMapping(value = "/generate")
+    public Map<String, String> generate() {
+        String token = tokenService.generate("1", "web");
+        return Collections.singletonMap("value", token);
+    }
+
+    @RequireLogin
+    @GetMapping(value = "/checkAndGet")
+    public Map<String, String> checkAndGet(HttpServletRequest request) {
+        String token = request.getHeader(headerToken);
+        if (StringUtils.isBlank(token)) {
+            return Collections.singletonMap("value", "登出成功");
+        }
+        String userId = tokenService.checkAndGet(token);
+        return Collections.singletonMap("value", userId);
+    }
+
+    @RequireLogin
+    @GetMapping(value = "/invalid")
+    public Map<String, String> invalid(HttpServletRequest request) {
+        String token = request.getHeader(headerToken);
+        if (StringUtils.isBlank(token)) {
+            return Collections.singletonMap("value", "登出成功");
+        }
+
+        String device = tokenService.invalid(token);
+        return Collections.singletonMap("value", device);
+    }
+
 	@PostMapping(value = "/cookie/login")
 	public Object login(@RequestBody Map<String, Object> param) {
 		// 手机号+验证码

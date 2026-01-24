@@ -50,12 +50,9 @@ public class NavigationController {
 
 		Map<String, String> runtimeAttach = WebUtil.getReqParam(request);
 
-		/* 补充一些系统可自动获取的参数 */
-		// 需要取token的话可能要在最外层取
-		// if (!runtimeAttach.containsKey("token")) {
-		// String token = HeaderContextUtil.head("x-token");
-		// runtimeAttach.put("token", token);
-		// }
+        /* 补充一些系统可自动获取的参数 */
+        Map<String, String> headerMap = HeaderContextUtil.headerMap();
+        runtimeAttach.putAll(headerMap);
 
 		/* 补充一些展示替换的参数 */
 
@@ -91,12 +88,9 @@ public class NavigationController {
 
 		Map<String, String> runtimeAttach = WebUtil.getReqParam(request);
 
-		/* 补充一些系统可自动获取的参数 */
-		// 需要取token的话可能要在最外层取
-		// if (!runtimeAttach.containsKey("token")) {
-		// String token = HeaderContextUtil.head("x-token");
-		// runtimeAttach.put("token", token);
-		// }
+        /* 补充一些系统可自动获取的参数 */
+        Map<String, String> headerMap = HeaderContextUtil.headerMap();
+        runtimeAttach.putAll(headerMap);
 
 		/* 补充一些展示替换的参数 */
 

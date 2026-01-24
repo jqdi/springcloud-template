@@ -55,8 +55,8 @@ public class TokenUtil {
 		return token;
 	}
 
-	public static String checkTokenAndGetSubject(String token, boolean returnNullIfExpired, String secret) {
-		if (StringUtils.isBlank(token)) {
+    public static String checkTokenAndGetSubject(String token, String secret) {
+        if (StringUtils.isBlank(token)) {
 			return null;
 		}
 
@@ -73,10 +73,10 @@ public class TokenUtil {
 			body = e.getClaims();
 			expired = true;
 		}
-		if (expired && returnNullIfExpired) {
-			// token过期
-			return null;
-		}
+        if (expired) {
+            // token过期
+            return null;
+        }
 		String subject = body.getSubject();
 		// String id = body.getId();
 		// String string = RedisUtils.get("jwt:jti:" + id);
@@ -122,13 +122,13 @@ public class TokenUtil {
 
     public static void main(String[] args) {
         String secret = "hxqhjvtam5";// 密钥
-        String subject = "83848";
-        String audience = "APP";// APP MINIP
+        String subject = "88888";
+        String audience = "APP";// APP WEB MINI
         Date expiration = DateUtils.addSeconds(new Date(), 5);
         String token = TokenUtil.generateToken(subject, audience, expiration, secret);
 //		String token = "eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJTRVJWSUNFIiwic3ViIjoiODM4NDgiLCJhdWQiOiJBUFAiLCJleHAiOjE2Mzk5MjU1ODIsIm5iZiI6MTYzOTkyNTU3NywiaWF0IjoxNjM5OTI1NTc3LCJqdGkiOiI5NzcyNTU4MGJjYjM0N2E1ODljZTZiYjkxZjY4OWZhZiJ9.-W6Z-VOffBLwvIipDT_LwUVhbLhJAFff_arh8Iu93go";
         System.out.println("token:" + token);
-        String userId = TokenUtil.checkTokenAndGetSubject(token, false, secret);
+        String userId = TokenUtil.checkTokenAndGetSubject(token, secret);
         System.out.println("userId:" + userId);
         log.info("token:" + token);
     }

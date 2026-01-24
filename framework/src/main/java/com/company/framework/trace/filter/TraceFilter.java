@@ -23,10 +23,6 @@ import java.io.IOException;
 @Order(CommonConstants.FilterOrdered.TRACE)
 public class TraceFilter extends OncePerRequestFilter {
 
-	static {
-		System.setProperty("log4j2.isThreadContextMapInheritable", "true");
-	}
-
 	@Autowired
 	private TraceManager traceManager;
 

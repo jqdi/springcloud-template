@@ -1,12 +1,12 @@
 package com.company.user.cache;
 
-import com.company.framework.cache.ICache;
-import com.company.framework.util.JsonUtil;
-import com.company.user.api.response.UserInfoResp;
-import com.company.user.entity.UserInfo;
-import com.company.user.service.UserInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import com.company.framework.cache.ICache;
+import com.company.framework.util.JsonUtil;
+import com.company.user.entity.UserInfo;
+import com.company.user.service.UserInfoService;
 
 @Component
 public class UserInfoCache {
@@ -17,7 +17,7 @@ public class UserInfoCache {
     @Autowired
     private UserInfoService userInfoService;
 
-    public UserInfoResp getById(Integer id) {
+    public UserInfo getById(Integer id) {
         String key = String.format(KEY_PATTERN, id);
         return cache.get(key, () -> {
             UserInfo userInfo = userInfoService.getById(id);
@@ -25,7 +25,7 @@ public class UserInfoCache {
                 userInfo = new UserInfo();
             }
             return JsonUtil.toJsonString(userInfo);
-        }, UserInfoResp.class);
+        }, UserInfo.class);
     }
 
     public void del(Integer id) {

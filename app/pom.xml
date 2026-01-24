@@ -58,13 +58,6 @@
 		</dependency>
 		<!-- 授权登录 -->
 
-        <!-- token -->
-        <dependency>
-            <groupId>com.company</groupId>
-            <artifactId>boot-starter-token</artifactId>
-            <version>${boot-starter-token.version}</version>
-        </dependency>
-
 		<!-- knife4j文档：https://doc.xiaominfo.com/knife4j -->
 		<dependency>
 			<groupId>com.github.xiaoymin</groupId>

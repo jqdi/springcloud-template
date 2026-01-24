@@ -2,7 +2,7 @@ spring:
   config:
     import: classpath:bootstrap.yml # 在Spring Boot 2.7.x版本中，默认情况下，bootstrap.yml件不再被自动加载
   profiles:
-    include: gracefulresponse,feign,resilience4j,sentinel,redis,rabbitmq,rocketmq,messagedriven,cachemanager,token,encryptbody
+    include: gracefulresponse,developer,feign,resilience4j,sentinel,redis,rabbitmq,rocketmq,messagedriven,cachemanager,token,encryptbody
   main:
     allow-bean-definition-overriding: true
   messages:

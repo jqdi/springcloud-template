@@ -21,7 +21,7 @@ import com.company.adminapi.easyexcel.ExcelUtil;
 import com.company.adminapi.enums.OperationLogEnum.BusinessType;
 import com.company.adminapi.excel.SysUserExcel;
 
-import com.company.framework.annotation.RequireLogin;
+import com.company.token.accesscontrol.annotation.RequireLogin;
 import com.company.framework.context.HeaderContextUtil;
 import com.company.framework.util.PropertyUtils;
 import com.company.system.api.feign.SysUserFeign;

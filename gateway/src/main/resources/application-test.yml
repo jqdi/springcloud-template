@@ -6,8 +6,3 @@ logging:
 template:
   domain: http://t-domain.com
   message-driven: rocketmq # springevent:spring事件,rabbitmq:RabbitMQ消息队列,rocketmq:RocketMQ消息队列,redis:redis消息队列
-
-# 开发者路由配置
-developer:
-  enabled: true
-  headers: x-deviceid,x-token

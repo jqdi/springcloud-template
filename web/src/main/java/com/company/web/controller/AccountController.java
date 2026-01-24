@@ -7,27 +7,20 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 
-import com.company.framework.context.HeaderContextUtil;
-import com.company.framework.globalresponse.ExceptionUtil;
-import com.company.token.util.TokenValueUtil;
-import com.jqdi.easylogin.core.LoginParams;
-import com.jqdi.easylogin.spring.boot.starter.LoginType;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-
-import com.company.framework.util.RegexUtil;
+import com.company.framework.context.HeaderContextUtil;
+import com.company.framework.globalresponse.ExceptionUtil;
 import com.company.framework.messagedriven.MessageSender;
 import com.company.framework.messagedriven.constants.BroadcastConstants;
-import com.company.framework.annotation.RequireLogin;
+import com.company.framework.util.RegexUtil;
+import com.company.token.TokenService;
+import com.company.token.accesscontrol.annotation.RequireLogin;
 import com.company.tool.api.feign.VerifyCodeFeign;
 import com.company.user.api.enums.UserOauthEnum;
 import com.company.user.api.feign.UserInfoFeign;
@@ -41,11 +34,12 @@ import com.company.web.req.LoginByMobileReq;
 import com.company.web.req.RegByEmailReq;
 import com.company.web.req.RegByMobileReq;
 import com.company.web.resp.LoginResp;
-import com.company.token.TokenService;
 import com.company.web.util.PassWordUtil;
 import com.google.common.collect.Maps;
 import com.jqdi.easylogin.core.LoginClient;
+import com.jqdi.easylogin.core.LoginParams;
 import com.jqdi.easylogin.core.exception.LoginException;
+import com.jqdi.easylogin.spring.boot.starter.LoginType;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -272,7 +266,6 @@ public class AccountController {
 	@PostMapping(value = "/logout")
 	public Map<String, String> logout(HttpServletRequest request) {
 		String token = request.getHeader(headerToken);
-		token = TokenValueUtil.fixToken(tokenPrefix, token);
 		if (StringUtils.isBlank(token)) {
 			return Collections.singletonMap("value", "登出成功");
 		}

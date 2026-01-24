@@ -34,10 +34,9 @@ public class SkywalkingTraceFilter implements GlobalFilter, Ordered {
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
-        ServerHttpRequest request = exchange.getRequest();
         String tid = WebFluxSkyWalkingOperators.continueTracing(exchange, TraceContext::traceId);
         MDC.put("tid", tid);
-        return chain.filter(exchange.mutate().request(request).build()).then(Mono.fromRunnable(() -> {
+        return chain.filter(exchange).then(Mono.fromRunnable(() -> {
             MDC.remove("tid");
         }));
     }

@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.company.app.req.RefundApplyReq;
 import com.company.app.req.ToPayReq;
 
-import com.company.framework.annotation.RequireLogin;
+import com.company.token.accesscontrol.annotation.RequireLogin;
 import com.company.framework.context.HeaderContextUtil;
 import com.company.framework.sequence.SequenceGenerator;
 import com.company.framework.util.PropertyUtils;

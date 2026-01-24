@@ -128,13 +128,11 @@
             <version>8.16.0</version>
 		</dependency>
         <!-- skywalking api:需硬编码时用到 -->
-        <!--
         <dependency>
 			<groupId>org.apache.skywalking</groupId>
 			<artifactId>apm-toolkit-trace</artifactId>
 			<version>8.16.0</version>
 		</dependency>
-		-->
 		<!-- skywalking日志追踪 -->
 
 		<!-- MQ -->

@@ -46,7 +46,7 @@ canal:
 spring:
   config:
     activate:
-      on-profile: prod
+      on-profile: prod,prod-zone1,prod-zone2
 canal:
   # 跟服务端canal.properties中canal.serverMode配置强相关
   # 框架实现选项：simple,cluster,zk,kafka

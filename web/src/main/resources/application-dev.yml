@@ -9,7 +9,6 @@ template:
     cache: guava # guava:本地缓存,redis:redis缓存,combination:组合缓存,cachemanager:CacheManager缓存
     lock: jvm # jvm:jvm锁,redisson:redisson分布式锁
     message-driven: springevent # springevent:spring事件,rabbitmq:RabbitMQ消息队列,rocketmq:RocketMQ消息队列,redis:redis消息队列
-    access-control: false
   mock:
     time: false
 
@@ -21,8 +20,3 @@ knife4j:
     enable: false  # 是否开启认证
     username: admin # Basic认证用户名
     password: 123456 # Basic认证密码
-
-# 开发者路由配置
-developer:
-  enabled: true
-  headers: x-deviceid,x-current-user-id

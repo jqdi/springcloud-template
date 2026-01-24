@@ -1,31 +1,33 @@
 package com.company.openapi.interceptor;
 
-import com.company.framework.globalresponse.ExceptionUtil;
-import com.company.framework.util.JsonUtil;
-import com.company.framework.cache.ICache;
-import com.company.framework.filter.request.BodyReaderHttpServletRequestWrapper;
-import com.company.framework.util.WebUtil;
-import com.company.openapi.annotation.NoSign;
-import com.company.openapi.config.SignConfiguration;
-import com.company.openapi.util.SignUtil;
+import java.lang.reflect.Method;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
-import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
+import org.springframework.web.servlet.AsyncHandlerInterceptor;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.lang.reflect.Method;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
+import com.company.framework.cache.ICache;
+import com.company.framework.filter.request.BodyReaderHttpServletRequestWrapper;
+import com.company.framework.globalresponse.ExceptionUtil;
+import com.company.framework.util.JsonUtil;
+import com.company.framework.util.WebUtil;
+import com.company.openapi.annotation.NoSign;
+import com.company.openapi.config.SignConfiguration;
+import com.company.openapi.util.SignUtil;
 
 @Component
 @ConditionalOnProperty(prefix = "sign", name = "check", havingValue = "true", matchIfMissing = true)
-public class SignInterceptor extends HandlerInterceptorAdapter {
+public class SignInterceptor implements AsyncHandlerInterceptor {
 
 	@Autowired
 	private SignConfiguration signConfiguration;

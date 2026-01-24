@@ -68,7 +68,7 @@ custom:
 spring:
   config:
     activate:
-      on-profile: prod
+      on-profile: prod,prod-zone1,prod-zone2
 custom:
   ip_port: 127.0.0.1:3306
   username: root

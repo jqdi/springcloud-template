@@ -18,7 +18,7 @@ import java.util.Map;
  * 请求头放到上下文
  */
 @Component
-@Order(CommonConstants.FilterOrdered.HEADER_CONTEXT)
+@Order(CommonConstants.FilterOrdered.HEADER_CONTEXT) // 注：一定要在UserIdFilter之后执行
 public class HeaderContextFilter extends OncePerRequestFilter {
 
     @Override

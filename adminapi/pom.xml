@@ -49,13 +49,6 @@
 		</dependency>
 		<!-- 授权登录 -->
 
-        <!-- token -->
-        <dependency>
-            <groupId>com.company</groupId>
-            <artifactId>boot-starter-token</artifactId>
-            <version>${boot-starter-token.version}</version>
-        </dependency>
-
 		<!-- excel操作 -->
 		<dependency>
 			<groupId>com.alibaba</groupId>

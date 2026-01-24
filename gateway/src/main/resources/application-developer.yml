@@ -1,0 +1,44 @@
+# 下面是环境区分，多个配置以 ‘---’ 分开
+---
+# dev环境配置
+spring:
+  config:
+    activate:
+      on-profile: dev
+# 开发者路由配置
+developer:
+  enabled: true
+  headers: x-deviceid,x-token
+
+---
+# test环境配置
+spring:
+  config:
+    activate:
+      on-profile: test
+# 开发者路由配置
+developer:
+  enabled: true
+  headers: x-deviceid,x-token
+
+---
+# pre环境配置
+spring:
+  config:
+    activate:
+      on-profile: pre
+# 开发者路由配置
+developer:
+  enabled: true
+  headers: x-deviceid,x-token
+
+---
+# prod环境配置
+spring:
+  config:
+    activate:
+      on-profile: prod,prod-zone1,prod-zone2
+# 开发者路由配置
+developer:
+  enabled: false
+  headers: x-deviceid,x-token

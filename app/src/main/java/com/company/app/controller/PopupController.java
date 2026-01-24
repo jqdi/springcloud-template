@@ -4,6 +4,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.company.framework.context.HeaderContextUtil;
 import com.company.tool.api.response.BestPopupResp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -35,12 +36,10 @@ public class PopupController {
 		
 		Map<String, String> runtimeAttach = WebUtil.getReqParam(request);
 
-		/* 补充一些系统可自动获取的参数 */
-		// 需要取token的话可能要在最外层取
-		// if (!runtimeAttach.containsKey("token")) {
-		// String token = HeaderContextUtil.head("x-token");
-		// runtimeAttach.put("token", token);
-		// }
+        /* 补充一些系统可自动获取的参数 */
+        Map<String, String> headerMap = HeaderContextUtil.headerMap();
+        runtimeAttach.putAll(headerMap);
+
 		/* 补充一些弹窗替换的参数 */
 		
 		bestPopupReq.setRuntimeAttach(runtimeAttach);

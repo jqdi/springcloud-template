@@ -36,6 +36,12 @@
 			<artifactId>boot-starter-encryptbody</artifactId>
 			<version>${boot-starter-encryptbody.version}</version>
 		</dependency>
+        <!-- token -->
+        <dependency>
+            <groupId>com.company</groupId>
+            <artifactId>boot-starter-token</artifactId>
+            <version>${boot-starter-token.version}</version>
+        </dependency>
 	</dependencies>
 
 </project>

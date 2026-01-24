@@ -1,7 +1,7 @@
 package com.company.web.controller;
 
 
-import com.company.framework.annotation.RequireLogin;
+import com.company.token.accesscontrol.annotation.RequireLogin;
 import com.company.framework.cache.ICache;
 import com.company.framework.constant.HeaderConstants;
 import com.company.framework.context.HeaderContextUtil;

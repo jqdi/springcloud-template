@@ -9,7 +9,6 @@ template:
     cache: guava # guava:本地缓存,redis:redis缓存,combination:组合缓存,cachemanager:CacheManager缓存
     lock: redisson # jvm:jvm锁,redisson:redisson分布式锁
     message-driven: rocketmq # springevent:spring事件,rabbitmq:RabbitMQ消息队列,rocketmq:RocketMQ消息队列,redis:redis消息队列
-    access-control: true
 
 # knife4j文档，访问地址：http://localhost:xxxx/doc.html
 knife4j:

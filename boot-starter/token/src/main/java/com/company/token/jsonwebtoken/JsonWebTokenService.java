@@ -1,34 +1,64 @@
 package com.company.token.jsonwebtoken;
 
+import java.util.Date;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.DateUtils;
+
 import com.company.token.TokenService;
 import com.company.token.jsonwebtoken.util.TokenUtil;
+
 import io.jsonwebtoken.Claims;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.time.DateUtils;
-import org.springframework.beans.factory.annotation.Value;
-
-import java.util.Date;
 
 @Slf4j
 public class JsonWebTokenService implements TokenService {
+    /**
+     * 连接 Token 前缀和 Token 值的字符
+     */
+    public static final String TOKEN_CONNECTOR_CHAT  = " ";
 
-    @Value("${token.timeout:2592000}")
-    private Integer timeout;
+    // 超时秒数
+    private final Integer timeout;
+    // 秘钥
+    private final String secret;
+    // 前缀
+    private final String name;
+    // 前缀
+    private final String prefix;
 
-    @Value("${token.secret:defaultsecret}")
-    private String secret;
-
-    @Value("${template.enable.access-control:true}")
-    private Boolean enableAccessControl;
+    public JsonWebTokenService(Integer timeout, String secret, String name, String prefix) {
+        this.timeout = timeout;
+        this.secret = secret;
+        this.name = name;
+        this.prefix = prefix;
+    }
 
     @Override
     public String generate(String userId, String device) {
-        Date expiration = DateUtils.addSeconds(new Date(), timeout);
-        return TokenUtil.generateToken(userId, device, expiration, secret);
+        int amount = timeout;
+        if (timeout == -1) {
+            amount = Integer.MAX_VALUE;
+        }
+        Date expiration = DateUtils.addSeconds(new Date(), amount);
+        String token = TokenUtil.generateToken(userId, device, expiration, secret);
+        if (StringUtils.isNotBlank(prefix)) {
+            token = prefix + TOKEN_CONNECTOR_CHAT + token;
+        }
+        return token;
     }
 
     @Override
     public String invalid(String token) {
+        if (StringUtils.isBlank(token)) {
+            return null;
+        }
+        if (StringUtils.isNotBlank(prefix)) {
+            if (!token.startsWith(prefix + TOKEN_CONNECTOR_CHAT)) {
+                return null;
+            }
+            token = token.substring(prefix.length() + TOKEN_CONNECTOR_CHAT.length());
+        }
         Claims claims = TokenUtil.getClaims(token, secret);
         log.info("claims:{}", claims);
 
@@ -41,7 +71,21 @@ public class JsonWebTokenService implements TokenService {
 
     @Override
     public String checkAndGet(String token) {
-        return TokenUtil.checkTokenAndGetSubject(token, enableAccessControl, secret);
+        if (StringUtils.isBlank(token)) {
+            return null;
+        }
+        if (StringUtils.isNotBlank(prefix)) {
+            if (!token.startsWith(prefix + TOKEN_CONNECTOR_CHAT)) {
+                return null;
+            }
+            token = token.substring(prefix.length() + TOKEN_CONNECTOR_CHAT.length());
+        }
+        return TokenUtil.checkTokenAndGetSubject(token, secret);
+    }
+
+    @Override
+    public String getTokenName() {
+        return name;
     }
 
 }

@@ -2,7 +2,7 @@ spring:
   config:
     import: classpath:bootstrap.yml # 在Spring Boot 2.7.x版本中，默认情况下，bootstrap.yml件不再被自动加载
   profiles:
-    include: gracefulresponse,redis,rabbitmq,rocketmq,messagedriven,cachemanager,datasource # 项目中增加配置application-*.yml可覆盖boot-starter-*,framework的默认配置application-*.yml
+    include: gracefulresponse,developer,redis,rabbitmq,rocketmq,messagedriven,cachemanager,datasource # 项目中增加配置application-*.yml可覆盖boot-starter-*,framework的默认配置application-*.yml
   main:
     allow-bean-definition-overriding: true
   resources:
