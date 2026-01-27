@@ -99,7 +99,8 @@ public class RequestFilter extends OncePerRequestFilter {
 			"text/html",
 			"text/xml",
 			"text/css",
-			"text/javascript"
+			"text/javascript",
+			"application/vnd.spring-boot.actuator"
 	);
 
 	private boolean isLoggableContentType(String contentType) {

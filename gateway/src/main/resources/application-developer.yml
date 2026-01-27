@@ -8,7 +8,7 @@ spring:
 # 开发者路由配置
 developer:
   enabled: true
-  headers: x-deviceid,x-token
+  headers: x-deviceid,Authorization
 
 ---
 # test环境配置
@@ -19,7 +19,7 @@ spring:
 # 开发者路由配置
 developer:
   enabled: true
-  headers: x-deviceid,x-token
+  headers: x-deviceid,Authorization
 
 ---
 # pre环境配置
@@ -30,7 +30,7 @@ spring:
 # 开发者路由配置
 developer:
   enabled: true
-  headers: x-deviceid,x-token
+  headers: x-deviceid,Authorization
 
 ---
 # prod环境配置
@@ -41,4 +41,4 @@ spring:
 # 开发者路由配置
 developer:
   enabled: false
-  headers: x-deviceid,x-token
+  headers: x-deviceid,Authorization

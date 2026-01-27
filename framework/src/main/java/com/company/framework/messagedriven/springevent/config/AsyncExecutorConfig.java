@@ -11,7 +11,7 @@ import java.util.concurrent.Executor;
 /**
  * ApplicationListener异步执行配置
  */
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @ConditionalOnProperty(prefix = "template.enable", name = "message-driven", havingValue = "springevent")
 public class AsyncExecutorConfig {
 

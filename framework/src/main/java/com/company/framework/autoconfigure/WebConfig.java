@@ -20,7 +20,7 @@ import lombok.extern.slf4j.Slf4j;
  * 统一加载拦截器，其他地方请勿使用InterceptorRegistry添加拦截器，可能会重复添加
  */
 @Slf4j
-@Configuration
+@Configuration(proxyBeanMethods = false)
 public class WebConfig implements WebMvcConfigurer {
 
 	@Autowired(required = false)

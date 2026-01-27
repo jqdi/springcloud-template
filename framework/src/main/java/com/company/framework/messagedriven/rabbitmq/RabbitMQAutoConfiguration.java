@@ -23,7 +23,7 @@ import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
 
 @Slf4j
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @Conditional(RabbitMQAutoConfiguration.RabbitMQCondition.class)
 public class RabbitMQAutoConfiguration extends org.springframework.boot.autoconfigure.amqp.RabbitAutoConfiguration {
 

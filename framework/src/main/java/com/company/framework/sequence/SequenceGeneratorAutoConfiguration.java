@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Configuration;
 
 import com.company.framework.sequence.snowflake.HutoolSnowflake;
 
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @ConditionalOnProperty(prefix = "template", name = "sequence.datacenterId")
 public class SequenceGeneratorAutoConfiguration {
 

@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
 @Slf4j
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @Conditional(RocketMQAutoConfiguration.RocketMQCondition.class)
 @Import(org.apache.rocketmq.spring.autoconfigure.RocketMQAutoConfiguration.class)
 public class RocketMQAutoConfiguration {

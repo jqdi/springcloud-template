@@ -105,7 +105,7 @@ public class UserController {
 
 | 配置项 | 默认值 | 说明 |
 |--------|--------|------|
-| token.name | x-token | Token在HTTP Header中的名称 |
+| token.name | Authorization | Token在HTTP Header中的名称 |
 | token.prefix | | Token前缀，例如"Bearer" |
 | token.secret | defaultsecret | JWT加密密钥 |
 | token.timeout | 2592000 | Token超时时间（秒），-1表示永不过期 |

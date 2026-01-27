@@ -10,7 +10,7 @@ GlobalResponse 模块是基于 GracefulResponse 框架构建的全局统一响�
 globalresponse/
 ├── gracefulresponse/              # 请阅读gracefulresponse的README.md
 ├── ArgsBusinessException.java     # 带参数的业务异常类
-├── BusinessException.java         # 业务异常类（已废弃）
+├── BusinessException.java         # 业务异常类
 ├── ExceptionUtil.java             # 异常工具类
 └── GlobalExceptionHandler.java    # 全局异常处理器（已废弃）
 ```

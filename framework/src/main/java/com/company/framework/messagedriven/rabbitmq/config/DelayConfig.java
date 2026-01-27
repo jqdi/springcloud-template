@@ -20,7 +20,7 @@ import org.springframework.context.annotation.Configuration;
  *
  * @return
  */
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @Conditional(RabbitMQAutoConfiguration.RabbitMQCondition.class)
 public class DelayConfig {
 

@@ -17,7 +17,7 @@ import static org.springframework.beans.factory.config.BeanDefinition.ROLE_INFRA
  * <p>
  * 参考网页：https://blog.csdn.net/echizao1839/article/details/122319170
  */
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @ConditionalOnClass({ContextRefresher.class, RefreshScope.class, EnvironmentChangeEvent.class})
 @ConditionalOnProperty(name = "spring.cloud.nacos.config.enabled", matchIfMissing = true)// 仅nacos启动时装配
 public class SpringValueAutoRefreshConfiguration {

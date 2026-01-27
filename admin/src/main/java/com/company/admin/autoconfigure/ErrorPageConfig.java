@@ -6,7 +6,7 @@ import org.springframework.boot.web.server.ErrorPageRegistry;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
 
-@Configuration
+@Configuration(proxyBeanMethods = false)
 public class ErrorPageConfig implements ErrorPageRegistrar {
 
 	@Override

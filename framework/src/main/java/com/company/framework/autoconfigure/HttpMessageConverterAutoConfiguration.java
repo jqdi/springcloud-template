@@ -8,7 +8,7 @@ import org.springframework.http.converter.json.MappingJackson2HttpMessageConvert
 
 import com.company.framework.util.JsonUtil;
 
-@Configuration
+@Configuration(proxyBeanMethods = false)
 public class HttpMessageConverterAutoConfiguration {
 
     @Bean

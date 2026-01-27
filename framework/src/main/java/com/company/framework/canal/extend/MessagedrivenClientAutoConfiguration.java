@@ -22,7 +22,7 @@ import java.util.Map;
  * 參考top.javatool.canal.client.spring.boot.autoconfigure.KafkaClientAutoConfiguration实现
  * </p>
  */
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @ConditionalOnProperty(value = CanalProperties.CANAL_MODE, havingValue = "messagedriven")
 @Import(ThreadPoolAutoConfiguration.class)
 public class MessagedrivenClientAutoConfiguration {

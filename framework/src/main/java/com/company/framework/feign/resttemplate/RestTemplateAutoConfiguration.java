@@ -23,7 +23,7 @@ import org.springframework.web.client.RestTemplate;
 
 import com.company.framework.trace.TraceManager;
 
-@Configuration
+@Configuration(proxyBeanMethods = false)
 public class RestTemplateAutoConfiguration {
 
 	@Bean
@@ -47,15 +47,15 @@ public class RestTemplateAutoConfiguration {
 	}
 
 	@Bean
-	public ClientHttpRequestFactory httpRequestFactory() {
-		return new HttpComponentsClientHttpRequestFactory(httpClient());
+	public ClientHttpRequestFactory httpRequestFactory(HttpClient httpClient) {
+		return new HttpComponentsClientHttpRequestFactory(httpClient);
 	}
 
 	@LoadBalanced // 启用负载，注册在注册中心上的实例有效 需要 通过服务名访问
 //	@SentinelRestTemplate(blockHandler = "handleException", blockHandlerClass = ExceptionUtil.class)
 	@Bean("restTemplate")
-	public RestTemplate restTemplate(TraceManager traceManager) {
-        RestTemplate restTemplate = new RestTemplate(httpRequestFactory());
+	public RestTemplate restTemplate(ClientHttpRequestFactory httpRequestFactory, TraceManager traceManager) {
+        RestTemplate restTemplate = new RestTemplate(httpRequestFactory);
         List<ClientHttpRequestInterceptor> interceptors = new ArrayList<>();
         interceptors.add(new TraceHeaderClientHttpRequestInterceptor(traceManager));
         interceptors.add(new RestTemplateLoggerClientHttpRequestInterceptor());

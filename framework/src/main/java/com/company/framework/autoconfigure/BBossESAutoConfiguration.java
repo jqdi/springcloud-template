@@ -13,7 +13,7 @@ import org.springframework.context.annotation.Configuration;
 
 import com.company.framework.autoconfigure.BBossESAutoConfiguration.BBossESCondition;
 
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @ConditionalOnClass(BBossESStarter.class)
 @EnableConfigurationProperties({ BBossESProperties.class })
 @Conditional(BBossESCondition.class)

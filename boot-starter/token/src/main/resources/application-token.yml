@@ -1,7 +1,7 @@
 # Token 配置
 token:
   # token名称
-  name: x-token
+  name: Authorization
   prefix:
 
 # Sa-Token 配置

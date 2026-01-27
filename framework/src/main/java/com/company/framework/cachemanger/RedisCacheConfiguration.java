@@ -47,7 +47,7 @@ import java.util.List;
  * @author Mark Paluch
  * @author Ryon Day
  */
-@Configuration//(proxyBeanMethods = false)
+@Configuration(proxyBeanMethods = false)
 @ConditionalOnClass(RedisConnectionFactory.class)
 @AutoConfigureAfter(RedisAutoConfiguration.class)
 //@ConditionalOnBean(RedisConnectionFactory.class)

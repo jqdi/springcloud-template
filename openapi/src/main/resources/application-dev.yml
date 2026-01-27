@@ -11,7 +11,7 @@ template:
     message-driven: springevent # springevent:spring事件,rabbitmq:RabbitMQ消息队列,rocketmq:RocketMQ消息队列,redis:redis消息队列
 
 sign:
-  check: false
+  check: true
   reqValidSeconds: 6000 # 请求有效秒数
   nonceValid: false # 校验nonce随机数，打开后重放请求不通过
   accounts:

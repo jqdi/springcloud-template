@@ -25,7 +25,7 @@ import com.company.gateway.util.HostUtil;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @Conditional(RabbitMQAutoConfiguration.RabbitMQCondition.class)
 public class RabbitMQAutoConfiguration extends org.springframework.boot.autoconfigure.amqp.RabbitAutoConfiguration {
 

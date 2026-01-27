@@ -10,7 +10,7 @@ import com.company.framework.context.threadpool.HeaderContextTaskDecorator;
 import com.company.framework.trace.threadpool.TraceTaskDecorator;
 import com.company.framework.trace.provider.RandomProvider;
 
-@Configuration
+@Configuration(proxyBeanMethods = false)
 public class TraceAutoConfiguration {
 
     @Bean
