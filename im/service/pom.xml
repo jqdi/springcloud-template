@@ -80,7 +80,7 @@
                 </executions>
                 <configuration>
                 	<!-- 1.4.2.RELEASE导致多个main方法的情况下需要指定主类 -->
-                    <mainClass>com.company.websocket.WebApplication</mainClass>
+                    <mainClass>com.company.im.IMApplication</mainClass>
                 </configuration>
 			</plugin>
             <!-- mvn install 忽略本模块-->

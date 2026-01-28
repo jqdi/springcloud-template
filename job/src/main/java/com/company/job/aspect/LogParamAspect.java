@@ -20,7 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Aspect
 @Component
-@Order(Ordered.HIGHEST_PRECEDENCE + 10) // 优先级要比TraceAspect底
+@Order(20) // 优先级要比TraceAspect底
 public class LogParamAspect {
 
     // 在jobHander执行之前打印入参

@@ -15,5 +15,5 @@ spring:
   application:
     name: template-job
   profiles:
-    active: dev # dev,test,pre,prod，不同环境jar启动命令后面加上 --spring.profiles.active=prod
+    active: test # dev,test,pre,prod，不同环境jar启动命令后面加上 --spring.profiles.active=prod
     include: eureka,nacos-discovery,config,apollo,nacos-config,actuator # 引入配置文件：bootstrap-*.yml

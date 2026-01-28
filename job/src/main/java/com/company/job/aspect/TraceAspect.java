@@ -19,7 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Aspect
 @Component("jobTraceAspect")
-@Order(Ordered.HIGHEST_PRECEDENCE)
+@Order(10)
 public class TraceAspect {
 	@Autowired
 	private TraceManager traceManager;

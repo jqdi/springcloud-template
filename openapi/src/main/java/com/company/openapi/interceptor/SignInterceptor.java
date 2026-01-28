@@ -54,15 +54,15 @@ public class SignInterceptor implements AsyncHandlerInterceptor {
 		}
 
 		// 检查时效性
-		String timestamp = request.getHeader("timestamp");// 加入timestamp（时间戳），10分钟内数据有效
+		String timestamp = request.getHeader("timestamp");// 加入timestamp（时间戳），正负10分钟内数据有效
 		if (StringUtils.isBlank(timestamp)) {
 			ExceptionUtil.throwException("请求已过期");
 		}
 		long timestampLong = Long.parseLong(timestamp);
 		long now = System.currentTimeMillis();
-		if (now - timestampLong > signConfiguration.getReqValidSeconds() * 1000) {
-			ExceptionUtil.throwException("请求已过期");
-		}
+        if (Math.abs(now - timestampLong) > signConfiguration.getReqValidSeconds() * 1000) {
+            ExceptionUtil.throwException("请求已过期");
+        }
 
 		// 检查appid是否正确
 		String appid = request.getHeader("appid");// 线下分配appid和appsecret，针对不同的调用方分配不同的appid和appsecret

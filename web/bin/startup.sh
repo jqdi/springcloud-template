@@ -22,14 +22,39 @@ SKYWALKING_COLLECTOR_BACKEND_SERVICE=127.0.0.1:11800
 LOG_HOME="./logs"
 
 
-# 创建日志目录
-mkdir -p "$LOG_HOME"
+function get_pid() {
+  # 查看是否存在这个进程，返回结果是数字
+  pcount=`ps -ef | grep "$APP_JAR" | grep -v "grep" | wc -l`
+  if [ $pcount -gt 0 ]; then  #返回的数字不小于0 说明存在进程
+    # 获取进程ID 并 杀掉进程
+	pid=`ps -ef | grep "$APP_JAR" | grep -v "grep" | awk '{ print $2; }'`
+	echo "$pid"
+  else
+    echo "-1"
+  fi
+}
 
-# jar位置，可通过第一个参数修改
+function stop_pid() {
+  # 查看是否存在这个进程，返回结果是数字
+  jar_pid=$(get_pid)
+  echo "$APP_JAR进程ID: $jar_pid"
+  if [ $jar_pid == "-1" ]
+    then
+	echo "$APP_JAR" not running;
+  else
+    kill $jar_pid
+    echo "kill $jar_pid 成功"
+  fi
+}
+
+echo "参数1：【$1】，参数2：【$2】"
+
+# jar位置，可通过第二个参数修改
 APP_JAR="$MODULE.jar"
-if [ $# -gt 0 ]; then
-    APP_JAR="$1"
+if [ $# -gt 1 ]; then
+    APP_JAR="$2"
 fi
+echo "JAR文件: $APP_JAR"
 
 # 检查JAR文件是否存在
 if [ ! -f "$APP_JAR" ]; then
@@ -37,8 +62,32 @@ if [ ! -f "$APP_JAR" ]; then
     exit 1
 fi
 
-# 获取当前进程的PID
+if [ $# -eq 0 ]; then
+  echo "请输入参数1：start|stop|restart"
+  exit 0
+fi
+
+echo "开始执行脚本"
+if [ $1 == "stop" ]
+  then
+  echo $APP_JAR  "stopping"
+  stop_pid
+  exit 0
+fi
+
+if [ $1 == "restart" ]
+  then
+  echo $APP_JAR  "restart"
+  stop_pid
+  sleep 1
+fi
+
+# 创建日志目录
+mkdir -p "$LOG_HOME"
+
+# 获取启动进程ID
 PID=$$
+echo "启动进程ID:$PID"
 
 # JVM参数配置（第一个留空，后续采用拼接方式添加参数）
 JVM_OPTS=""
@@ -99,11 +148,11 @@ JVM_OPTS="$JVM_OPTS -javaagent:plugins/prometheus/jmx_prometheus_javaagent-1.0.1
 APP_OPTS="--spring.profiles.active=$ENV"
 
 echo "正在启动$ENV服务..."
-echo "JAR文件: $APP_JAR"
 
-# 前台运行
-java $JVM_OPTS -jar $APP_JAR $APP_OPTS
 # 后台运行
-#nohup java $JVM_OPTS -jar $APP_JAR $APP_OPTS > "$LOG_HOME/nohup.out" 2>&1 &
+nohup java $JVM_OPTS -jar $APP_JAR $APP_OPTS > "$LOG_HOME/nohup.out" 2>&1 &
+
+jar_pid=$(get_pid)
+echo "$APP_JAR进程ID: $jar_pid"
 
 exit $?
