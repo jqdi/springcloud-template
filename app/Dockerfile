@@ -11,4 +11,4 @@ EXPOSE 9020
 COPY bin/startup.sh startup.sh
 
 # 在容器启动时执行启动脚本
-ENTRYPOINT ["sh","startup.sh","app.jar"]
+ENTRYPOINT ["sh","startup.sh","start","app.jar"]
