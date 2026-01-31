@@ -14,8 +14,10 @@ PROJECT="springcloud-template"
 MODULE="template-web"
 # 环境，该值会赋给spring.profiles.active，可选（dev、test、pre、prod）
 ENV="dev"
+# 端口
+PORT=9010
 # JMX端口
-JMX_PORT=29010
+JMX_PORT="2$PORT"
 # skywalking服务端IP+地址
 SKYWALKING_COLLECTOR_BACKEND_SERVICE=127.0.0.1:11800
 # 日志根目录，建议与logging.file.path保持一致
@@ -27,21 +29,27 @@ function get_pid() {
   pcount=`ps -ef | grep "$APP_JAR" | grep -v "grep" | wc -l`
   if [ $pcount -gt 0 ]; then  #返回的数字不小于0 说明存在进程
     # 获取进程ID 并 杀掉进程
-	pid=`ps -ef | grep "$APP_JAR" | grep -v "grep" | awk '{ print $2; }'`
-	echo "$pid"
+    pid=`ps -ef | grep "$APP_JAR" | grep -v "grep" | awk '{ print $2; }'`
+    echo "$pid"
   else
     echo "-1"
   fi
+}
+
+function prestop() {
+  # 发送请求，设置超时
+  response=$(curl -s --max-time 60 "http://127.0.0.1:$PORT/gracefulshutdown/prestop")
+  echo "prestop response:$response"
 }
 
 function stop_pid() {
   # 查看是否存在这个进程，返回结果是数字
   jar_pid=$(get_pid)
   echo "$APP_JAR进程ID: $jar_pid"
-  if [ $jar_pid == "-1" ]
-    then
-	echo "$APP_JAR" not running;
+  if [ $jar_pid == "-1" ]; then
+    echo "$APP_JAR" not running;
   else
+    prestop
     kill $jar_pid
     echo "kill $jar_pid 成功"
   fi
@@ -62,21 +70,20 @@ if [ ! -f "$APP_JAR" ]; then
     exit 1
 fi
 
-if [ $# -eq 0 ]; then
-  echo "请输入参数1：start|stop|restart"
-  exit 0
+if [[ "$1" != "start" && "$1" != "stop" && "$1" != "restart" ]]; then
+    echo "错误: 无效的操作 '$1'"
+    echo "用法: $0 {start|stop|restart}"
+    exit 1
 fi
 
 echo "开始执行脚本"
-if [ $1 == "stop" ]
-  then
+if [ $1 == "stop" ]; then
   echo $APP_JAR  "stopping"
   stop_pid
   exit 0
 fi
 
-if [ $1 == "restart" ]
-  then
+if [ $1 == "restart" ]; then
   echo $APP_JAR  "restart"
   stop_pid
   sleep 1
