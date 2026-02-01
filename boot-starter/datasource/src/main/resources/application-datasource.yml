@@ -41,8 +41,6 @@ mybatis-plus:
     db-config:
       #主键类型 0(AUTO):"数据库ID自增", 1(INPUT):"用户输入ID",2(ID_WORKER):"全局唯一ID (数字类型唯一ID)", 3(UUID):"全局唯一ID UUID";
       id-type: 0
-      logicDeleteField: del_flag
-      logicDeleteValue: UNIX_TIMESTAMP()
 
 # 下面是环境区分，多个配置以 ‘---’ 分开
 ---
