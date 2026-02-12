@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.company.tool.mapper.CommonI18nMapper">
+    <select id="selectByBusinessTypeBusinessidsLocale" resultType="com.company.tool.entity.CommonI18n">
+        select * from common_i18n
+        where
+        <choose>
+        	<when test="businessTypeIds != null and businessTypeIds.size() > 0">
+                business_id in
+		        <foreach collection="businessTypeIds" open="(" item="item" close=")" separator=",">
+		            #{item}
+		        </foreach>
+        	</when>
+        	<otherwise>
+        		1 != 1
+        	</otherwise>
+        </choose>
+        and business_type = #{businessType}
+        and locale = #{locale}
+    </select>
+</mapper>

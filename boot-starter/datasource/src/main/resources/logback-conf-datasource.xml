@@ -22,4 +22,11 @@
 		<appender-ref ref="FILE" />
 		<appender-ref ref="ERROR_FILE" />
 	</logger>
+
+    <!-- 打印JDBC操作日志 -->
+    <logger name="org.springframework.jdbc" level="DEBUG" additivity="false">
+        <appender-ref ref="STDOUT" />
+        <appender-ref ref="FILE" />
+        <appender-ref ref="ERROR_FILE" />
+    </logger>
 </included>

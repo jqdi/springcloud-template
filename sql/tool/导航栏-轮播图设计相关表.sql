@@ -63,7 +63,7 @@ CREATE TABLE `banner_condition` (
   `create_by` varchar(64) DEFAULT '' COMMENT '创建者',
   `update_by` varchar(64) DEFAULT '' COMMENT '更新者',
   PRIMARY KEY (`id`),
-  KEY `idx_navitemid` (`banner_id`)
+  KEY `idx_bannerid` (`banner_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='轮播图-条件';
 
 

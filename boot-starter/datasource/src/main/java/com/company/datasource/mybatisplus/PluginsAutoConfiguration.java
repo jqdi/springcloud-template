@@ -1,12 +1,20 @@
 package com.company.datasource.mybatisplus;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.context.annotation.Bean;
+import org.springframework.jdbc.core.JdbcTemplate;
+
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
+import com.company.datasource.mybatis.i18n.plugin.I18nFieldValueReplaceInterceptor;
+import com.company.datasource.mybatis.i18n.provider.I18nDataProvider;
+import com.company.datasource.mybatis.i18n.provider.I18nDataProviderFactory;
+import com.company.datasource.mybatis.i18n.spring.JdbcTemplateI18nDataProvider;
+import com.company.datasource.mybatis.i18n.spring.SpringI18nDataProviderFactory;
 import com.company.datasource.mybatisplus.plugins.PerformanceInterceptor;
 import com.company.datasource.mybatisplus.plugins.SqlLimitInterceptor;
 import com.company.datasource.mybatisplus.plugins.SummarySQLInterceptor;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
 
 //@Configuration 使用org.springframework.boot.autoconfigure.AutoConfiguration.imports装配bean
 public class PluginsAutoConfiguration {
@@ -53,4 +61,22 @@ public class PluginsAutoConfiguration {
 	public SummarySQLInterceptor summarySQLInterceptor() {
 		return new SummarySQLInterceptor();
 	}
+
+    /* 国际化字段替换 */
+    @Bean
+    public I18nDataProvider defaultI18nDataProvider(JdbcTemplate jdbcTemplate) {
+        return new JdbcTemplateI18nDataProvider(jdbcTemplate);
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public I18nDataProviderFactory i18nDataProviderFactory(I18nDataProvider defaultI18nDataProvider) {
+        return new SpringI18nDataProviderFactory(defaultI18nDataProvider);
+    }
+
+    @Bean
+    public I18nFieldValueReplaceInterceptor i18nFieldValueReplaceInterceptor(I18nDataProviderFactory i18nDataProviderFactory) {
+        return new I18nFieldValueReplaceInterceptor(i18nDataProviderFactory);
+    }
+    /* 国际化字段替换 */
 }
