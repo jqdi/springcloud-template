@@ -1,6 +1,7 @@
 package com.company.tool.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.company.datasource.mybatis.i18n.annotation.I18nField;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
@@ -38,9 +39,10 @@ public class AppVersion {
 	private String downloadUrl;
 
 	/**
-	 * 发布说明
-	 */
-	private String releaseNotes;
+     * 发布说明
+     */
+    @I18nField(i18nTable = "app_version_i18n", i18nColumn = "release_notes", i18nRelatedColumn = "app_version_id", relatedValueFromField = "id")
+    private String releaseNotes;
 
 	private String remark;
 	private LocalDateTime createTime;
