@@ -103,7 +103,7 @@ public class SignInterceptor implements AsyncHandlerInterceptor {
 		}
 
 		if (signConfiguration.nonceValid()) {
-			String key = String.format("nonce:%s", noncestr);
+			String key = String.format("nonce:%s:%s", appid, noncestr);
 			String value = cache.get(key);
 			if (StringUtils.isNotBlank(value)) {
 				ExceptionUtil.throwException("请求重复");

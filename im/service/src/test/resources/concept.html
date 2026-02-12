@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>concept demo</title>
+    <title>concept demo</title>
+    <meta charset="UTF-8">
 </head>
 <body>
 	<p> concept demo </p>
@@ -41,14 +42,14 @@
 			}
 
 			// 给指定路径的客户端发送消息
-			var reqUrl = "ws://localhost:8004/concept-websocket/kefu?userId=" + userId;
+			var reqUrl = "ws://localhost:8050/concept-websocket/kefu?userId=" + userId;
 
 			// 给指定用户发送消息
-			//var reqUrl = "ws://localhost:8004/concept-websocket/user?userId=" + userId;
-			//var reqUrl = "ws://localhost:8004/concept-websocket/user?userId=" + userId +"&g=ffff";
+			//var reqUrl = "ws://localhost:8050/concept-websocket/user?userId=" + userId;
+			//var reqUrl = "ws://localhost:8050/concept-websocket/user?userId=" + userId +"&g=ffff";
 
 			// 给指定组发送消息(框架未实现)
-			//var reqUrl = "ws://localhost:8004/concept-websocket/group?group=" + (Math.ceil(userId / 10));
+			//var reqUrl = "ws://localhost:8050/concept-websocket/group?group=" + (Math.ceil(userId / 10));
 			console.log("reqUrl:",reqUrl);
 			socket = new WebSocket(reqUrl.replace("http", "ws"));
 			//打开事件
