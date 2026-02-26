@@ -3,9 +3,9 @@ package com.company.tool.entity;
 import java.time.LocalDateTime;
 
 import com.baomidou.mybatisplus.annotation.TableName;
-
-import com.company.datasource.mybatis.i18n.annotation.I18nField;
 import com.company.tool.i18n.CommonI18nDataProvider;
+
+import io.github.jqdi.i18n.core.annotation.I18nField;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
