@@ -9,6 +9,7 @@ import com.google.common.collect.Maps;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
+import org.springframework.core.task.AsyncTaskExecutor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -32,6 +33,8 @@ public class DeviceInfoFilter extends OncePerRequestFilter {
 
 	@Autowired
 	private MessageSender messageSender;
+    @Autowired
+    private AsyncTaskExecutor executor;
 
 	@Override
 	protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
@@ -94,7 +97,8 @@ public class DeviceInfoFilter extends OncePerRequestFilter {
 		params.put("requestip", requestip);
 		params.put("userAgent", userAgent);
 		params.put("time", time);
-		messageSender.sendBroadcastMessage(params, BroadcastConstants.DEVICE_INFO.EXCHANGE);
+        // 异步防止阻塞，保证性能
+        executor.submit(() -> messageSender.sendBroadcastMessage(params, BroadcastConstants.DEVICE_INFO.EXCHANGE));
 
 		chain.doFilter(request, response);
 	}
