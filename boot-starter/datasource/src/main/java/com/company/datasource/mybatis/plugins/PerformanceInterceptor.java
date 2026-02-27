@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package com.company.datasource.mybatisplus.plugins;
+package com.company.datasource.mybatis.plugins;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;

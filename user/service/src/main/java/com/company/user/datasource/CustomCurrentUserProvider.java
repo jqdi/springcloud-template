@@ -1,0 +1,14 @@
+package com.company.user.datasource;
+
+import org.springframework.stereotype.Component;
+
+import com.company.datasource.CurrentUserProvider;
+import com.company.framework.context.HeaderContextUtil;
+
+@Component
+public class CustomCurrentUserProvider implements CurrentUserProvider {
+    @Override
+    public String currentUserId() {
+        return HeaderContextUtil.currentUserId();
+    }
+}

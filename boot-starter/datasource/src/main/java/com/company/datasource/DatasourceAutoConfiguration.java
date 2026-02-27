@@ -1,16 +1,18 @@
-package com.company.datasource.mybatisplus;
+package com.company.datasource;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.context.annotation.Bean;
 
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
-import com.company.datasource.mybatisplus.plugins.PerformanceInterceptor;
+import com.company.datasource.mybatis.plugins.PerformanceInterceptor;
+import com.company.datasource.mybatis.plugins.SummarySQLInterceptor;
+import com.company.datasource.mybatisplus.handlers.InsertUpdateMetaObjectHandler;
 import com.company.datasource.mybatisplus.plugins.SqlLimitInterceptor;
-import com.company.datasource.mybatisplus.plugins.SummarySQLInterceptor;
 
 //@Configuration 使用org.springframework.boot.autoconfigure.AutoConfiguration.imports装配bean
-public class PluginsAutoConfiguration {
+public class DatasourceAutoConfiguration {
 
     @Bean
     public MybatisPlusInterceptor mybatisPlusInterceptor(@Value("${template.sqllimit.max:0}") Integer limit) {
@@ -54,4 +56,18 @@ public class PluginsAutoConfiguration {
 	public SummarySQLInterceptor summarySQLInterceptor() {
 		return new SummarySQLInterceptor();
 	}
+
+    /**
+     * <pre>
+     * 自动填充审计字段（创建人、更新人、创建时间、更新时间）
+     * </pre>
+     * 
+     * @param currentUserProvider
+     * @return
+     */
+    @Bean
+    @ConditionalOnBean(CurrentUserProvider.class)
+    public InsertUpdateMetaObjectHandler insertUpdateMetaObjectHandler(CurrentUserProvider currentUserProvider) {
+        return new InsertUpdateMetaObjectHandler(currentUserProvider);
+    }
 }
