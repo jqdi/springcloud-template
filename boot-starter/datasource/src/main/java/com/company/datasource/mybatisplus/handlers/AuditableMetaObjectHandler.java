@@ -7,13 +7,13 @@ import org.apache.ibatis.reflection.MetaObject;
 
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 
-public class InsertUpdateMetaObjectHandler implements MetaObjectHandler {
+public class AuditableMetaObjectHandler implements MetaObjectHandler {
 
     private static final String DEFAULT_CURRENT_USER_ID = "0";
 
     private final CurrentUserProvider currentUserProvider;
 
-    public InsertUpdateMetaObjectHandler(CurrentUserProvider currentUserProvider) {
+    public AuditableMetaObjectHandler(CurrentUserProvider currentUserProvider) {
         this.currentUserProvider = currentUserProvider;
     }
 

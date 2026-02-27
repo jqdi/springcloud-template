@@ -8,7 +8,7 @@ import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
 import com.company.datasource.mybatis.plugins.PerformanceInterceptor;
 import com.company.datasource.mybatis.plugins.SummarySQLInterceptor;
-import com.company.datasource.mybatisplus.handlers.InsertUpdateMetaObjectHandler;
+import com.company.datasource.mybatisplus.handlers.AuditableMetaObjectHandler;
 import com.company.datasource.mybatisplus.plugins.SqlLimitInterceptor;
 
 //@Configuration 使用org.springframework.boot.autoconfigure.AutoConfiguration.imports装配bean
@@ -67,7 +67,7 @@ public class DatasourceAutoConfiguration {
      */
     @Bean
     @ConditionalOnBean(CurrentUserProvider.class)
-    public InsertUpdateMetaObjectHandler insertUpdateMetaObjectHandler(CurrentUserProvider currentUserProvider) {
-        return new InsertUpdateMetaObjectHandler(currentUserProvider);
+    public AuditableMetaObjectHandler auditableMetaObjectHandler(CurrentUserProvider currentUserProvider) {
+        return new AuditableMetaObjectHandler(currentUserProvider);
     }
 }
