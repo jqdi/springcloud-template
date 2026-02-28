@@ -6,6 +6,6 @@ import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
 public interface AppVersionMapper extends BaseMapper<AppVersion> {
-    @Select("SELECT * FROM app_version WHERE app_code = #{appCode} and release_time <= now() ORDER BY id DESC LIMIT 1")
+    @Select("SELECT * FROM app_version WHERE app_code = #{appCode} and release_time <= now() ORDER BY id DESC")
     AppVersion selectLastByAppCode(@Param("appCode") String appCode);
 }

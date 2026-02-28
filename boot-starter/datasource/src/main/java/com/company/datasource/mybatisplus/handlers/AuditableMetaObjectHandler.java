@@ -28,6 +28,7 @@ public class AuditableMetaObjectHandler implements MetaObjectHandler {
                 currentUser = createBy;
             }
         }
+        LocalDateTime now = LocalDateTime.now();
         // 创建人
         Object createBy = this.getFieldValByName("createBy", metaObject);
         if (createBy == null) {
@@ -36,7 +37,7 @@ public class AuditableMetaObjectHandler implements MetaObjectHandler {
         // 创建时间
         Object createTime = this.getFieldValByName("createTime", metaObject);
         if (createTime == null) {
-            this.setFieldValByName("createTime", LocalDateTime.now(), metaObject);
+            this.setFieldValByName("createTime", now, metaObject);
         }
         // 更新人
         Object updateBy = this.getFieldValByName("updateBy", metaObject);
@@ -46,7 +47,7 @@ public class AuditableMetaObjectHandler implements MetaObjectHandler {
         // 更新时间
         Object updateTime = this.getFieldValByName("updateTime", metaObject);
         if (updateTime == null) {
-            this.setFieldValByName("updateTime", LocalDateTime.now(), metaObject);
+            this.setFieldValByName("updateTime", now, metaObject);
         }
     }
 
@@ -61,9 +62,10 @@ public class AuditableMetaObjectHandler implements MetaObjectHandler {
                 currentUser = updateBy;
             }
         }
+        LocalDateTime now = LocalDateTime.now();
         // 更新人
         this.setFieldValByName("updateBy", currentUser, metaObject);
         // 更新时间
-        this.setFieldValByName("updateTime", LocalDateTime.now(), metaObject);
+        this.setFieldValByName("updateTime", now, metaObject);
     }
 }

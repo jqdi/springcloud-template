@@ -37,6 +37,7 @@ mybatis-plus:
     mapUnderscoreToCamelCase: true # 使用驼峰命名法转换字段
     jdbcTypeForNull: NULL # 设置但JDBC类型为空时,某些驱动程序要指定值,default:OTHER，插入空值时不需要指定类型
     logImpl: org.apache.ibatis.logging.log4j2.Log4j2Impl # 打印SQL语句
+#    logImpl: org.apache.ibatis.logging.stdout.StdOutImpl # 打印SQL语句
   global-config:
     db-config:
       #主键类型 0(AUTO):"数据库ID自增", 1(INPUT):"用户输入ID",2(ID_WORKER):"全局唯一ID (数字类型唯一ID)", 3(UUID):"全局唯一ID UUID";
