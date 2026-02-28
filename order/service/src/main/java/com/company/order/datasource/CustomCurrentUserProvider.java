@@ -1,4 +1,4 @@
-package com.company.user.datasource;
+package com.company.order.datasource;
 
 import org.springframework.stereotype.Component;
 

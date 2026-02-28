@@ -1,4 +1,4 @@
-package com.company.user.datasource;
+package com.company.tool.datasource;
 
 import org.springframework.stereotype.Component;
 

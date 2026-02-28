@@ -19,35 +19,51 @@ public class AuditableMetaObjectHandler implements MetaObjectHandler {
 
     @Override
     public void insertFill(MetaObject metaObject) {
-        // 填充创建时间
-//        Object createTime1 = this.getFieldValByName("createTime", metaObject);
-        if (metaObject.hasGetter("createTime")) {
-            this.strictInsertFill(metaObject, "createTime", LocalDateTime.class, LocalDateTime.now());
+        Object currentUser = currentUserProvider.currentUser();
+        if (currentUser == null) {
+            Object createBy = this.getFieldValByName("createBy", metaObject);
+            if (createBy == null) {
+                currentUser = DEFAULT_CURRENT_USER_ID;
+            } else {
+                currentUser = createBy;
+            }
         }
+        // 创建人
+        Object createBy = this.getFieldValByName("createBy", metaObject);
+        if (createBy == null) {
+            this.setFieldValByName("createBy", currentUser, metaObject);
+        }
+        // 创建时间
         Object createTime = this.getFieldValByName("createTime", metaObject);
-
-        // 填充更新时间（与创建时间一致）
-        this.strictInsertFill(metaObject, "updateTime", LocalDateTime.class, LocalDateTime.now());
-
-        // 填充创建人
-        String currentUserId = currentUserProvider.currentUserId();
-        if (currentUserId == null) {
-            currentUserId = DEFAULT_CURRENT_USER_ID;
+        if (createTime == null) {
+            this.setFieldValByName("createTime", LocalDateTime.now(), metaObject);
         }
-        this.strictInsertFill(metaObject, "createBy", String.class, currentUserId);
-        // 填充更新人
-        this.strictInsertFill(metaObject, "updateBy", String.class, currentUserId);
+        // 更新人
+        Object updateBy = this.getFieldValByName("updateBy", metaObject);
+        if (updateBy == null) {
+            this.setFieldValByName("updateBy", currentUser, metaObject);
+        }
+        // 更新时间
+        Object updateTime = this.getFieldValByName("updateTime", metaObject);
+        if (updateTime == null) {
+            this.setFieldValByName("updateTime", LocalDateTime.now(), metaObject);
+        }
     }
 
     @Override
     public void updateFill(MetaObject metaObject) {
-        // 填充更新时间
-        this.strictUpdateFill(metaObject, "updateTime", LocalDateTime.class, LocalDateTime.now());
-        // 填充更新人
-        String currentUserId = currentUserProvider.currentUserId();
-        if (currentUserId == null) {
-            currentUserId = DEFAULT_CURRENT_USER_ID;
+        Object currentUser = currentUserProvider.currentUser();
+        if (currentUser == null) {
+            Object updateBy = this.getFieldValByName("updateBy", metaObject);
+            if (updateBy == null) {
+                currentUser = DEFAULT_CURRENT_USER_ID;
+            } else {
+                currentUser = updateBy;
+            }
         }
-        this.strictUpdateFill(metaObject, "updateBy", String.class, currentUserId);
+        // 更新人
+        this.setFieldValByName("updateBy", currentUser, metaObject);
+        // 更新时间
+        this.setFieldValByName("updateTime", LocalDateTime.now(), metaObject);
     }
 }
