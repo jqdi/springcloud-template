@@ -255,7 +255,7 @@ springcloud-template 开源软件遵循 [Apache 2.0 协议](https://www.apache.o
 
 ### 感谢
  - nacos: https://nacos.io/
- - 登录认证：https://gitee.com/jq_di/easy-login
+ - 登录认证：https://github.com/jqdi/easy-login
  - Sa-Token：https://sa-token.cc
  - 文件存储：https://gitee.com/jq_di/file-storage
  - 短信发送：https://gitee.com/jq_di/sms-sender

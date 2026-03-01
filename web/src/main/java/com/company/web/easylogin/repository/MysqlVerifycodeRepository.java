@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 
 import com.company.tool.api.feign.VerifyCodeFeign;
 import com.company.web.constants.Constants;
-import com.jqdi.easylogin.core.repository.VerifycodeRepository;
+import io.github.jqdi.easylogin.core.repository.VerifycodeRepository;
 
 @Component
 public class MysqlVerifycodeRepository implements VerifycodeRepository {

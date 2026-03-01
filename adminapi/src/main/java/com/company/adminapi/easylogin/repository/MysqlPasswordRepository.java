@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 
 import com.company.adminapi.util.PassWordUtil;
 import com.company.system.api.feign.SysUserPasswordFeign;
-import com.jqdi.easylogin.core.repository.PasswordRepository;
+import io.github.jqdi.easylogin.core.repository.PasswordRepository;
 
 @Component
 public class MysqlPasswordRepository implements PasswordRepository {

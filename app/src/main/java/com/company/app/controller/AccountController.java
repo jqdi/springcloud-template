@@ -32,10 +32,11 @@ import com.company.user.api.enums.UserOauthEnum;
 import com.company.user.api.feign.UserOauthFeign;
 import com.company.user.api.response.UserOauthResp;
 import com.google.common.collect.Maps;
-import com.jqdi.easylogin.core.LoginClient;
-import com.jqdi.easylogin.core.LoginParams;
-import com.jqdi.easylogin.core.exception.LoginException;
-import com.jqdi.easylogin.spring.boot.starter.LoginType;
+
+import io.github.jqdi.easylogin.core.LoginClient;
+import io.github.jqdi.easylogin.core.LoginParams;
+import io.github.jqdi.easylogin.core.exception.LoginException;
+import io.github.jqdi.easylogin.spring.boot.starter.LoginType;
 
 @Validated
 @RestController

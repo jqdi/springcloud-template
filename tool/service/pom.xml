@@ -38,7 +38,7 @@
 		</dependency>
 
 		<!-- 文件系统 -->
-		<!-- 源码：https://gitee.com/jq_di/file-storage -->
+		<!-- 源码：https://github.com/jqdi/file-storage -->
 		<dependency>
 		    <groupId>com.jqdi</groupId>
 		    <artifactId>file-storage-spring-boot-starter</artifactId>
@@ -53,7 +53,7 @@
 		<!-- 文件系统 -->
 
 		<!-- 短信SMS -->
-		<!-- 源码：https://gitee.com/jq_di/sms-sender -->
+		<!-- 源码：https://github.com/jqdi/sms-sender -->
 		<dependency>
 			<groupId>com.jqdi</groupId>
 			<artifactId>sms-sender-spring-boot-starter</artifactId>

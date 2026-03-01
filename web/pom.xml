@@ -57,11 +57,11 @@
 		<!-- 渲染模板 -->
 
 		<!-- 授权登录 -->
-		<!-- 源码：https://gitee.com/jq_di/easy-login -->
+		<!-- 源码：https://github.com/jqdi/easy-login -->
 		<dependency>
-		    <groupId>com.jqdi</groupId>
+		    <groupId>io.github.jqdi</groupId>
 		    <artifactId>easy-login-spring-boot-starter</artifactId>
-		    <version>1.0.1</version>
+		    <version>1.0.2</version>
 		</dependency>
 		<!-- 授权登录 -->
 
