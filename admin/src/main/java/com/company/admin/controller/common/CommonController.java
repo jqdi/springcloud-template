@@ -3,7 +3,7 @@ package com.company.admin.controller.common;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.jqdi.filestorage.core.FileStorage;
+import io.github.jqdi.filestorage.core.FileStorage;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
