@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import com.baomidou.mybatisplus.core.toolkit.GlobalConfigUtils;
 import org.apache.ibatis.executor.statement.StatementHandler;
 import org.apache.ibatis.logging.Log;
 import org.apache.ibatis.logging.LogFactory;
@@ -18,6 +19,7 @@ import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.mapping.SqlCommandType;
 import org.apache.ibatis.reflection.MetaObject;
 import org.apache.ibatis.reflection.SystemMetaObject;
+import org.apache.ibatis.session.Configuration;
 import org.springframework.util.ClassUtils;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
@@ -29,9 +31,14 @@ import com.baomidou.mybatisplus.extension.plugins.inner.InnerInterceptor;
 import com.company.datasource.CurrentUserProvider;
 
 /**
- * <p>
- * 审计字段拦截器，用于自动填充审计字段，如创建人、创建时间、更新人、更新时间等
- * </p>
+ * 审计字段Mybatis Plus拦截器，用于自动填充审计字段（创建人、创建时间、更新人、更新时间）
+ * 
+ * <pre>
+ * 与AuditableMetaObjectHandler不同的地方是：该拦截器可处理非 BaseMapper API执行的SQL
+ * </pre>
+ * 
+ * @see com.company.datasource.mybatisplus.handlers.AuditableMetaObjectHandler
+ * @author JQ棣
  */
 public class AuditableInterceptor implements InnerInterceptor {
     private static final Log logger = LogFactory.getLog(AuditableInterceptor.class);
@@ -91,11 +98,24 @@ public class AuditableInterceptor implements InnerInterceptor {
             return;
         }
 
+        Configuration configuration = ms.getConfiguration();
+        // 到这里就应该转换到实体参数对象了,因为填充和ID处理都是针对实体对象处理的,不用传递原参数对象下去.
+//        MetaObject metaObject = configuration.newMetaObject(entity);
+        if (SqlCommandType.INSERT == sqlCommandType) {
+            populateKeys(tableInfo, metaObject, entity);
+            insertFill(metaObject, tableInfo);
+
+        } else {
+            updateFill(metaObject, tableInfo);
+        }
+
         String originalSql = boundSql.getSql();
 
         List<TableFieldInfo> fieldList = tableInfo.getFieldList();
         Map<String, TableFieldInfo> propertyThisMap =
             fieldList.stream().collect(Collectors.toMap(TableFieldInfo::getProperty, a -> a, (a, b) -> b));
+
+        
         if (SqlCommandType.INSERT == sqlCommandType) {
             // 拼接SQL
         } else {
@@ -143,6 +163,22 @@ public class AuditableInterceptor implements InnerInterceptor {
             PluginUtils.MPBoundSql mpBoundSql = PluginUtils.mpBoundSql(boundSql);
             mpBoundSql.sql(newSql);
         }
+    }
+
+    protected void insertFill(MetaObject metaObject, TableInfo tableInfo) {
+        GlobalConfigUtils.getMetaObjectHandler(this.configuration).ifPresent(metaObjectHandler -> {
+            if (metaObjectHandler.openInsertFill() && metaObjectHandler.openInsertFill(mappedStatement) && tableInfo.isWithInsertFill()) {
+                metaObjectHandler.insertFill(metaObject);
+            }
+        });
+    }
+
+    protected void updateFill(MetaObject metaObject, TableInfo tableInfo) {
+        GlobalConfigUtils.getMetaObjectHandler(this.configuration).ifPresent(metaObjectHandler -> {
+            if (metaObjectHandler.openUpdateFill() && metaObjectHandler.openUpdateFill(mappedStatement) && tableInfo.isWithUpdateFill()) {
+                metaObjectHandler.updateFill(metaObject);
+            }
+        });
     }
 
     /**
