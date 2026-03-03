@@ -6,6 +6,7 @@ import java.sql.Connection;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -101,84 +102,243 @@ public class AuditableInterceptor implements InnerInterceptor {
         Configuration configuration = ms.getConfiguration();
         // 到这里就应该转换到实体参数对象了,因为填充和ID处理都是针对实体对象处理的,不用传递原参数对象下去.
 //        MetaObject metaObject = configuration.newMetaObject(entity);
-        if (SqlCommandType.INSERT == sqlCommandType) {
-            populateKeys(tableInfo, metaObject, entity);
-            insertFill(metaObject, tableInfo);
 
-        } else {
-            updateFill(metaObject, tableInfo);
-        }
 
         String originalSql = boundSql.getSql();
 
         List<TableFieldInfo> fieldList = tableInfo.getFieldList();
         Map<String, TableFieldInfo> propertyThisMap =
-            fieldList.stream().collect(Collectors.toMap(TableFieldInfo::getProperty, a -> a, (a, b) -> b));
+                fieldList.stream().collect(Collectors.toMap(TableFieldInfo::getProperty, a -> a, (a, b) -> b));
 
-        
         if (SqlCommandType.INSERT == sqlCommandType) {
-            // 拼接SQL
+//            populateKeys(tableInfo, metaObject, entity);
+//            insertFill(metaObject, tableInfo);
+            insertFill(boundSql, tableInfo, propertyThisMap);
         } else {
-            List<String> appendSqlList = new ArrayList<>();
-
-            TableFieldInfo createByFieldInfo = propertyThisMap.get("createBy");
-            if (createByFieldInfo != null) {
-                // boolean withInsertFill = createByFieldInfo.isWithInsertFill();
-                String column = createByFieldInfo.getColumn();
-                if (!originalSql.contains(column)) {
-                    appendSqlList.add(String.format("%s = '%s'", column, currentUser));
-                }
-            }
-
-            TableFieldInfo createTimeFieldInfo = propertyThisMap.get("createTime");
-            if (createTimeFieldInfo != null) {
-                String column = createTimeFieldInfo.getColumn();
-                if (!originalSql.contains(column)) {
-                    appendSqlList.add(String.format("%s = '%s'", column, now));
-                }
-            }
-
-            TableFieldInfo updateByFieldInfo = propertyThisMap.get("updateBy");
-            if (updateByFieldInfo != null) {
-                String column = updateByFieldInfo.getColumn();
-                if (!originalSql.contains(column)) {
-                    appendSqlList.add(String.format("%s = '%s'", column, currentUser));
-                }
-            }
-
-            TableFieldInfo updateTimeFieldInfo = propertyThisMap.get("updateTime");
-            if (updateTimeFieldInfo != null) {
-                String column = updateTimeFieldInfo.getColumn();
-                if (!originalSql.contains(column)) {
-                    appendSqlList.add(String.format("%s = '%s'", column, now));
-                }
-            }
-
-            if (appendSqlList.isEmpty()) {
-                return;
-            }
-            String appendSql = String.join(",", appendSqlList);
-            String newSql = originalSql.replaceFirst("where", ", " + appendSql + " where");
-            logger.debug("sql change: " + originalSql + " ==> " + newSql);
-            PluginUtils.MPBoundSql mpBoundSql = PluginUtils.mpBoundSql(boundSql);
-            mpBoundSql.sql(newSql);
+            updateFill(boundSql, tableInfo, propertyThisMap);
+            // updateFill(metaObject, tableInfo);
         }
     }
 
-    protected void insertFill(MetaObject metaObject, TableInfo tableInfo) {
-        GlobalConfigUtils.getMetaObjectHandler(this.configuration).ifPresent(metaObjectHandler -> {
-            if (metaObjectHandler.openInsertFill() && metaObjectHandler.openInsertFill(mappedStatement) && tableInfo.isWithInsertFill()) {
-                metaObjectHandler.insertFill(metaObject);
-            }
-        });
+    protected void insertFill(BoundSql boundSql, TableInfo tableInfo, Map<String, TableFieldInfo> propertyThisMap) {
+        if (!tableInfo.isWithInsertFill()) {
+            return;
+        }
+
+        Object currentUser = currentUserProvider.currentUser();
+        if (currentUser == null) {
+            currentUser = DEFAULT_CURRENT_USER_ID;
+        }
+        String now = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        String originalSql = boundSql.getSql();
+
+        Map<String, Object> auditFieldMap = new HashMap<>();
+        TableFieldInfo createByFieldInfo = propertyThisMap.get("createBy");
+        String createByColumn = getColumn(originalSql, createByFieldInfo);
+        if (createByColumn != null) {
+            auditFieldMap.put(createByColumn, currentUser);
+        }
+        TableFieldInfo createTimeFieldInfo = propertyThisMap.get("createTime");
+        String createTimeColumn = getColumn(originalSql, createTimeFieldInfo);
+        if (createTimeColumn != null) {
+            auditFieldMap.put(createTimeColumn, now);
+        }
+        String newSql = appendAuditFieldsToInsert(originalSql, auditFieldMap);
+        logger.debug("sql change: " + originalSql + " ==> " + newSql);
+        PluginUtils.MPBoundSql mpBoundSql = PluginUtils.mpBoundSql(boundSql);
+        mpBoundSql.sql(newSql);
     }
 
-    protected void updateFill(MetaObject metaObject, TableInfo tableInfo) {
-        GlobalConfigUtils.getMetaObjectHandler(this.configuration).ifPresent(metaObjectHandler -> {
-            if (metaObjectHandler.openUpdateFill() && metaObjectHandler.openUpdateFill(mappedStatement) && tableInfo.isWithUpdateFill()) {
-                metaObjectHandler.updateFill(metaObject);
+    protected void updateFill(BoundSql boundSql, TableInfo tableInfo, Map<String, TableFieldInfo> propertyThisMap) {
+        if (!tableInfo.isWithUpdateFill()) {
+            return;
+        }
+        
+        Object currentUser = currentUserProvider.currentUser();
+        if (currentUser == null) {
+            currentUser = DEFAULT_CURRENT_USER_ID;
+        }
+        String now = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        String originalSql = boundSql.getSql();
+
+        Map<String, Object> auditFieldMap = new HashMap<>();
+        TableFieldInfo createByFieldInfo = propertyThisMap.get("createBy");
+        String createByColumn = getColumnIfNotExist(originalSql, createByFieldInfo);
+        if (createByColumn != null) {
+            auditFieldMap.put(createByColumn, currentUser);
+        }
+
+        List<String> appendSqlList = new ArrayList<>();
+
+        TableFieldInfo createByFieldInfo = propertyThisMap.get("createBy");
+        if (createByFieldInfo != null) {
+            // boolean withInsertFill = createByFieldInfo.isWithInsertFill();
+            String column = createByFieldInfo.getColumn();
+            if (!originalSql.contains(column)) {
+                appendSqlList.add(String.format("%s = '%s'", column, currentUser));
             }
-        });
+        }
+
+        TableFieldInfo createTimeFieldInfo = propertyThisMap.get("createTime");
+        if (createTimeFieldInfo != null) {
+            String column = createTimeFieldInfo.getColumn();
+            if (!originalSql.contains(column)) {
+                appendSqlList.add(String.format("%s = '%s'", column, now));
+            }
+        }
+
+        TableFieldInfo updateByFieldInfo = propertyThisMap.get("updateBy");
+        String updateByValue = formatUpdateValue(originalSql, updateByFieldInfo, currentUser);
+        if (updateByValue != null) {
+            appendSqlList.add(updateByValue);
+        }
+
+        TableFieldInfo updateTimeFieldInfo = propertyThisMap.get("updateTime");
+        String updateTimeColumn = getColumnIfNotExist(originalSql, updateTimeFieldInfo);
+        if (updateTimeColumn != null) {
+            appendSqlList.add(String.format("%s = '%s'", updateTimeColumn, now));
+        }
+
+        if (appendSqlList.isEmpty()) {
+            return;
+        }
+        String appendSql = String.join(",", appendSqlList);
+        String newSql = originalSql.replaceFirst("where", ", " + appendSql + " where");
+        logger.debug("sql change: " + originalSql + " ==> " + newSql);
+        PluginUtils.MPBoundSql mpBoundSql = PluginUtils.mpBoundSql(boundSql);
+        mpBoundSql.sql(newSql);
+    }
+
+    private String getColumnIfNotExist(String originalSql, TableFieldInfo tableFieldInfo) {
+        if (tableFieldInfo == null) {
+            return null;
+        }
+        String column = tableFieldInfo.getColumn();
+        if (originalSql.contains(column)) {
+            return null;
+        }
+        return column;
+    }
+
+    /**
+     * 拼接审计字段到SQL语句
+     * 
+     * @param originalSql 原SQL语句
+     * @param auditFields 审计字段键值对
+     * @return 拼接后的SQL语句
+     */
+    public static String appendAuditFields(String originalSql, Map<String, Object> auditFields) {
+        if (originalSql == null || originalSql.trim().isEmpty() || auditFields == null || auditFields.isEmpty()) {
+            return originalSql;
+        }
+
+        // 处理INSERT语句
+        if (originalSql.trim().toUpperCase().startsWith("INSERT")) {
+            return appendAuditFieldsToInsert(originalSql, auditFields);
+        }
+
+        // 处理UPDATE语句
+        if (originalSql.trim().toUpperCase().startsWith("UPDATE")) {
+            return appendAuditFieldsToUpdate(originalSql, auditFields);
+        }
+
+        return originalSql;
+    }
+
+    /**
+     * 为INSERT语句拼接审计字段
+     */
+    private static String appendAuditFieldsToInsert(String originalSql, Map<String, Object> auditFields) {
+        // 找到字段列表的结束位置（第一个右括号）
+        int fieldsEndIndex = originalSql.indexOf(")");
+        if (fieldsEndIndex == -1) {
+            return originalSql;
+        }
+
+        // 找到值列表的开始位置
+        int valuesStartIndex = originalSql.toUpperCase().indexOf("VALUES", fieldsEndIndex);
+        if (valuesStartIndex == -1) {
+            return originalSql;
+        }
+
+        // 找到值列表的开始位置（左括号）
+        int valuesLeftBracketIndex = originalSql.indexOf("(", valuesStartIndex);
+        if (valuesLeftBracketIndex == -1) {
+            return originalSql;
+        }
+
+        // 找到值列表的结束位置（右括号）
+        int valuesEndIndex = originalSql.indexOf(")", valuesLeftBracketIndex);
+        if (valuesEndIndex == -1) {
+            return originalSql;
+        }
+
+        // 构建新的字段列表
+        StringBuilder newFields = new StringBuilder(originalSql.substring(0, fieldsEndIndex));
+        for (String field : auditFields.keySet()) {
+            newFields.append(",").append(field);
+        }
+        newFields.append(")");
+
+        // 构建新的值列表
+        StringBuilder newValues = new StringBuilder(originalSql.substring(valuesLeftBracketIndex, valuesEndIndex));
+        for (Object value : auditFields.values()) {
+            newValues.append(",").append(formatValue(value));
+        }
+        newValues.append(")");
+
+        // 拼接新的SQL语句
+        return newFields.toString() + originalSql.substring(fieldsEndIndex, valuesLeftBracketIndex) + newValues.toString();
+    }
+
+    /**
+     * 为UPDATE语句拼接审计字段
+     */
+    private static String appendAuditFieldsToUpdate(String originalSql, Map<String, Object> auditFields) {
+        // 找到SET子句的结束位置（WHERE子句开始位置）
+        int whereIndex = originalSql.toUpperCase().indexOf("WHERE");
+        int setEndIndex = whereIndex != -1 ? whereIndex : originalSql.length();
+
+        // 构建新的SET子句
+        StringBuilder newSetClause = new StringBuilder(originalSql.substring(0, setEndIndex).trim());
+        if (!newSetClause.toString().endsWith(",")) {
+            newSetClause.append(",");
+        }
+
+        // 添加审计字段
+        for (Map.Entry<String, Object> entry : auditFields.entrySet()) {
+            newSetClause.append(entry.getKey()).append("=").append(formatValue(entry.getValue())).append(",");
+        }
+
+        // 移除最后一个逗号
+        if (newSetClause.toString().endsWith(",")) {
+            newSetClause.setLength(newSetClause.length() - 1);
+        }
+
+        // 拼接新的SQL语句
+        return newSetClause.toString() + (whereIndex != -1 ? originalSql.substring(whereIndex) : "");
+    }
+
+    /**
+     * 格式化值，处理不同类型的值
+     */
+    private static String formatValue(Object value) {
+        if (value == null) {
+            return "NULL";
+        }
+        if (value instanceof String) {
+            return "'" + value.toString().replace("'", "''") + "'";
+        }
+        if (value instanceof Number) {
+            return value.toString();
+        }
+        if (value instanceof java.util.Date) {
+            return "'" + new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(value) + "'";
+        }
+        if (value instanceof java.time.LocalDateTime) {
+            return "'" + value.toString().replace("T", " ") + "'";
+        }
+        return "'" + value.toString().replace("'", "''") + "'";
     }
 
     /**
