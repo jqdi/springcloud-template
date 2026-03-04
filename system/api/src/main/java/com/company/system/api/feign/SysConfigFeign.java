@@ -43,4 +43,6 @@ public interface SysConfigFeign {
 	@PostMapping("/updateValueByCode")
 	Boolean updateValueByCode(@RequestParam("value") String value, @RequestParam("code") String code);
 
+    @PostMapping("/insertOrUpdateConfig")
+    Boolean insertOrUpdateConfig(@RequestParam("value") String value, @RequestParam("code") String code);
 }

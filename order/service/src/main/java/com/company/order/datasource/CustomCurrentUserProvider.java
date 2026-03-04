@@ -8,7 +8,7 @@ import com.company.framework.context.HeaderContextUtil;
 @Component
 public class CustomCurrentUserProvider implements CurrentUserProvider {
     @Override
-    public Object currentUser() {
-        return HeaderContextUtil.currentUserId();
+    public Integer currentUser() {
+        return HeaderContextUtil.currentUserIdInt();
     }
 }

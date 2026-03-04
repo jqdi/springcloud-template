@@ -5,13 +5,11 @@ import java.lang.reflect.Type;
 import java.sql.Connection;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import com.baomidou.mybatisplus.core.toolkit.GlobalConfigUtils;
 import org.apache.ibatis.executor.statement.StatementHandler;
 import org.apache.ibatis.logging.Log;
 import org.apache.ibatis.logging.LogFactory;
@@ -20,7 +18,6 @@ import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.mapping.SqlCommandType;
 import org.apache.ibatis.reflection.MetaObject;
 import org.apache.ibatis.reflection.SystemMetaObject;
-import org.apache.ibatis.session.Configuration;
 import org.springframework.util.ClassUtils;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
@@ -74,17 +71,12 @@ public class AuditableInterceptor implements InnerInterceptor {
             return;
         }
 
-        // 仅处理 UPDATE 操作
+        // 仅处理 INSERT UPDATE 操作
         SqlCommandType sqlCommandType = ms.getSqlCommandType();
         if (SqlCommandType.INSERT != sqlCommandType && SqlCommandType.UPDATE != sqlCommandType) {
             return;
         }
 
-        Object currentUser = currentUserProvider.currentUser();
-        if (currentUser == null) {
-            currentUser = DEFAULT_CURRENT_USER_ID;
-        }
-        String now = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
         String resource = ms.getResource();
         int index = resource.indexOf(".java");
         String className = resource.substring(0, index).replace("/", ".");
@@ -99,24 +91,14 @@ public class AuditableInterceptor implements InnerInterceptor {
             return;
         }
 
-        Configuration configuration = ms.getConfiguration();
-        // 到这里就应该转换到实体参数对象了,因为填充和ID处理都是针对实体对象处理的,不用传递原参数对象下去.
-//        MetaObject metaObject = configuration.newMetaObject(entity);
-
-
-        String originalSql = boundSql.getSql();
-
         List<TableFieldInfo> fieldList = tableInfo.getFieldList();
         Map<String, TableFieldInfo> propertyThisMap =
-                fieldList.stream().collect(Collectors.toMap(TableFieldInfo::getProperty, a -> a, (a, b) -> b));
+            fieldList.stream().collect(Collectors.toMap(TableFieldInfo::getProperty, a -> a, (a, b) -> b));
 
         if (SqlCommandType.INSERT == sqlCommandType) {
-//            populateKeys(tableInfo, metaObject, entity);
-//            insertFill(metaObject, tableInfo);
             insertFill(boundSql, tableInfo, propertyThisMap);
         } else {
             updateFill(boundSql, tableInfo, propertyThisMap);
-            // updateFill(metaObject, tableInfo);
         }
     }
 
@@ -134,14 +116,39 @@ public class AuditableInterceptor implements InnerInterceptor {
 
         Map<String, Object> auditFieldMap = new HashMap<>();
         TableFieldInfo createByFieldInfo = propertyThisMap.get("createBy");
-        String createByColumn = getColumn(originalSql, createByFieldInfo);
-        if (createByColumn != null) {
-            auditFieldMap.put(createByColumn, currentUser);
+        if (createByFieldInfo != null && createByFieldInfo.isWithInsertFill()) {
+            String createByColumn = getColumnIfNotExist(originalSql, createByFieldInfo);
+            if (createByColumn != null) {
+                auditFieldMap.put(createByColumn, currentUser);
+            }
         }
+
         TableFieldInfo createTimeFieldInfo = propertyThisMap.get("createTime");
-        String createTimeColumn = getColumn(originalSql, createTimeFieldInfo);
-        if (createTimeColumn != null) {
-            auditFieldMap.put(createTimeColumn, now);
+        if (createTimeFieldInfo != null && createTimeFieldInfo.isWithInsertFill()) {
+            String createTimeColumn = getColumnIfNotExist(originalSql, createTimeFieldInfo);
+            if (createTimeFieldInfo.isWithInsertFill() && createTimeColumn != null) {
+                auditFieldMap.put(createTimeColumn, now);
+            }
+        }
+
+        TableFieldInfo updateByFieldInfo = propertyThisMap.get("updateBy");
+        if (updateByFieldInfo != null && updateByFieldInfo.isWithInsertFill()) {
+            String updateByColumn = getColumnIfNotExist(originalSql, updateByFieldInfo);
+            if (updateByColumn != null) {
+                auditFieldMap.put(updateByColumn, currentUser);
+            }
+        }
+
+        TableFieldInfo updateTimeFieldInfo = propertyThisMap.get("updateTime");
+        if (updateTimeFieldInfo != null && updateTimeFieldInfo.isWithInsertFill()) {
+            String updateTimeColumn = getColumnIfNotExist(originalSql, updateTimeFieldInfo);
+            if (updateTimeColumn != null) {
+                auditFieldMap.put(updateTimeColumn, now);
+            }
+        }
+
+        if (auditFieldMap.isEmpty()) {
+            return;
         }
         String newSql = appendAuditFieldsToInsert(originalSql, auditFieldMap);
         logger.debug("sql change: " + originalSql + " ==> " + newSql);
@@ -153,7 +160,7 @@ public class AuditableInterceptor implements InnerInterceptor {
         if (!tableInfo.isWithUpdateFill()) {
             return;
         }
-        
+
         Object currentUser = currentUserProvider.currentUser();
         if (currentUser == null) {
             currentUser = DEFAULT_CURRENT_USER_ID;
@@ -162,48 +169,27 @@ public class AuditableInterceptor implements InnerInterceptor {
         String originalSql = boundSql.getSql();
 
         Map<String, Object> auditFieldMap = new HashMap<>();
-        TableFieldInfo createByFieldInfo = propertyThisMap.get("createBy");
-        String createByColumn = getColumnIfNotExist(originalSql, createByFieldInfo);
-        if (createByColumn != null) {
-            auditFieldMap.put(createByColumn, currentUser);
-        }
-
-        List<String> appendSqlList = new ArrayList<>();
-
-        TableFieldInfo createByFieldInfo = propertyThisMap.get("createBy");
-        if (createByFieldInfo != null) {
-            // boolean withInsertFill = createByFieldInfo.isWithInsertFill();
-            String column = createByFieldInfo.getColumn();
-            if (!originalSql.contains(column)) {
-                appendSqlList.add(String.format("%s = '%s'", column, currentUser));
-            }
-        }
-
-        TableFieldInfo createTimeFieldInfo = propertyThisMap.get("createTime");
-        if (createTimeFieldInfo != null) {
-            String column = createTimeFieldInfo.getColumn();
-            if (!originalSql.contains(column)) {
-                appendSqlList.add(String.format("%s = '%s'", column, now));
-            }
-        }
 
         TableFieldInfo updateByFieldInfo = propertyThisMap.get("updateBy");
-        String updateByValue = formatUpdateValue(originalSql, updateByFieldInfo, currentUser);
-        if (updateByValue != null) {
-            appendSqlList.add(updateByValue);
+        if (updateByFieldInfo != null && updateByFieldInfo.isWithUpdateFill()) {
+            String updateByColumn = getColumnIfNotExist(originalSql, updateByFieldInfo);
+            if (updateByColumn != null) {
+                auditFieldMap.put(updateByColumn, currentUser);
+            }
         }
 
         TableFieldInfo updateTimeFieldInfo = propertyThisMap.get("updateTime");
-        String updateTimeColumn = getColumnIfNotExist(originalSql, updateTimeFieldInfo);
-        if (updateTimeColumn != null) {
-            appendSqlList.add(String.format("%s = '%s'", updateTimeColumn, now));
+        if (updateTimeFieldInfo != null && updateTimeFieldInfo.isWithUpdateFill()) {
+            String updateTimeColumn = getColumnIfNotExist(originalSql, updateTimeFieldInfo);
+            if (updateTimeColumn != null) {
+                auditFieldMap.put(updateTimeColumn, now);
+            }
         }
 
-        if (appendSqlList.isEmpty()) {
+        if (auditFieldMap.isEmpty()) {
             return;
         }
-        String appendSql = String.join(",", appendSqlList);
-        String newSql = originalSql.replaceFirst("where", ", " + appendSql + " where");
+        String newSql = appendAuditFieldsToUpdate(originalSql, auditFieldMap);
         logger.debug("sql change: " + originalSql + " ==> " + newSql);
         PluginUtils.MPBoundSql mpBoundSql = PluginUtils.mpBoundSql(boundSql);
         mpBoundSql.sql(newSql);
@@ -218,31 +204,6 @@ public class AuditableInterceptor implements InnerInterceptor {
             return null;
         }
         return column;
-    }
-
-    /**
-     * 拼接审计字段到SQL语句
-     * 
-     * @param originalSql 原SQL语句
-     * @param auditFields 审计字段键值对
-     * @return 拼接后的SQL语句
-     */
-    public static String appendAuditFields(String originalSql, Map<String, Object> auditFields) {
-        if (originalSql == null || originalSql.trim().isEmpty() || auditFields == null || auditFields.isEmpty()) {
-            return originalSql;
-        }
-
-        // 处理INSERT语句
-        if (originalSql.trim().toUpperCase().startsWith("INSERT")) {
-            return appendAuditFieldsToInsert(originalSql, auditFields);
-        }
-
-        // 处理UPDATE语句
-        if (originalSql.trim().toUpperCase().startsWith("UPDATE")) {
-            return appendAuditFieldsToUpdate(originalSql, auditFields);
-        }
-
-        return originalSql;
     }
 
     /**
@@ -316,7 +277,7 @@ public class AuditableInterceptor implements InnerInterceptor {
         }
 
         // 拼接新的SQL语句
-        return newSetClause.toString() + (whereIndex != -1 ? originalSql.substring(whereIndex) : "");
+        return newSetClause.toString() + " " + (whereIndex != -1 ? originalSql.substring(whereIndex) : "");
     }
 
     /**
