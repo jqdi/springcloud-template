@@ -210,26 +210,27 @@ public class AuditableInterceptor implements InnerInterceptor {
      * 为INSERT语句拼接审计字段
      */
     private static String appendAuditFieldsToInsert(String originalSql, Map<String, Object> auditFields) {
+        String originalSqlU = originalSql.toUpperCase();
         // 找到字段列表的结束位置（第一个右括号）
-        int fieldsEndIndex = originalSql.indexOf(")");
+        int fieldsEndIndex = originalSqlU.indexOf(")");
         if (fieldsEndIndex == -1) {
             return originalSql;
         }
 
         // 找到值列表的开始位置
-        int valuesStartIndex = originalSql.toUpperCase().indexOf("VALUES", fieldsEndIndex);
+        int valuesStartIndex = originalSqlU.indexOf("VALUES", fieldsEndIndex);
         if (valuesStartIndex == -1) {
             return originalSql;
         }
 
         // 找到值列表的开始位置（左括号）
-        int valuesLeftBracketIndex = originalSql.indexOf("(", valuesStartIndex);
+        int valuesLeftBracketIndex = originalSqlU.indexOf("(", valuesStartIndex);
         if (valuesLeftBracketIndex == -1) {
             return originalSql;
         }
 
         // 找到值列表的结束位置（右括号）
-        int valuesEndIndex = originalSql.indexOf(")", valuesLeftBracketIndex);
+        int valuesEndIndex = originalSqlU.indexOf(")", valuesLeftBracketIndex);
         if (valuesEndIndex == -1) {
             return originalSql;
         }
@@ -249,7 +250,36 @@ public class AuditableInterceptor implements InnerInterceptor {
         newValues.append(")");
 
         // 拼接新的SQL语句
-        return newFields.toString() + originalSql.substring(fieldsEndIndex, valuesLeftBracketIndex) + newValues.toString();
+        StringBuilder newSql = new StringBuilder();
+        newSql.append(newFields.toString())
+                .append(originalSql.substring(fieldsEndIndex, valuesLeftBracketIndex))
+                .append(newValues.toString());
+
+        // 检测是否包含ON DUPLICATE KEY UPDATE子句
+        int duplicateKeyUpdateIndex = originalSqlU.indexOf("ON DUPLICATE KEY UPDATE");
+        boolean hasDuplicateKeyUpdate = duplicateKeyUpdateIndex != -1;
+
+        // 如果包含ON DUPLICATE KEY UPDATE子句，则在其后面添加审计字段的更新
+        if (hasDuplicateKeyUpdate) {
+            // 获取ON DUPLICATE KEY UPDATE子句的内容
+            String duplicateKeyUpdateClause = originalSql.substring(duplicateKeyUpdateIndex);
+
+            // 构建审计字段的更新内容
+            StringBuilder auditUpdateClause = new StringBuilder();
+            for (Map.Entry<String, Object> entry : auditFields.entrySet()) {
+                auditUpdateClause.append(",").append(entry.getKey()).append("=").append(formatValue(entry.getValue()));
+            }
+
+            // 如果更新子句不是以逗号结尾，则添加逗号
+//            if (!duplicateKeyUpdateClause.trim().endsWith(",")) {
+//                auditUpdateClause.insert(0, ",");
+//            }
+
+            // 将审计字段的更新内容添加到ON DUPLICATE KEY UPDATE子句中
+            newSql.append(duplicateKeyUpdateClause).append(auditUpdateClause.toString());
+        }
+
+        return newSql.toString();
     }
 
     /**
