@@ -67,6 +67,15 @@ public class AuditableInterceptor implements InnerInterceptor {
 
     @Override
     public void beforePrepare(StatementHandler sh, Connection connection, Integer transactionTimeout) {
+        try {
+            addAuditFieldSql(sh);
+        } catch (Exception e) {
+            // 捕获所有异常，避免异常中断
+            logger.error("添加审计字段失败", e);
+        }
+    }
+
+    protected void addAuditFieldSql(StatementHandler sh) {
         BoundSql boundSql = sh.getBoundSql();
         MappedStatement ms = this.getMappedStatement(sh);
 
@@ -82,6 +91,9 @@ public class AuditableInterceptor implements InnerInterceptor {
 
         String resource = ms.getResource();
         int index = resource.indexOf(".java");
+        if (index == -1) {
+            return;
+        }
         String className = resource.substring(0, index).replace("/", ".");
 
         Class<?> entityClass = getEntityClassByMapperClassName(className);
@@ -101,88 +113,41 @@ public class AuditableInterceptor implements InnerInterceptor {
         Map<String, TableFieldInfo> propertyThisMap =
             fieldList.stream().collect(Collectors.toMap(TableFieldInfo::getProperty, a -> a, (a, b) -> b));
 
+        // 记录审计字段与填充值的关系（需保证顺序，用LinkedHashMap）
+        Map<TableFieldInfo, String> auditFieldMap = new LinkedHashMap<>();
+
+        AuditableModel<?> auditableModel = auditableModelProvider.getAuditableModel();
+        Field[] auditableModelFieldList = auditableModel.getClass().getDeclaredFields();
+        for (Field auditableModelField : auditableModelFieldList) {
+            String fieldName = auditableModelField.getName();
+            TableFieldInfo fieldInfo = propertyThisMap.get(fieldName);
+            if (fieldInfo == null) {
+                continue;
+            }
+            Object fieldVal = ReflectionKit.getFieldValue(auditableModel, fieldName);
+            auditFieldMap.put(fieldInfo, formatValue(fieldVal));
+        }
+
+        if (auditFieldMap.isEmpty()) {
+            return;
+        }
+
+        String originalSql = boundSql.getSql();
+        String newSql;
         if (SqlCommandType.INSERT == sqlCommandType) {
-            insertFill(boundSql, tableInfo, propertyThisMap);
+            if (!tableInfo.isWithInsertFill()) {
+                return;
+            }
+            newSql = appendAuditFieldsToInsert(originalSql, auditFieldMap);
         } else {
-            updateFill(boundSql, tableInfo, propertyThisMap);
-        }
-    }
-
-    protected void insertFill(BoundSql boundSql, TableInfo tableInfo, Map<String, TableFieldInfo> propertyThisMap) {
-        if (!tableInfo.isWithInsertFill()) {
-            return;
-        }
-
-        String originalSql = boundSql.getSql();
-
-        // 需保证顺序，用LinkedHashMap
-        Map<String, String> auditFieldMap = new LinkedHashMap<>();
-
-        AuditableModel<?> auditableModel = auditableModelProvider.getAuditableModel();
-        Field[] fieldList = auditableModel.getClass().getDeclaredFields();
-        for (Field field : fieldList) {
-            String fieldName = field.getName();
-            Object fieldVal = ReflectionKit.getFieldValue(auditableModel, fieldName);
-            TableFieldInfo fieldInfo = propertyThisMap.get(fieldName);
-            if (fieldInfo != null && fieldInfo.isWithInsertFill()) {
-                String column = getColumnIfNotExist(originalSql, fieldInfo);
-                if (column != null) {
-                    auditFieldMap.put(column, formatValue(fieldVal));
-                }
+            if (!tableInfo.isWithUpdateFill()) {
+                return;
             }
+            newSql = appendAuditFieldsToUpdate(originalSql, auditFieldMap);
         }
-
-        if (auditFieldMap.isEmpty()) {
-            return;
-        }
-        String newSql = appendAuditFieldsToInsert(originalSql, auditFieldMap);
         logger.debug("sql change: " + originalSql + " ==> " + newSql);
         PluginUtils.MPBoundSql mpBoundSql = PluginUtils.mpBoundSql(boundSql);
         mpBoundSql.sql(newSql);
-    }
-
-    protected void updateFill(BoundSql boundSql, TableInfo tableInfo, Map<String, TableFieldInfo> propertyThisMap) {
-        if (!tableInfo.isWithUpdateFill()) {
-            return;
-        }
-
-        String originalSql = boundSql.getSql();
-
-        // 需保证顺序，用LinkedHashMap
-        Map<String, String> auditFieldMap = new LinkedHashMap<>();
-
-        AuditableModel<?> auditableModel = auditableModelProvider.getAuditableModel();
-        Field[] fieldList = auditableModel.getClass().getDeclaredFields();
-        for (Field field : fieldList) {
-            String fieldName = field.getName();
-            Object fieldVal = ReflectionKit.getFieldValue(auditableModel, fieldName);
-            TableFieldInfo fieldInfo = propertyThisMap.get(fieldName);
-            if (fieldInfo != null && fieldInfo.isWithUpdateFill()) {
-                String column = getColumnIfNotExist(originalSql, fieldInfo);
-                if (column != null) {
-                    auditFieldMap.put(column, formatValue(fieldVal));
-                }
-            }
-        }
-
-        if (auditFieldMap.isEmpty()) {
-            return;
-        }
-        String newSql = appendAuditFieldsToUpdate(originalSql, auditFieldMap);
-        logger.debug("sql change: " + originalSql + " ==> " + newSql);
-        PluginUtils.MPBoundSql mpBoundSql = PluginUtils.mpBoundSql(boundSql);
-        mpBoundSql.sql(newSql);
-    }
-
-    private String getColumnIfNotExist(String originalSql, TableFieldInfo tableFieldInfo) {
-        if (tableFieldInfo == null) {
-            return null;
-        }
-        String column = tableFieldInfo.getColumn();
-        if (originalSql.contains(column)) {
-            return null;
-        }
-        return column;
     }
 
     private static String formatValue(Object value) {
@@ -202,7 +167,7 @@ public class AuditableInterceptor implements InnerInterceptor {
     /**
      * 为INSERT语句拼接审计字段
      */
-    private static String appendAuditFieldsToInsert(String originalSql, Map<String, String> auditFields) {
+    private static String appendAuditFieldsToInsert(String originalSql, Map<TableFieldInfo, String> auditFields) {
         if (auditFields.isEmpty()) {
             return originalSql;
         }
@@ -261,10 +226,18 @@ public class AuditableInterceptor implements InnerInterceptor {
 
         List<String> columnList = new ArrayList<>();
         List<String> valueList = new ArrayList<>();
-        Set<Map.Entry<String, String>> entries = auditFields.entrySet();
-        for (Map.Entry<String, String> entry : entries) {
-            columnList.add(entry.getKey());
-            valueList.add(String.format("'%s'",entry.getValue()));
+        Set<Map.Entry<TableFieldInfo, String>> entries = auditFields.entrySet();
+        for (Map.Entry<TableFieldInfo, String> entry : entries) {
+            TableFieldInfo fieldInfo = entry.getKey();
+            if (fieldInfo == null || !fieldInfo.isWithInsertFill()) {
+                continue;
+            }
+            String column = getColumnIfNotExist(originalSql, fieldInfo);
+            if (column == null) {
+                continue;
+            }
+            columnList.add(column);
+            valueList.add(String.format("'%s'", entry.getValue()));
         }
         String columnSplit = String.join(", ", columnList);
         String valueSplit = String.join(", ", valueList);
@@ -275,8 +248,16 @@ public class AuditableInterceptor implements InnerInterceptor {
         // 如果包含ON DUPLICATE KEY UPDATE子句，则在其后面添加审计字段的更新
         if (hasDuplicateKeyUpdate) {
             List<String> columnValueList = new ArrayList<>();
-            for (Map.Entry<String, String> entry : auditFields.entrySet()) {
-                columnValueList.add(entry.getKey() + " = " + String.format("'%s'", entry.getValue()));
+            for (Map.Entry<TableFieldInfo, String> entry : auditFields.entrySet()) {
+                TableFieldInfo fieldInfo = entry.getKey();
+                if (fieldInfo == null || !fieldInfo.isWithUpdateFill()) {
+                    continue;
+                }
+                String column = getColumnIfNotExist(originalSql, fieldInfo);
+                if (column == null) {
+                    continue;
+                }
+                columnValueList.add(column + " = " + String.format("'%s'", entry.getValue()));
             }
             String columnValueSplit = String.join(", ", columnValueList);
 
@@ -289,7 +270,7 @@ public class AuditableInterceptor implements InnerInterceptor {
     /**
      * 为UPDATE语句拼接审计字段
      */
-    private static String appendAuditFieldsToUpdate(String originalSql, Map<String, String> auditFields) {
+    private static String appendAuditFieldsToUpdate(String originalSql, Map<TableFieldInfo, String> auditFields) {
         if (auditFields.isEmpty()) {
             return originalSql;
         }
@@ -310,14 +291,33 @@ public class AuditableInterceptor implements InnerInterceptor {
         String sqlPart2 = originalSql.substring(setEndIndex);
 
         List<String> columnValueList = new ArrayList<>();
-        for (Map.Entry<String, String> entry : auditFields.entrySet()) {
-            columnValueList.add(entry.getKey() + " = " + String.format("'%s'", entry.getValue()));
+        for (Map.Entry<TableFieldInfo, String> entry : auditFields.entrySet()) {
+            TableFieldInfo fieldInfo = entry.getKey();
+            if (fieldInfo == null || !fieldInfo.isWithUpdateFill()) {
+                continue;
+            }
+            String column = getColumnIfNotExist(originalSql, fieldInfo);
+            if (column == null) {
+                continue;
+            }
+            columnValueList.add(column + " = " + String.format("'%s'", entry.getValue()));
         }
         String columnValueSplit = String.join(", ", columnValueList);
 
         // 拼接新的SQL语句
         String newSql = sqlPart1 + ", " + columnValueSplit + sqlPart2;
         return newSql;
+    }
+
+    private static String getColumnIfNotExist(String originalSql, TableFieldInfo tableFieldInfo) {
+        if (tableFieldInfo == null) {
+            return null;
+        }
+        String column = tableFieldInfo.getColumn();
+        if (originalSql.contains(column)) {
+            return null;
+        }
+        return column;
     }
 
     /**
