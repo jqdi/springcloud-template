@@ -121,7 +121,7 @@ public class AuditableInterceptor implements InnerInterceptor {
         TableFieldInfo createTimeFieldInfo = propertyThisMap.get("createTime");
         if (createTimeFieldInfo != null && createTimeFieldInfo.isWithInsertFill()) {
             String createTimeColumn = getColumnIfNotExist(originalSql, createTimeFieldInfo);
-            if (createTimeFieldInfo.isWithInsertFill() && createTimeColumn != null) {
+            if (createTimeColumn != null) {
                 auditFieldMap.put(createTimeColumn, now);
             }
         }
