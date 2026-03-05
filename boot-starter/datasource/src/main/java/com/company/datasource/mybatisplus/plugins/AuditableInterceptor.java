@@ -9,6 +9,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.apache.ibatis.executor.statement.StatementHandler;
@@ -114,6 +115,7 @@ public class AuditableInterceptor implements InnerInterceptor {
             fieldList.stream().collect(Collectors.toMap(TableFieldInfo::getProperty, a -> a, (a, b) -> b));
 
         String originalSql = boundSql.getSql();
+        String originalSqlU = originalSql.toUpperCase();
 
         // 记录审计字段与填充值的关系（需保证顺序，用LinkedHashMap）
         Map<TableFieldInfo, String> auditFieldMap = new LinkedHashMap<>();
@@ -134,12 +136,16 @@ public class AuditableInterceptor implements InnerInterceptor {
                 // 更新操作，且字段未配置更新填充，跳过
                 continue;
             }
-            String column = fieldInfo.getColumn();
-            if (originalSql.contains(column)) {
+            String columnU = fieldInfo.getColumn().toUpperCase();
+            Pattern pattern = Pattern.compile("\\b" + Pattern.quote(columnU) + "\\b");
+            if (pattern.matcher(originalSqlU).find()) {
                 // 字段已存在，跳过
                 continue;
             }
             Object fieldVal = ReflectionKit.getFieldValue(auditableModel, fieldName);
+            if (fieldVal == null) {
+                continue;
+            }
             auditFieldMap.put(fieldInfo, formatValue(fieldVal));
         }
 
@@ -195,9 +201,6 @@ public class AuditableInterceptor implements InnerInterceptor {
      * 为INSERT语句拼接审计字段
      */
     private static String appendAuditFieldsToInsert(String originalSql, Map<TableFieldInfo, String> auditFields) {
-        if (auditFields.isEmpty()) {
-            return originalSql;
-        }
         /*
         例：INSERT INTO `sys_config` (`code`, `value`) VALUES ('1', '1')
         将sql语句分成3段
@@ -297,9 +300,6 @@ public class AuditableInterceptor implements InnerInterceptor {
      * 为UPDATE语句拼接审计字段
      */
     private static String appendAuditFieldsToUpdate(String originalSql, Map<TableFieldInfo, String> auditFields) {
-        if (auditFields.isEmpty()) {
-            return originalSql;
-        }
         /*
         例：UPDATE `sys_config` SET `value` = '11' WHERE `code` = 2;
         将sql语句分成2段
@@ -308,13 +308,6 @@ public class AuditableInterceptor implements InnerInterceptor {
         得到：UPDATE `sys_config` SET `value` = '11', `update_time` = '2020-01-01 00:00:00', `update_by` = '1' WHERE `code` = 2;
          */
         String originalSqlU = originalSql.toUpperCase();
-
-        // 找到SET子句的结束位置（WHERE子句开始位置）
-        int whereIndex = originalSqlU.indexOf(" WHERE");
-        int setEndIndex = whereIndex != -1 ? whereIndex : originalSql.length();
-
-        String sqlPart1 = originalSql.substring(0, setEndIndex);
-        String sqlPart2 = originalSql.substring(setEndIndex);
 
         List<String> columnValueList = new ArrayList<>();
         for (Map.Entry<TableFieldInfo, String> entry : auditFields.entrySet()) {
@@ -326,9 +319,20 @@ public class AuditableInterceptor implements InnerInterceptor {
         }
         String columnValueSplit = String.join(", ", columnValueList);
 
+        // 找到SET子句的结束位置（WHERE子句开始位置）
+        int whereIndex = originalSqlU.indexOf(" WHERE");
+        if (whereIndex == -1) {
+            // 没有WHERE条件，则添加审计字段到SET子句的末尾
+            // 拼接新的SQL语句
+            return originalSqlU + ", " + columnValueSplit;
+        }
+        int setEndIndex = whereIndex != -1 ? whereIndex : originalSql.length();
+
+        String sqlPart1 = originalSql.substring(0, setEndIndex);
+        String sqlPart2 = originalSql.substring(setEndIndex);
+
         // 拼接新的SQL语句
-        String newSql = sqlPart1 + ", " + columnValueSplit + sqlPart2;
-        return newSql;
+        return sqlPart1 + ", " + columnValueSplit + sqlPart2;
     }
 
     /**
