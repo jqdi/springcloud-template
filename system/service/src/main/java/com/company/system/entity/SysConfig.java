@@ -1,9 +1,13 @@
 package com.company.system.entity;
 
+import com.baomidou.mybatisplus.annotation.FieldFill;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 
 import com.company.datasource.mybatisplus.activerecord.AuditableModel;
 import lombok.Data;
+
+import java.time.LocalDateTime;
 
 /**
  * 参数配置

@@ -17,13 +17,14 @@ import com.company.datasource.mybatisplus.plugins.SqlLimitInterceptor;
 public class DatasourceAutoConfiguration {
 
     @Bean
-    public MybatisPlusInterceptor mybatisPlusInterceptor(@Autowired(required = false) CurrentUserProvider currentUserProvider,
+    public MybatisPlusInterceptor mybatisPlusInterceptor(
+        @Autowired(required = false) AuditableModelProvider auditableModelProvider,
         @Value("${template.sqllimit.max:0}") Integer limit) {
         MybatisPlusInterceptor mybatisPlusInterceptor = new MybatisPlusInterceptor();
 
-        // 审计字段拦截器（mybatis 方案）
-        if (currentUserProvider != null) {
-            mybatisPlusInterceptor.addInnerInterceptor(new AuditableInterceptor(currentUserProvider));
+        // 审计字段拦截器（mybatis sql 方案）
+        if (auditableModelProvider != null) {
+            mybatisPlusInterceptor.addInnerInterceptor(new AuditableInterceptor(auditableModelProvider));
         }
 
         // 分页拦截器
@@ -73,12 +74,12 @@ public class DatasourceAutoConfiguration {
      * （mybatis plus方案）
      * </pre>
      *
-     * @param currentUserProvider
+     * @param auditableModelProvider
      * @return
      */
     @Bean
-    @ConditionalOnBean(CurrentUserProvider.class)
-    public AuditableMetaObjectHandler auditableMetaObjectHandler(CurrentUserProvider currentUserProvider) {
-        return new AuditableMetaObjectHandler(currentUserProvider);
+    @ConditionalOnBean(AuditableModelProvider.class)
+    public AuditableMetaObjectHandler auditableMetaObjectHandler(AuditableModelProvider auditableModelProvider) {
+        return new AuditableMetaObjectHandler(auditableModelProvider);
     }
 }
