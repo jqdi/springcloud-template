@@ -3,7 +3,6 @@ package com.company.tool.entity;
 import java.time.LocalDateTime;
 
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.company.datasource.mybatisplus.base.AuditableModel;
 
 import io.github.encrypt.annotation.FieldEncrypt;
 import io.github.encrypt.bean.Encrypted;
@@ -13,7 +12,7 @@ import lombok.experimental.Accessors;
 @TableName("sms_task_detail")
 @Data
 @Accessors(chain = true)
-public class SmsTaskDetail extends AuditableModel<SmsTaskDetail> implements Encrypted {
+public class SmsTaskDetail implements Encrypted {
 	/**
 	 * ID
 	 */

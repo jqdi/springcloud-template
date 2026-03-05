@@ -5,9 +5,7 @@ import java.lang.reflect.Type;
 import java.sql.Connection;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import org.apache.ibatis.executor.statement.StatementHandler;
@@ -32,6 +30,7 @@ import com.company.datasource.CurrentUserProvider;
  * 审计字段Mybatis Plus拦截器，用于自动填充审计字段（创建人、创建时间、更新人、更新时间）
  * 
  * <pre>
+ * 审计字段需要声明@TableField(fill = FieldFill.INSERT)、@TableField(fill = FieldFill.INSERT_UPDATE)
  * 与AuditableMetaObjectHandler不同的地方是：该拦截器可处理非 BaseMapper API执行的SQL
  * </pre>
  * 
@@ -90,6 +89,9 @@ public class AuditableInterceptor implements InnerInterceptor {
         if (tableInfo == null) {
             return;
         }
+        if (!tableInfo.isWithInsertFill() && !tableInfo.isWithUpdateFill()) {
+            return;
+        }
 
         List<TableFieldInfo> fieldList = tableInfo.getFieldList();
         Map<String, TableFieldInfo> propertyThisMap =
@@ -115,13 +117,6 @@ public class AuditableInterceptor implements InnerInterceptor {
         String originalSql = boundSql.getSql();
 
         Map<String, Object> auditFieldMap = new HashMap<>();
-        TableFieldInfo createByFieldInfo = propertyThisMap.get("createBy");
-        if (createByFieldInfo != null && createByFieldInfo.isWithInsertFill()) {
-            String createByColumn = getColumnIfNotExist(originalSql, createByFieldInfo);
-            if (createByColumn != null) {
-                auditFieldMap.put(createByColumn, currentUser);
-            }
-        }
 
         TableFieldInfo createTimeFieldInfo = propertyThisMap.get("createTime");
         if (createTimeFieldInfo != null && createTimeFieldInfo.isWithInsertFill()) {
@@ -131,11 +126,11 @@ public class AuditableInterceptor implements InnerInterceptor {
             }
         }
 
-        TableFieldInfo updateByFieldInfo = propertyThisMap.get("updateBy");
-        if (updateByFieldInfo != null && updateByFieldInfo.isWithInsertFill()) {
-            String updateByColumn = getColumnIfNotExist(originalSql, updateByFieldInfo);
-            if (updateByColumn != null) {
-                auditFieldMap.put(updateByColumn, currentUser);
+        TableFieldInfo createByFieldInfo = propertyThisMap.get("createBy");
+        if (createByFieldInfo != null && createByFieldInfo.isWithInsertFill()) {
+            String createByColumn = getColumnIfNotExist(originalSql, createByFieldInfo);
+            if (createByColumn != null) {
+                auditFieldMap.put(createByColumn, currentUser);
             }
         }
 
@@ -144,6 +139,14 @@ public class AuditableInterceptor implements InnerInterceptor {
             String updateTimeColumn = getColumnIfNotExist(originalSql, updateTimeFieldInfo);
             if (updateTimeColumn != null) {
                 auditFieldMap.put(updateTimeColumn, now);
+            }
+        }
+
+        TableFieldInfo updateByFieldInfo = propertyThisMap.get("updateBy");
+        if (updateByFieldInfo != null && updateByFieldInfo.isWithInsertFill()) {
+            String updateByColumn = getColumnIfNotExist(originalSql, updateByFieldInfo);
+            if (updateByColumn != null) {
+                auditFieldMap.put(updateByColumn, currentUser);
             }
         }
 
@@ -170,19 +173,19 @@ public class AuditableInterceptor implements InnerInterceptor {
 
         Map<String, Object> auditFieldMap = new HashMap<>();
 
-        TableFieldInfo updateByFieldInfo = propertyThisMap.get("updateBy");
-        if (updateByFieldInfo != null && updateByFieldInfo.isWithUpdateFill()) {
-            String updateByColumn = getColumnIfNotExist(originalSql, updateByFieldInfo);
-            if (updateByColumn != null) {
-                auditFieldMap.put(updateByColumn, currentUser);
-            }
-        }
-
         TableFieldInfo updateTimeFieldInfo = propertyThisMap.get("updateTime");
         if (updateTimeFieldInfo != null && updateTimeFieldInfo.isWithUpdateFill()) {
             String updateTimeColumn = getColumnIfNotExist(originalSql, updateTimeFieldInfo);
             if (updateTimeColumn != null) {
                 auditFieldMap.put(updateTimeColumn, now);
+            }
+        }
+
+        TableFieldInfo updateByFieldInfo = propertyThisMap.get("updateBy");
+        if (updateByFieldInfo != null && updateByFieldInfo.isWithUpdateFill()) {
+            String updateByColumn = getColumnIfNotExist(originalSql, updateByFieldInfo);
+            if (updateByColumn != null) {
+                auditFieldMap.put(updateByColumn, currentUser);
             }
         }
 
@@ -210,9 +213,30 @@ public class AuditableInterceptor implements InnerInterceptor {
      * 为INSERT语句拼接审计字段
      */
     private static String appendAuditFieldsToInsert(String originalSql, Map<String, Object> auditFields) {
+        if (auditFields.isEmpty()) {
+            return originalSql;
+        }
+        /*
+        例：INSERT INTO `sys_config` (`code`, `value`) VALUES ('1', '1');
+        将sql语句分成3段
+        1. INSERT INTO `sys_config` (`code`, `value`   -> 插入字段名
+        2. ) VALUES ('1', '1'   -> 插入字段名
+        3. );
+        得到：INSERT INTO `sys_config` (`code`, `value`, `create_time`, `create_by`, `update_time`, `update_by`) VALUES ('1', '1', '2020-01-01 00:00:00', '1', '2020-01-01 00:00:00', '1');
+         */
         String originalSqlU = originalSql.toUpperCase();
-        // 找到字段列表的结束位置（第一个右括号）
-        int fieldsEndIndex = originalSqlU.indexOf(")");
+
+        // 检测是否包含ON DUPLICATE KEY UPDATE子句
+        int duplicateKeyUpdateIndex = originalSqlU.indexOf("ON DUPLICATE KEY UPDATE");
+        boolean hasDuplicateKeyUpdate = duplicateKeyUpdateIndex != -1;
+
+        // 找到VALUES的前一个右括号的位置（字段列表的结束位置）
+        int valuesIndex = originalSqlU.indexOf("VALUES");
+        if (valuesIndex == -1) {
+            return originalSql;
+        }
+        String valuesEndStr = originalSqlU.substring(0, valuesIndex);
+        int fieldsEndIndex = valuesEndStr.lastIndexOf(")");
         if (fieldsEndIndex == -1) {
             return originalSql;
         }
@@ -230,106 +254,80 @@ public class AuditableInterceptor implements InnerInterceptor {
         }
 
         // 找到值列表的结束位置（右括号）
-        int valuesEndIndex = originalSqlU.indexOf(")", valuesLeftBracketIndex);
+        int valuesEndIndex;
+        if (hasDuplicateKeyUpdate) {
+            String valuesStr = originalSqlU.substring(valuesLeftBracketIndex, duplicateKeyUpdateIndex);
+            valuesEndIndex = valuesLeftBracketIndex + valuesStr.lastIndexOf(")");
+        } else {
+            valuesEndIndex = originalSqlU.lastIndexOf(")");
+        }
+
         if (valuesEndIndex == -1) {
             return originalSql;
         }
+        String sqlPart1 = originalSql.substring(0, fieldsEndIndex);
+        String sqlPart2 = originalSql.substring(fieldsEndIndex, valuesEndIndex);
+        String sqlPart3 = originalSql.substring(valuesEndIndex);
 
-        // 构建新的字段列表
-        StringBuilder newFields = new StringBuilder(originalSql.substring(0, fieldsEndIndex));
-        for (String field : auditFields.keySet()) {
-            newFields.append(",").append(field);
+        List<String> columnList = new ArrayList<>();
+        List<String> valueList = new ArrayList<>();
+        Set<Map.Entry<String, Object>> entries = auditFields.entrySet();
+        for (Map.Entry<String, Object> entry : entries) {
+            columnList.add(entry.getKey());
+            valueList.add(String.format("'%s'",entry.getValue()));
         }
-        newFields.append(")");
-
-        // 构建新的值列表
-        StringBuilder newValues = new StringBuilder(originalSql.substring(valuesLeftBracketIndex, valuesEndIndex));
-        for (Object value : auditFields.values()) {
-            newValues.append(",").append(formatValue(value));
-        }
-        newValues.append(")");
+        String columnSplit = String.join(", ", columnList);
+        String valueSplit = String.join(", ", valueList);
 
         // 拼接新的SQL语句
-        StringBuilder newSql = new StringBuilder();
-        newSql.append(newFields.toString())
-                .append(originalSql.substring(fieldsEndIndex, valuesLeftBracketIndex))
-                .append(newValues.toString());
-
-        // 检测是否包含ON DUPLICATE KEY UPDATE子句
-        int duplicateKeyUpdateIndex = originalSqlU.indexOf("ON DUPLICATE KEY UPDATE");
-        boolean hasDuplicateKeyUpdate = duplicateKeyUpdateIndex != -1;
+        String newSql = sqlPart1 + ", " + columnSplit + sqlPart2 + ", " + valueSplit + sqlPart3;
 
         // 如果包含ON DUPLICATE KEY UPDATE子句，则在其后面添加审计字段的更新
         if (hasDuplicateKeyUpdate) {
-            // 获取ON DUPLICATE KEY UPDATE子句的内容
-            String duplicateKeyUpdateClause = originalSql.substring(duplicateKeyUpdateIndex);
-
-            // 构建审计字段的更新内容
-            StringBuilder auditUpdateClause = new StringBuilder();
+            List<String> columnValueList = new ArrayList<>();
             for (Map.Entry<String, Object> entry : auditFields.entrySet()) {
-                auditUpdateClause.append(",").append(entry.getKey()).append("=").append(formatValue(entry.getValue()));
+                columnValueList.add(entry.getKey() + " = " + String.format("'%s'", entry.getValue()));
             }
+            String columnValueSplit = String.join(", ", columnValueList);
 
-            // 如果更新子句不是以逗号结尾，则添加逗号
-//            if (!duplicateKeyUpdateClause.trim().endsWith(",")) {
-//                auditUpdateClause.insert(0, ",");
-//            }
-
-            // 将审计字段的更新内容添加到ON DUPLICATE KEY UPDATE子句中
-            newSql.append(duplicateKeyUpdateClause).append(auditUpdateClause.toString());
+            newSql = newSql + ", " + columnValueSplit;
         }
 
-        return newSql.toString();
+        return newSql;
     }
 
     /**
      * 为UPDATE语句拼接审计字段
      */
     private static String appendAuditFieldsToUpdate(String originalSql, Map<String, Object> auditFields) {
+        if (auditFields.isEmpty()) {
+            return originalSql;
+        }
+        /*
+        例：UPDATE `sys_config` SET `value` = '11' WHERE `code` = 2;
+        将sql语句分成2段
+        1. UPDATE `sys_config` SET `value` = '11'   -> 插入字段名=字段值
+        2. WHERE `code` = 2;
+        得到：UPDATE `sys_config` SET `value` = '11', `update_time` = '2020-01-01 00:00:00', `update_by` = '1' WHERE `code` = 2;
+         */
+        String originalSqlU = originalSql.toUpperCase();
+
         // 找到SET子句的结束位置（WHERE子句开始位置）
-        int whereIndex = originalSql.toUpperCase().indexOf("WHERE");
+        int whereIndex = originalSqlU.indexOf(" WHERE");
         int setEndIndex = whereIndex != -1 ? whereIndex : originalSql.length();
 
-        // 构建新的SET子句
-        StringBuilder newSetClause = new StringBuilder(originalSql.substring(0, setEndIndex).trim());
-        if (!newSetClause.toString().endsWith(",")) {
-            newSetClause.append(",");
-        }
+        String sqlPart1 = originalSql.substring(0, setEndIndex);
+        String sqlPart2 = originalSql.substring(setEndIndex);
 
-        // 添加审计字段
+        List<String> columnValueList = new ArrayList<>();
         for (Map.Entry<String, Object> entry : auditFields.entrySet()) {
-            newSetClause.append(entry.getKey()).append("=").append(formatValue(entry.getValue())).append(",");
+            columnValueList.add(entry.getKey() + " = " + String.format("'%s'", entry.getValue()));
         }
-
-        // 移除最后一个逗号
-        if (newSetClause.toString().endsWith(",")) {
-            newSetClause.setLength(newSetClause.length() - 1);
-        }
+        String columnValueSplit = String.join(", ", columnValueList);
 
         // 拼接新的SQL语句
-        return newSetClause.toString() + " " + (whereIndex != -1 ? originalSql.substring(whereIndex) : "");
-    }
-
-    /**
-     * 格式化值，处理不同类型的值
-     */
-    private static String formatValue(Object value) {
-        if (value == null) {
-            return "NULL";
-        }
-        if (value instanceof String) {
-            return "'" + value.toString().replace("'", "''") + "'";
-        }
-        if (value instanceof Number) {
-            return value.toString();
-        }
-        if (value instanceof java.util.Date) {
-            return "'" + new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(value) + "'";
-        }
-        if (value instanceof java.time.LocalDateTime) {
-            return "'" + value.toString().replace("T", " ") + "'";
-        }
-        return "'" + value.toString().replace("'", "''") + "'";
+        String newSql = sqlPart1 + ", " + columnValueSplit + sqlPart2;
+        return newSql;
     }
 
     /**

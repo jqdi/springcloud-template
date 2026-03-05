@@ -113,10 +113,4 @@ public class SysConfigController implements SysConfigFeign {
 		boolean success = sysConfigService.updateValueByCode(value, code);
 		return success;
 	}
-
-	@Override
-    public Boolean insertOrUpdateConfig(String value, String code) {
-		boolean success = sysConfigService.insertOrUpdateConfig(value, code);
-		return success;
-	}
 }

@@ -1,20 +1,21 @@
 package com.company.system.api.feign;
 
 
-import com.company.system.api.constant.Constants;
-import com.company.system.api.feign.fallback.ThrowExceptionFallback;
-import com.company.system.api.request.RemoveReq;
-import com.company.system.api.request.SysConfigReq;
-import com.company.system.api.response.PageResp;
-import com.company.system.api.response.SysConfigResp;
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.List;
-import java.util.Map;
+import com.company.system.api.constant.Constants;
+import com.company.system.api.feign.fallback.ThrowExceptionFallback;
+import com.company.system.api.request.RemoveReq;
+import com.company.system.api.request.SysConfigReq;
+import com.company.system.api.response.PageResp;
+import com.company.system.api.response.SysConfigResp;
 
 @FeignClient(value = Constants.FEIGNCLIENT_VALUE, path = "/sysConfig", fallbackFactory = ThrowExceptionFallback.class)
 public interface SysConfigFeign {
@@ -42,7 +43,4 @@ public interface SysConfigFeign {
 
 	@PostMapping("/updateValueByCode")
 	Boolean updateValueByCode(@RequestParam("value") String value, @RequestParam("code") String code);
-
-    @PostMapping("/insertOrUpdateConfig")
-    Boolean insertOrUpdateConfig(@RequestParam("value") String value, @RequestParam("code") String code);
 }

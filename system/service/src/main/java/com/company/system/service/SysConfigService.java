@@ -18,8 +18,4 @@ public class SysConfigService extends ServiceImpl<SysConfigMapper, SysConfig> im
 		Integer affect = baseMapper.updateValueByCode(value, code);
 		return affect > 0;
 	}
-	public boolean insertOrUpdateConfig(String value, String code) {
-		Integer affect = baseMapper.insertConfig(value, code);
-		return affect > 0;
-	}
 }

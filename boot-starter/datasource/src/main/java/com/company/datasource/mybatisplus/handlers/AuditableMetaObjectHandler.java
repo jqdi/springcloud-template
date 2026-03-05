@@ -1,21 +1,11 @@
 package com.company.datasource.mybatisplus.handlers;
 
-import java.lang.reflect.Field;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
-import com.baomidou.mybatisplus.core.metadata.TableFieldInfo;
-import com.baomidou.mybatisplus.core.metadata.TableInfo;
-import com.baomidou.mybatisplus.core.metadata.TableInfoHelper;
-import com.company.datasource.CurrentUserProvider;
-import com.company.datasource.mybatisplus.base.AuditableModel;
 import org.apache.ibatis.reflection.MetaObject;
 
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
+import com.company.datasource.CurrentUserProvider;
 
 /**
  * 审计字段Mybatis Plus处理器，用于自动填充审计字段（创建人、创建时间、更新人、更新时间）

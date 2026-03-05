@@ -16,7 +16,13 @@ public interface SysConfigMapper extends BaseMapper<SysConfig> {
 	@Update("update sys_config set value = #{value} where code = #{code}")
 	Integer updateValueByCode(@Param("value") String value, @Param("code") String code);
 
-    @Insert("INSERT INTO sys_config(`code`, `value`) VALUES (#{code}, #{value}) on duplicate key update `value` = #{value}")
+    @Insert("insert into sys_config(code, value) values (#{code}, #{value})")
     Integer insertConfig(@Param("value") String value, @Param("code") String code);
+
+    @Insert("insert into sys_config(code, value, create_time) values (#{code}, #{value}, now())")
+    Integer insertConfig2(@Param("value") String value, @Param("code") String code);
+
+    @Insert("insert into sys_config(code, value) values (#{code}, #{value}) on duplicate key update value = #{value}")
+    Integer insertOrUpdateConfig(@Param("value") String value, @Param("code") String code);
 
 }
