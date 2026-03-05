@@ -113,6 +113,8 @@ public class AuditableInterceptor implements InnerInterceptor {
         Map<String, TableFieldInfo> propertyThisMap =
             fieldList.stream().collect(Collectors.toMap(TableFieldInfo::getProperty, a -> a, (a, b) -> b));
 
+        String originalSql = boundSql.getSql();
+
         // 记录审计字段与填充值的关系（需保证顺序，用LinkedHashMap）
         Map<TableFieldInfo, String> auditFieldMap = new LinkedHashMap<>();
 
@@ -124,6 +126,19 @@ public class AuditableInterceptor implements InnerInterceptor {
             if (fieldInfo == null) {
                 continue;
             }
+            if (SqlCommandType.INSERT == sqlCommandType && !fieldInfo.isWithInsertFill()) {
+                // 新增操作，且字段未配置新增填充，跳过
+                continue;
+            }
+            if (SqlCommandType.UPDATE == sqlCommandType && !fieldInfo.isWithUpdateFill()) {
+                // 更新操作，且字段未配置更新填充，跳过
+                continue;
+            }
+            String column = fieldInfo.getColumn();
+            if (originalSql.contains(column)) {
+                // 字段已存在，跳过
+                continue;
+            }
             Object fieldVal = ReflectionKit.getFieldValue(auditableModel, fieldName);
             auditFieldMap.put(fieldInfo, formatValue(fieldVal));
         }
@@ -132,7 +147,6 @@ public class AuditableInterceptor implements InnerInterceptor {
             return;
         }
 
-        String originalSql = boundSql.getSql();
         // 将SQL标准化成1行，去除多余空格、换行
         originalSql = originalSql.trim().replaceAll("[\\s]+", " ");
         boolean endsWithFen = originalSql.endsWith(";");
@@ -245,11 +259,7 @@ public class AuditableInterceptor implements InnerInterceptor {
             if (fieldInfo == null || !fieldInfo.isWithInsertFill()) {
                 continue;
             }
-            String column = getColumnIfNotExist(originalSql, fieldInfo);
-            if (column == null) {
-                continue;
-            }
-            columnList.add(column);
+            columnList.add(fieldInfo.getColumn());
             valueList.add(String.format("'%s'", entry.getValue()));
         }
         String columnSplit = String.join(", ", columnList);
@@ -274,11 +284,7 @@ public class AuditableInterceptor implements InnerInterceptor {
                 if (fieldInfo == null || !fieldInfo.isWithUpdateFill()) {
                     continue;
                 }
-                String column = getColumnIfNotExist(originalSql, fieldInfo);
-                if (column == null) {
-                    continue;
-                }
-                columnValueList.add(column + " = " + String.format("'%s'", entry.getValue()));
+                columnValueList.add(fieldInfo.getColumn() + " = " + String.format("'%s'", entry.getValue()));
             }
             String columnValueSplit = String.join(", ", columnValueList);
 
@@ -316,28 +322,13 @@ public class AuditableInterceptor implements InnerInterceptor {
             if (fieldInfo == null || !fieldInfo.isWithUpdateFill()) {
                 continue;
             }
-            String column = getColumnIfNotExist(originalSql, fieldInfo);
-            if (column == null) {
-                continue;
-            }
-            columnValueList.add(column + " = " + String.format("'%s'", entry.getValue()));
+            columnValueList.add(fieldInfo.getColumn() + " = " + String.format("'%s'", entry.getValue()));
         }
         String columnValueSplit = String.join(", ", columnValueList);
 
         // 拼接新的SQL语句
         String newSql = sqlPart1 + ", " + columnValueSplit + sqlPart2;
         return newSql;
-    }
-
-    private static String getColumnIfNotExist(String originalSql, TableFieldInfo tableFieldInfo) {
-        if (tableFieldInfo == null) {
-            return null;
-        }
-        String column = tableFieldInfo.getColumn();
-        if (originalSql.contains(column)) {
-            return null;
-        }
-        return column;
     }
 
     /**
