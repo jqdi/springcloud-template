@@ -31,6 +31,7 @@ public class AuditableMetaObjectHandler implements MetaObjectHandler {
         Field[] fieldList = auditableModel.getClass().getDeclaredFields();
         for (Field field : fieldList) {
             String fieldName = field.getName();
+            @SuppressWarnings("unchecked")
             Class<Object> fieldType = (Class<Object>)field.getType();
             Object fieldVal = ReflectionKit.getFieldValue(auditableModel, fieldName);
             this.strictInsertFill(metaObject, fieldName, fieldType, fieldVal);
@@ -43,6 +44,7 @@ public class AuditableMetaObjectHandler implements MetaObjectHandler {
         Field[] fieldList = auditableModel.getClass().getDeclaredFields();
         for (Field field : fieldList) {
             String fieldName = field.getName();
+            @SuppressWarnings("unchecked")
             Class<Object> fieldType = (Class<Object>)field.getType();
             Object fieldVal = ReflectionKit.getFieldValue(auditableModel, fieldName);
             this.strictUpdateFill(metaObject, fieldName, fieldType, fieldVal);
