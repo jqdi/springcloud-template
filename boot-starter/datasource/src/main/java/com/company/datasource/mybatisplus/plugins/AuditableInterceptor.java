@@ -133,6 +133,14 @@ public class AuditableInterceptor implements InnerInterceptor {
         }
 
         String originalSql = boundSql.getSql();
+        // 将SQL标准化成1行，去除多余空格、换行
+        originalSql = originalSql.trim().replaceAll("[\\s]+", " ");
+        boolean endsWithFen = originalSql.endsWith(";");
+        if (endsWithFen) {
+            // SQL 结尾有分号，先去掉分号
+            originalSql = originalSql.substring(0, originalSql.length() - 1);
+        }
+
         String newSql;
         if (SqlCommandType.INSERT == sqlCommandType) {
             if (!tableInfo.isWithInsertFill()) {
@@ -145,7 +153,12 @@ public class AuditableInterceptor implements InnerInterceptor {
             }
             newSql = appendAuditFieldsToUpdate(originalSql, auditFieldMap);
         }
-        logger.debug("sql change: " + originalSql + " ==> " + newSql);
+        
+        if (endsWithFen) {
+            // 添加分号
+            newSql = newSql + ";";
+        }
+        logger.debug("sql change: " + boundSql.getSql() + " ==> " + newSql);
         PluginUtils.MPBoundSql mpBoundSql = PluginUtils.mpBoundSql(boundSql);
         mpBoundSql.sql(newSql);
     }
@@ -172,12 +185,12 @@ public class AuditableInterceptor implements InnerInterceptor {
             return originalSql;
         }
         /*
-        例：INSERT INTO `sys_config` (`code`, `value`) VALUES ('1', '1');
+        例：INSERT INTO `sys_config` (`code`, `value`) VALUES ('1', '1')
         将sql语句分成3段
         1. INSERT INTO `sys_config` (`code`, `value`   -> 插入字段名
         2. ) VALUES ('1', '1'   -> 插入字段名
-        3. );
-        得到：INSERT INTO `sys_config` (`code`, `value`, `create_time`, `create_by`, `update_time`, `update_by`) VALUES ('1', '1', '2020-01-01 00:00:00', '1', '2020-01-01 00:00:00', '1');
+        3. )
+        得到：INSERT INTO `sys_config` (`code`, `value`, `create_time`, `create_by`, `update_time`, `update_by`) VALUES ('1', '1', '2020-01-01 00:00:00', '1', '2020-01-01 00:00:00', '1')
          */
         String originalSqlU = originalSql.toUpperCase();
 
@@ -247,6 +260,14 @@ public class AuditableInterceptor implements InnerInterceptor {
 
         // 如果包含ON DUPLICATE KEY UPDATE子句，则在其后面添加审计字段的更新
         if (hasDuplicateKeyUpdate) {
+            /*
+            例：INSERT INTO `sys_config` (`code`, `value`) VALUES ('1', '1') ON DUPLICATE KEY update `value` = '2'
+            将sql语句分成3段
+            1. INSERT INTO `sys_config` (`code`, `value`   -> 插入字段名
+            2. ) VALUES ('1', '1'   -> 插入字段名
+            3. ) ON DUPLICATE KEY update `value` = '2'
+            得到：INSERT INTO `sys_config` (`code`, `value`, `create_time`, `create_by`, `update_time`, `update_by`) VALUES ('1', '1', '2020-01-01 00:00:00', '1', '2020-01-01 00:00:00', '1') ON DUPLICATE KEY update `value` = '2', `update_time` = '2020-01-01 00:00:00', `update_by` = '1'
+             */
             List<String> columnValueList = new ArrayList<>();
             for (Map.Entry<TableFieldInfo, String> entry : auditFields.entrySet()) {
                 TableFieldInfo fieldInfo = entry.getKey();
@@ -263,7 +284,6 @@ public class AuditableInterceptor implements InnerInterceptor {
 
             newSql = newSql + ", " + columnValueSplit;
         }
-
         return newSql;
     }
 
