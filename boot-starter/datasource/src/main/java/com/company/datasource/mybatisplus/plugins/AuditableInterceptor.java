@@ -320,7 +320,7 @@ public class AuditableInterceptor implements InnerInterceptor {
         String columnValueSplit = String.join(", ", columnValueList);
 
         // 找到SET子句的结束位置（WHERE子句开始位置）
-        int whereIndex = originalSqlU.indexOf("WHERE");
+        int whereIndex = originalSqlU.indexOf(" WHERE ");
         if (whereIndex == -1) {
             // 没有WHERE条件，则添加审计字段到SET子句的末尾
             // 拼接新的SQL语句
@@ -328,11 +328,11 @@ public class AuditableInterceptor implements InnerInterceptor {
         }
         int setEndIndex = whereIndex != -1 ? whereIndex : originalSql.length();
 
-        String sqlPart1 = originalSql.substring(0, setEndIndex).trim();
-        String sqlPart2 = originalSql.substring(setEndIndex).trim();
+        String sqlPart1 = originalSql.substring(0, setEndIndex);
+        String sqlPart2 = originalSql.substring(setEndIndex);
 
         // 拼接新的SQL语句
-        return sqlPart1 + ", " + columnValueSplit + " " + sqlPart2;
+        return sqlPart1 + ", " + columnValueSplit + sqlPart2;
     }
 
     /**
