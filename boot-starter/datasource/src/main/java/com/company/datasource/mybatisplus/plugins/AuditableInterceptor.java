@@ -121,7 +121,7 @@ public class AuditableInterceptor implements InnerInterceptor {
         Map<TableFieldInfo, String> auditFieldMap = new LinkedHashMap<>();
 
         AuditableModel<?> auditableModel = auditableModelProvider.getAuditableModel();
-        Field[] auditableModelFieldList = auditableModel.getClass().getDeclaredFields();
+        List<Field> auditableModelFieldList = ReflectionKit.getFieldList(auditableModel.getClass());
         for (Field auditableModelField : auditableModelFieldList) {
             String fieldName = auditableModelField.getName();
             TableFieldInfo fieldInfo = propertyThisMap.get(fieldName);
@@ -320,19 +320,19 @@ public class AuditableInterceptor implements InnerInterceptor {
         String columnValueSplit = String.join(", ", columnValueList);
 
         // 找到SET子句的结束位置（WHERE子句开始位置）
-        int whereIndex = originalSqlU.indexOf(" WHERE");
+        int whereIndex = originalSqlU.indexOf("WHERE");
         if (whereIndex == -1) {
             // 没有WHERE条件，则添加审计字段到SET子句的末尾
             // 拼接新的SQL语句
-            return originalSqlU + ", " + columnValueSplit;
+            return originalSql + ", " + columnValueSplit;
         }
         int setEndIndex = whereIndex != -1 ? whereIndex : originalSql.length();
 
-        String sqlPart1 = originalSql.substring(0, setEndIndex);
-        String sqlPart2 = originalSql.substring(setEndIndex);
+        String sqlPart1 = originalSql.substring(0, setEndIndex).trim();
+        String sqlPart2 = originalSql.substring(setEndIndex).trim();
 
         // 拼接新的SQL语句
-        return sqlPart1 + ", " + columnValueSplit + sqlPart2;
+        return sqlPart1 + ", " + columnValueSplit + " " + sqlPart2;
     }
 
     /**

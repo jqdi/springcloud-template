@@ -1,6 +1,7 @@
 package com.company.datasource.mybatisplus.handlers;
 
 import java.lang.reflect.Field;
+import java.util.List;
 
 import org.apache.ibatis.reflection.MetaObject;
 
@@ -28,8 +29,8 @@ public class AuditableMetaObjectHandler implements MetaObjectHandler {
     @Override
     public void insertFill(MetaObject metaObject) {
         AuditableModel<?> auditableModel = auditableModelProvider.getAuditableModel();
-        Field[] fieldList = auditableModel.getClass().getDeclaredFields();
-        for (Field field : fieldList) {
+        List<Field> auditableModelFieldList = ReflectionKit.getFieldList(auditableModel.getClass());
+        for (Field field : auditableModelFieldList) {
             String fieldName = field.getName();
             @SuppressWarnings("unchecked")
             Class<Object> fieldType = (Class<Object>)field.getType();
@@ -41,8 +42,8 @@ public class AuditableMetaObjectHandler implements MetaObjectHandler {
     @Override
     public void updateFill(MetaObject metaObject) {
         AuditableModel<?> auditableModel = auditableModelProvider.getAuditableModel();
-        Field[] fieldList = auditableModel.getClass().getDeclaredFields();
-        for (Field field : fieldList) {
+        List<Field> auditableModelFieldList = ReflectionKit.getFieldList(auditableModel.getClass());
+        for (Field field : auditableModelFieldList) {
             String fieldName = field.getName();
             @SuppressWarnings("unchecked")
             Class<Object> fieldType = (Class<Object>)field.getType();
