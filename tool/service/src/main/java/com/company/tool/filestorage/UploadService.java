@@ -6,7 +6,7 @@ import cn.hutool.core.util.IdUtil;
 import cn.hutool.http.HttpUtil;
 import com.company.framework.globalresponse.ExceptionUtil;
 import com.company.framework.util.Utils;
-import com.jqdi.filestorage.core.FileStorage;
+import io.github.jqdi.filestorage.core.FileStorage;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;

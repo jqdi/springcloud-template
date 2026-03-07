@@ -9,11 +9,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Component;
 
-import com.company.datasource.mybatis.i18n.metadata.I18nFieldInfo;
-import com.company.datasource.mybatis.i18n.metadata.RelatedI18nValueMapping;
-import com.company.datasource.mybatis.i18n.provider.I18nDataProvider;
 import com.company.tool.entity.CommonI18n;
 import com.company.tool.service.CommonI18nService;
+
+import io.github.jqdi.i18n.core.metadata.I18nFieldInfo;
+import io.github.jqdi.i18n.core.metadata.RelatedI18nValueMapping;
+import io.github.jqdi.i18n.core.provider.I18nDataProvider;
 
 /**
  * 通用国际化数据提供者（一张表存储所有的国际化翻译）

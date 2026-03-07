@@ -1,15 +1,14 @@
-package com.company.datasource.mybatisplus.plugins;
+package com.company.datasource.mybatis.plugins;
 
-import com.baomidou.mybatisplus.core.toolkit.SystemClock;
+import java.sql.Statement;
+import java.util.Properties;
+
 import org.apache.ibatis.executor.statement.StatementHandler;
 import org.apache.ibatis.logging.Log;
 import org.apache.ibatis.logging.LogFactory;
 import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.plugin.*;
 import org.apache.ibatis.session.ResultHandler;
-
-import java.sql.Statement;
-import java.util.Properties;
 
 /**
  * 打印SQL耗时
@@ -32,9 +31,9 @@ public class SummarySQLInterceptor implements Interceptor {
             sql = "获取sql语句失败";
         }
         // 计算执行 SQL 耗时
-        long start = SystemClock.now();
+        long start = System.currentTimeMillis();
         Object result = invocation.proceed();
-        long timing = SystemClock.now() - start;
+        long timing = System.currentTimeMillis() - start;
         logger.debug("|" + sql + "|" + timing);
         return result;
     }

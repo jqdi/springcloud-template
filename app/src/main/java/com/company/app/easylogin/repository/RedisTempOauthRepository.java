@@ -4,8 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.company.framework.cache.ICache;
-import com.jqdi.easylogin.core.model.BindAuthCode;
-import com.jqdi.easylogin.core.repository.OauthTempRepository;
+import io.github.jqdi.easylogin.core.model.BindAuthCode;
+import io.github.jqdi.easylogin.core.repository.OauthTempRepository;
 
 @Component
 public class RedisTempOauthRepository implements OauthTempRepository {
