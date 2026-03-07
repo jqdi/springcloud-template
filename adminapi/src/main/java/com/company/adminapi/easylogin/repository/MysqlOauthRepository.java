@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 import com.company.framework.globalresponse.ExceptionUtil;
 import com.company.system.api.feign.SysUserFeign;
 import com.company.system.api.response.SysUserResp;
-import com.jqdi.easylogin.core.repository.OauthRepository;
+import io.github.jqdi.easylogin.core.repository.OauthRepository;
 
 @Component
 public class MysqlOauthRepository implements OauthRepository {

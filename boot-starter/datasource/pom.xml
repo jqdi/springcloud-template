@@ -60,5 +60,13 @@
 		</dependency>
         <!-- 数据库 -->
 
+        <!-- mybatis-i18n字段国际化（https://github.com/jqdi/mybatis-i18n） -->
+        <dependency>
+            <groupId>io.github.jqdi</groupId>
+            <artifactId>mybatis-i18n-spring-boot-starter</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+        <!-- 数据库 -->
+
 	</dependencies>
 </project>

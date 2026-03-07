@@ -61,9 +61,9 @@
 		</dependency>
 		<!-- 认证框架 -->
         
-        <!-- 文件存储：来自https://gitee.com/jq_di/file-storage.git -->
+        <!-- 文件存储：来自https://github.com/jqdi/file-storage -->
         <dependency>
-			<groupId>com.jqdi</groupId>
+			<groupId>io.github.jqdi</groupId>
 			<artifactId>file-storage-spring-boot-starter</artifactId>
 			<version>2.0.0</version>
 		</dependency>

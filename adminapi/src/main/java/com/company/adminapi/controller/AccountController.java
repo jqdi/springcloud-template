@@ -27,12 +27,12 @@ import com.company.token.accesscontrol.annotation.RequireLogin;
 import com.company.tool.api.feign.VerifyCodeFeign;
 import com.company.tool.api.response.CaptchaResp;
 import com.google.common.collect.Maps;
-import com.jqdi.easylogin.core.LoginClient;
-import com.jqdi.easylogin.core.LoginParams;
-import com.jqdi.easylogin.core.exception.LoginException;
-import com.jqdi.easylogin.spring.boot.starter.LoginType;
 
 import cn.hutool.core.date.LocalDateTimeUtil;
+import io.github.jqdi.easylogin.core.LoginClient;
+import io.github.jqdi.easylogin.core.LoginParams;
+import io.github.jqdi.easylogin.core.exception.LoginException;
+import io.github.jqdi.easylogin.spring.boot.starter.LoginType;
 
 /**
  * 账户（验证码、登录、登出）

@@ -10,7 +10,7 @@ import com.company.user.api.request.UserInfoReq;
 import com.company.user.api.request.UserOauthReq;
 import com.company.user.api.response.UserInfoResp;
 import com.company.user.api.response.UserOauthResp;
-import com.jqdi.easylogin.core.repository.OauthRepository;
+import io.github.jqdi.easylogin.core.repository.OauthRepository;
 
 @Component
 public class MysqlOauthRepository implements OauthRepository {

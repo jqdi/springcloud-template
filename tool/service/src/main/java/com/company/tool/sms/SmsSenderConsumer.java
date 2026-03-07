@@ -20,8 +20,8 @@ import com.company.tool.service.SmsTaskDetailService;
 import com.company.tool.service.SmsTaskService;
 import com.company.tool.service.SmsTemplateService;
 import com.company.tool.service.SmsTypeTemplateConfigService;
-import com.jqdi.smssender.core.SendResponse;
-import com.jqdi.smssender.core.SmsSender;
+import io.github.jqdi.smssender.core.SendResponse;
+import io.github.jqdi.smssender.core.SmsSender;
 
 import cn.hutool.core.date.DateUtil;
 import lombok.extern.slf4j.Slf4j;

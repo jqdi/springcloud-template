@@ -36,11 +36,11 @@ import com.company.web.req.RegByMobileReq;
 import com.company.web.resp.LoginResp;
 import com.company.web.util.PassWordUtil;
 import com.google.common.collect.Maps;
-import com.jqdi.easylogin.core.LoginClient;
-import com.jqdi.easylogin.core.LoginParams;
-import com.jqdi.easylogin.core.exception.LoginException;
-import com.jqdi.easylogin.spring.boot.starter.LoginType;
 
+import io.github.jqdi.easylogin.core.LoginClient;
+import io.github.jqdi.easylogin.core.LoginParams;
+import io.github.jqdi.easylogin.core.exception.LoginException;
+import io.github.jqdi.easylogin.spring.boot.starter.LoginType;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j

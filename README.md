@@ -255,11 +255,12 @@ springcloud-template 开源软件遵循 [Apache 2.0 协议](https://www.apache.o
 
 ### 感谢
  - nacos: https://nacos.io/
- - 登录认证：https://gitee.com/jq_di/easy-login
+ - 登录认证：https://github.com/jqdi/easy-login
  - Sa-Token：https://sa-token.cc
- - 文件存储：https://gitee.com/jq_di/file-storage
- - 短信发送：https://gitee.com/jq_di/sms-sender
+ - 文件存储：https://github.com/jqdi/file-storage
+ - 短信发送：https://github.com/jqdi/sms-sender
  - Knife4j API文档：https://doc.xiaominfo.com
  - 动态数据源：https://gitee.com/baomidou/dynamic-datasource-spring-boot-starter
  - XXL-JOB：https://gitee.com/xuxueli0323/xxl-job
  - Graceful Response：https://doc.feiniaojin.com/graceful-response/home.html
+ - MyBatis 国际化：https://github.com/jqdi/mybatis-i18n
