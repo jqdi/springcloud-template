@@ -2,7 +2,7 @@ spring:
   config:
     import: classpath:bootstrap.yml # 在Spring Boot 2.7.x版本中，默认情况下，bootstrap.yml件不再被自动加载
   profiles:
-    include: gracefulresponse,developer,feign,resilience4j,sentinel,redis,rabbitmq,rocketmq,messagedriven,cachemanager,datasource,canal # 项目中增加配置application-*.yml可覆盖boot-starter-*的默认配置application-*.yml
+    include: gracefulresponse,developer,threadpool,feign,resilience4j,sentinel,redis,rabbitmq,rocketmq,messagedriven,cachemanager,datasource,canal # 项目中增加配置application-*.yml可覆盖boot-starter-*的默认配置application-*.yml
   main:
     allow-bean-definition-overriding: true
   mail:
@@ -21,11 +21,3 @@ spring:
 template:
   sequence:
     datacenterId: 1
-  threadpool:
-    corePoolSize: 10
-    maxPoolSize: 20
-    queueCapacity: 200
-    keepAliveSeconds: 60
-    threadNamePrefix: t-subTask-
-    waitForTasksToCompleteOnShutdown: true
-    awaitTerminationSeconds: 60

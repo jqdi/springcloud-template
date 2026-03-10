@@ -2,7 +2,7 @@ spring:
   config:
     import: classpath:bootstrap.yml # 在Spring Boot 2.7.x版本中，默认情况下，bootstrap.yml件不再被自动加载
   profiles:
-    include: gracefulresponse,developer,feign,resilience4j,sentinel,redis,rabbitmq,rocketmq,messagedriven,cachemanager,token,encryptbody
+    include: gracefulresponse,developer,threadpool,feign,resilience4j,sentinel,redis,rabbitmq,rocketmq,messagedriven,cachemanager,token,encryptbody
   main:
     allow-bean-definition-overriding: true
   messages:
@@ -21,14 +21,6 @@ spring:
 template:
   sequence:
     datacenterId: 3
-  threadpool:
-    corePoolSize: 10
-    maxPoolSize: 20
-    queueCapacity: 200
-    keepAliveSeconds: 60
-    threadNamePrefix: t-subTask-
-    waitForTasksToCompleteOnShutdown: true
-    awaitTerminationSeconds: 60
 
 easylogin:
   weixinApp:
