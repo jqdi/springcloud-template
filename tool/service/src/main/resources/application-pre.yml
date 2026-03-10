@@ -58,10 +58,3 @@ wx:
         token: 1111 #微信小程序消息服务器配置的token
         aesKey: 1111 #微信小程序消息服务器配置的EncodingAESKey
         msgDataFormat: JSON
-
-
-# 数据库表字段加密
-encrypt:
-  enable: true
-  key: 1vuttpsedhpo0hli
-  type: default
