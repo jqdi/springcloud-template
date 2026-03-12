@@ -19,7 +19,7 @@ public class AuditableModel<T extends Model<?>> extends Model<T> {
 
     // 创建人：插入时填充
     @TableField(fill = FieldFill.INSERT)
-    private Integer createBy;
+    private String createBy;
 
     // 更新时间：插入和更新时都填充
     @TableField(fill = FieldFill.INSERT_UPDATE)
@@ -27,7 +27,7 @@ public class AuditableModel<T extends Model<?>> extends Model<T> {
 
     // 更新人：插入和更新时都填充
     @TableField(fill = FieldFill.INSERT_UPDATE)
-    private Integer updateBy;
+    private String updateBy;
 
     public LocalDateTime getCreateTime() {
         return createTime;
@@ -37,11 +37,11 @@ public class AuditableModel<T extends Model<?>> extends Model<T> {
         this.createTime = createTime;
     }
 
-    public Integer getCreateBy() {
+    public String getCreateBy() {
         return createBy;
     }
 
-    public void setCreateBy(Integer createBy) {
+    public void setCreateBy(String createBy) {
         this.createBy = createBy;
     }
 
@@ -53,11 +53,11 @@ public class AuditableModel<T extends Model<?>> extends Model<T> {
         this.updateTime = updateTime;
     }
 
-    public Integer getUpdateBy() {
+    public String getUpdateBy() {
         return updateBy;
     }
 
-    public void setUpdateBy(Integer updateBy) {
+    public void setUpdateBy(String updateBy) {
         this.updateBy = updateBy;
     }
 

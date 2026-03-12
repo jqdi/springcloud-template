@@ -7,9 +7,9 @@ CREATE TABLE `app_info` (
 
   `remark` varchar(255) NOT NULL DEFAULT '' COMMENT '备注',
   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  `create_by` int(11) UNSIGNED NOT NULL DEFAULT 0 COMMENT '创建人',
+  `create_by` varchar(32) NOT NULL DEFAULT '' COMMENT '创建人',
   `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-  `update_by` int(11) UNSIGNED NOT NULL DEFAULT 0 COMMENT '更新人',
+  `update_by` varchar(32) NOT NULL DEFAULT '' COMMENT '更新人',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE KEY `uniq_appcode` (`app_code`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='APP信息';
