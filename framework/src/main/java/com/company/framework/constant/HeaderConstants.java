@@ -12,7 +12,7 @@ public interface HeaderConstants {
 
 	// 用户请求头（注：为了防止直接在header设置用户ID，绕过认证，要取最后1个值）
 	String HEADER_CURRENT_USER_ID = "x-current-user-id";// 当前登录用户id
-	String HEADER_CURRENT_USER_AUDIT = "x-current-user-audit";// 当前登录用户审计字段值
+	String HEADER_CURRENT_USER_AUDIT = "x-current-user-audit";// 当前登录用户审计
 
 	// 国际化语言切换
 	String ACCEPT_LANGUAGE = "Accept-Language";// 当前语言

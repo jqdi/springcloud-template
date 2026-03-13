@@ -48,8 +48,8 @@ public class HeaderContextUtil {
         return Optional.ofNullable(currentUserId()).map(Integer::valueOf).orElse(null);
     }
 
-    public static String currentUserType() {
-        return head(HeaderConstants.HEADER_CURRENT_USER_TYPE);
+    public static String currentUserAudit() {
+        return head(HeaderConstants.HEADER_CURRENT_USER_AUDIT);
     }
 
     public static String platform() {

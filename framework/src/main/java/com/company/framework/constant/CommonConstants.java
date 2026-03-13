@@ -15,6 +15,7 @@ public interface CommonConstants {
 		int SOURCE = 7;
 		int REQUEST = 10;
 		int TOKEN = 30;
+		int AUDIT_BY = 35;
 		int HEADER_CONTEXT = 40;// 优先级必须最低，才能将所有的请求头放到上下文
 	}
 
