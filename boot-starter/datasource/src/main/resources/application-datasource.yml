@@ -54,6 +54,11 @@ custom:
   username: root
   password: 12345678
   lazy: true # 是否懒加载数据源
+# 数据库表字段加密
+encrypt:
+  enable: false
+  key: ublp45r318fr4xr7
+  type: default
 
 ---
 # test环境配置
@@ -66,6 +71,11 @@ custom:
   username: root
   password: 12345678
   lazy: false # 是否懒加载数据源
+# 数据库表字段加密
+encrypt:
+  enable: true
+  key: ublp45r318fr4xr7
+  type: default
 
 ---
 # pre环境配置
@@ -78,6 +88,11 @@ custom:
   username: root
   password: 12345678
   lazy: false # 是否懒加载数据源
+# 数据库表字段加密
+encrypt:
+  enable: true
+  key: 1vuttpsedhpo0hli
+  type: default
 
 ---
 # prod环境配置
@@ -90,3 +105,8 @@ custom:
   username: root
   password: 12345678
   lazy: false # 是否懒加载数据源
+# 数据库表字段加密
+encrypt:
+  enable: true
+  key: zraxi5gpkwebsknm
+  type: default

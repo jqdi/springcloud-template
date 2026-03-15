@@ -7,7 +7,9 @@ CREATE TABLE `webhook_template` (
   `mentioned_mobile_list` varchar(255) NOT NULL DEFAULT '' COMMENT '英文逗号分，手机号列表，提醒手机号对应的群成员(@某个成员)，@all表示提醒所有人',
   `remark` varchar(255) DEFAULT NULL COMMENT '备注',
   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `create_by` varchar(32) NOT NULL DEFAULT '' COMMENT '创建人',
   `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `update_by` varchar(32) NOT NULL DEFAULT '' COMMENT '更新人',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE KEY `uniq_type` (`type`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='企微机器人模板';
@@ -26,7 +28,9 @@ CREATE TABLE `webhook_task` (
   `mentioned_mobile_list` varchar(255) NOT NULL DEFAULT '' COMMENT '英文逗号分，手机号列表，提醒手机号对应的群成员(@某个成员)，@all表示提醒所有人',
   `remark` varchar(255) DEFAULT NULL COMMENT '备注',
   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `create_by` varchar(32) NOT NULL DEFAULT '' COMMENT '创建人',
   `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `update_by` varchar(32) NOT NULL DEFAULT '' COMMENT '更新人',
   PRIMARY KEY (`id`) USING BTREE,
   KEY `idx_type` (`type`),
   KEY `idx_key` (`key`),

@@ -49,7 +49,7 @@
 		<dependency>
 			<groupId>com.baomidou</groupId>
 			<artifactId>dynamic-datasource-spring-boot-starter</artifactId>
-			<version>3.6.1</version>
+            <version>4.5.0</version>
 		</dependency>
 
 		<!-- mybatis-plus字段加密（https://github.com/panlicun/mybatisplus-database-encrypt-spring-boot-starter） -->

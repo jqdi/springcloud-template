@@ -4,27 +4,26 @@ public interface TokenService {
     /**
      * 生成token
      *
-     * @param userId 账号id
-     * @param device 登录设备类型
+     * @param tokenParams 账号id + 登录设备类型
      * @return token
      */
-    String generate(String userId, String device);
+    String generate(TokenParams tokenParams);
 
     /**
      * 失效token
      *
      * @param token token
-     * @return 登录设备类型
+     * @return tokenParams 账号id + 登录设备类型
      */
-    String invalid(String token);
+    TokenParams invalid(String token);
 
     /**
      * 检查token
      *
      * @param token token
-     * @return 账号id
+     * @return tokenParams 账号id + 登录设备类型
      */
-    String checkAndGet(String token);
+    TokenParams checkAndGet(String token);
 
     /**
      * 获取token名称

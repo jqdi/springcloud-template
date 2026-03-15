@@ -5,6 +5,7 @@ import java.util.Date;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 
+import com.company.token.TokenParams;
 import com.company.token.TokenService;
 import com.company.token.jsonwebtoken.util.TokenUtil;
 
@@ -35,7 +36,9 @@ public class JsonWebTokenService implements TokenService {
     }
 
     @Override
-    public String generate(String userId, String device) {
+    public String generate(TokenParams tokenParams) {
+        String userId = tokenParams.getUserId();
+        String device = tokenParams.getDevice();
         int amount = timeout;
         if (timeout == -1) {
             amount = Integer.MAX_VALUE;
@@ -49,7 +52,7 @@ public class JsonWebTokenService implements TokenService {
     }
 
     @Override
-    public String invalid(String token) {
+    public TokenParams invalid(String token) {
         if (StringUtils.isBlank(token)) {
             return null;
         }
@@ -66,11 +69,13 @@ public class JsonWebTokenService implements TokenService {
         if (claims == null) {
             return null;
         }
-        return claims.getAudience();
+        String userId = claims.getSubject();
+        String device = claims.getAudience();
+        return new TokenParams(userId, device);
     }
 
     @Override
-    public String checkAndGet(String token) {
+    public TokenParams checkAndGet(String token) {
         if (StringUtils.isBlank(token)) {
             return null;
         }
@@ -80,7 +85,11 @@ public class JsonWebTokenService implements TokenService {
             }
             token = token.substring(prefix.length() + TOKEN_CONNECTOR_CHAT.length());
         }
-        return TokenUtil.checkTokenAndGetSubject(token, secret);
+        String userId = TokenUtil.checkTokenAndGetSubject(token, secret);
+        Claims claims = TokenUtil.getClaims(token, secret);
+        log.info("claims:{}", claims);
+        String device = claims.getAudience();
+        return new TokenParams(userId, device);
     }
 
     @Override

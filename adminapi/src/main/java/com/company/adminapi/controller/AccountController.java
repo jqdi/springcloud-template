@@ -7,6 +7,8 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
+import com.company.framework.context.SpringContextUtil;
+import com.company.token.TokenParams;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -82,8 +84,9 @@ public class AccountController {
             ExceptionUtil.throwException(sysUserPasswordTipsResp.getPasswordTips());
         }
 
-		String device = "ADMIN"; // 此次登录的客户端设备类型, 用于[同端互斥登录]时指定此次登录的设备类型
-		String tokenValue = tokenService.generate(String.valueOf(sysUserId), device);
+		String device = SpringContextUtil.getProperty("spring.application.name"); // 此次登录的客户端设备类型, 用于[同端互斥登录]时指定此次登录的设备类型
+		TokenParams tokenParams = new TokenParams(String.valueOf(sysUserId), device);
+		String tokenValue = tokenService.generate(tokenParams);
 		if (StringUtils.isNoneBlank(tokenPrefix)) {
 			tokenValue = tokenPrefix + " " + tokenValue;
 		}

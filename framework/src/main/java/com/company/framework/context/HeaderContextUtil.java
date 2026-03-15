@@ -48,6 +48,10 @@ public class HeaderContextUtil {
         return Optional.ofNullable(currentUserId()).map(Integer::valueOf).orElse(null);
     }
 
+    public static String currentDevice() {
+        return head(HeaderConstants.HEADER_CURRENT_DEVICE);
+    }
+
     public static String platform() {
         return head(HeaderConstants.HEADER_PLATFORM);
     }

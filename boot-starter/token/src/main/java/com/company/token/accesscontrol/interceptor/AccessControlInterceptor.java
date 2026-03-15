@@ -1,10 +1,12 @@
 package com.company.token.accesscontrol.interceptor;
 
 import java.lang.reflect.Method;
+import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.company.token.TokenParams;
 import com.company.token.accesscontrol.handler.UnauthorizedHandler;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.annotation.AnnotationUtils;
@@ -55,7 +57,8 @@ public class AccessControlInterceptor implements AsyncHandlerInterceptor {
 
         String userId = null;
         if (StringUtils.isNotBlank(token)) {
-            userId = tokenService.checkAndGet(token);
+            TokenParams tokenParams = tokenService.checkAndGet(token);
+            userId = Optional.ofNullable(tokenParams).map(TokenParams::getUserId).orElse(null);
         }
         if (StringUtils.isNotBlank(userId)) {
             return true;

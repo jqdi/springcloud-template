@@ -5,7 +5,9 @@ CREATE TABLE `sms_type_template_config` (
   `template_code` varchar(32) NOT NULL COMMENT '模板编码',
   `remark` varchar(255) DEFAULT NULL COMMENT '备注',
   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `create_by` varchar(32) NOT NULL DEFAULT '' COMMENT '创建人',
   `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `update_by` varchar(32) NOT NULL DEFAULT '' COMMENT '更新人',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE KEY `uniq_type_channel` (`type`,`channel`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='短信业务-模板配置';
@@ -18,7 +20,7 @@ CREATE TABLE `sms_type_template_config` (
 -- INSERT INTO `sms_type_template_config` (`id`, `type`, `channel`, `template_code`, `remark`, `create_time`, `update_time`) VALUES ('5', 'market', 'tencent', 'SMS_213693663', NULL, '2023-05-28 14:55:29', '2023-05-28 15:39:24');
 -- INSERT INTO `sms_type_template_config` (`id`, `type`, `channel`, `template_code`, `remark`, `create_time`, `update_time`) VALUES ('6', 'market', 'log', 'LOG_213222122', NULL, '2023-05-28 14:55:58', '2023-06-23 16:25:46');
 -- INSERT INTO `sms_type_template_config` (`id`, `type`, `channel`, `template_code`, `remark`, `create_time`, `update_time`) VALUES ('8', 'verifycode', 'qiniu', 'SMS_213693132', '', '2023-05-28 14:55:58', '2023-06-23 14:46:05');
--- 
+--
 
 CREATE TABLE `sms_template` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT 'id',
@@ -27,7 +29,9 @@ CREATE TABLE `sms_template` (
   `template_content` varchar(255) DEFAULT NULL COMMENT '模板内容',
   `remark` varchar(255) DEFAULT NULL COMMENT '备注',
   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `create_by` varchar(32) NOT NULL DEFAULT '' COMMENT '创建人',
   `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `update_by` varchar(32) NOT NULL DEFAULT '' COMMENT '更新人',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE KEY `uniq_channel_templatecode` (`channel`,`template_code`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='短信模板';
@@ -41,7 +45,7 @@ CREATE TABLE `sms_template` (
 -- INSERT INTO `sms_template` (`id`, `channel`, `template_code`, `template_content`, `remark`, `create_time`, `update_time`) VALUES ('9', 'qiniu', 'SMS_213691555', '没赶上618？七牛云年中大促，狂欢到月底！存储秒杀低至0.001元/G，云主机0元抢，另有多款产品5折起，每日限量购，手慢无！https://dwz.cn/VjNhsExH', '营销短信', '2023-05-13 19:28:04', '2023-06-23 14:45:19');
 -- INSERT INTO `sms_template` (`id`, `channel`, `template_code`, `template_content`, `remark`, `create_time`, `update_time`) VALUES ('10', 'baidu', 'sms-tmpl-wHoJXL09355', '您的验证码是${code},将在${minutes}分钟后失效。', '验证码短信', '2023-05-13 19:28:04', '2023-06-23 14:48:43');
 -- INSERT INTO `sms_template` (`id`, `channel`, `template_code`, `template_content`, `remark`, `create_time`, `update_time`) VALUES ('15', 'log', 'LOG_213222122', 'XXX活动开始啦，快来参加版！退订回T', '营销短信', '2023-05-13 19:28:04', '2023-06-23 16:26:26');
--- 
+--
 
 CREATE TABLE `sms_task` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT 'id',
@@ -50,7 +54,9 @@ CREATE TABLE `sms_task` (
   `over_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '超时取消发送时间',
   `remark` varchar(255) DEFAULT NULL COMMENT '备注',
   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `create_by` varchar(32) NOT NULL DEFAULT '' COMMENT '创建人',
   `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `update_by` varchar(32) NOT NULL DEFAULT '' COMMENT '更新人',
   PRIMARY KEY (`id`) USING BTREE,
   KEY `idx_type` (`type`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='短信发送任务';
@@ -66,7 +72,9 @@ CREATE TABLE `sms_task_detail` (
   `content` varchar(255) DEFAULT NULL COMMENT '短信内容',
   `remark` varchar(255) DEFAULT NULL COMMENT '备注',
   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `create_by` varchar(32) NOT NULL DEFAULT '' COMMENT '创建人',
   `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `update_by` varchar(32) NOT NULL DEFAULT '' COMMENT '更新人',
   PRIMARY KEY (`id`) USING BTREE,
   KEY `idx_taskid` (`task_id`),
   KEY `idx_mobile` (`mobile`),
@@ -87,7 +95,9 @@ CREATE TABLE `sms_record` (
   `request_id` varchar(64) DEFAULT NULL COMMENT '请求ID',
   `remark` varchar(255) DEFAULT NULL COMMENT '备注',
   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `create_by` varchar(32) NOT NULL DEFAULT '' COMMENT '创建人',
   `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `update_by` varchar(32) NOT NULL DEFAULT '' COMMENT '更新人',
   PRIMARY KEY (`id`) USING BTREE,
   KEY `idx_mobile` (`mobile`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='短信发送记录';

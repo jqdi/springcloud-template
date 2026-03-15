@@ -5,6 +5,8 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.company.framework.context.SpringContextUtil;
+import com.company.token.TokenParams;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -35,7 +37,8 @@ public class SaTokenController {
 
     @GetMapping(value = "/generate")
     public Map<String, String> generate() {
-        String token = tokenService.generate("1", "web");
+		TokenParams tokenParams = new TokenParams("1", SpringContextUtil.getProperty("spring.application.name"));
+		String token = tokenService.generate(tokenParams);
         return Collections.singletonMap("value", token);
     }
 
@@ -46,8 +49,11 @@ public class SaTokenController {
         if (StringUtils.isBlank(token)) {
             return Collections.singletonMap("value", "登出成功");
         }
-        String userId = tokenService.checkAndGet(token);
-        return Collections.singletonMap("value", userId);
+        TokenParams tokenParams = tokenService.checkAndGet(token);
+        if (tokenParams == null) {
+            return Collections.singletonMap("value", "登出成功");
+        }
+		return Collections.singletonMap("value", tokenParams.getUserId());
     }
 
     @RequireLogin
@@ -58,8 +64,11 @@ public class SaTokenController {
             return Collections.singletonMap("value", "登出成功");
         }
 
-        String device = tokenService.invalid(token);
-        return Collections.singletonMap("value", device);
+		TokenParams tokenParams = tokenService.invalid(token);
+		if (tokenParams == null) {
+			return Collections.singletonMap("value", "登出成功");
+		}
+        return Collections.singletonMap("value", tokenParams.getDevice());
     }
 
 	@PostMapping(value = "/cookie/login")
@@ -69,18 +78,18 @@ public class SaTokenController {
 		// 小程序微信授权(根据code找到openid或unionid)
 //		WxMaJscode2SessionResult session = wxService.getUserService().getSessionInfo(code);
 		// APP微信授权(根据code找到openid或unionid)
-		
+
 		String userId = "83848";
 		StpUtil.login(userId);
 //		StpUtil.getTokenSession().set(key, value);
 		SaTokenInfo tokenInfo = StpUtil.getTokenInfo();
 		return tokenInfo;
 	}
-	
+
 	@RequireLogin
 	@GetMapping(value = "/cookie/check")
 	public String check() {
-		
+
 		String msg = "状态正常";
 		try {
 			// 获取当前会话账号id, 如果未登录，则抛出异常：`NotLoginException`
@@ -102,14 +111,14 @@ public class SaTokenController {
 		}
 		return msg;
 	}
-	
+
 	@RequireLogin
 	@PostMapping(value = "/cookie/logout")
 	public String logout(@RequestBody Map<String, Object> param) {
 		StpUtil.logout();
 		return "注销成功";
 	}
-	
+
 	@PostMapping(value = "/jwt/login")
 	public String jwtlogin(@RequestBody Map<String, Object> param) {
 		// 手机号+验证码
@@ -117,7 +126,7 @@ public class SaTokenController {
 		// 小程序微信授权(根据code找到openid或unionid)
 //		WxMaJscode2SessionResult session = wxService.getUserService().getSessionInfo(code);
 		// APP微信授权(根据code找到openid或unionid)
-		
+
 		String userId = "83848";
 		StpUtil.login(userId);
 		SaTokenInfo tokenInfo = StpUtil.getTokenInfo();
@@ -125,11 +134,11 @@ public class SaTokenController {
 		System.out.println("getTokenValue():"+tokenInfo.getTokenValue());
 		return tokenInfo.getTokenValue();
 	}
-	
+
 	@RequireLogin
 	@GetMapping(value = "/jwt/check")
 	public String jwtcheck() {
-		
+
 		String msg = "状态正常";
 		try {
 			// 获取当前会话账号id, 如果未登录，则抛出异常：`NotLoginException`
@@ -150,7 +159,7 @@ public class SaTokenController {
 		}
 		return msg;
 	}
-	
+
 	@RequireLogin
 	@PostMapping(value = "/jwt/logout")
 	public String jwtlogout(@RequestBody Map<String, Object> param) {

@@ -1,5 +1,6 @@
 package com.company.token.satoken;
 
+import com.company.token.TokenParams;
 import org.apache.commons.lang3.StringUtils;
 
 import com.company.token.TokenService;
@@ -21,7 +22,9 @@ public class SaTokenService implements TokenService {
     }
 
     @Override
-    public String generate(String userId, String device) {
+    public String generate(TokenParams tokenParams) {
+        String userId = tokenParams.getUserId();
+        String device = tokenParams.getDevice();
         stpLogic.login(userId, device);// 可以做到同端互斥登录
         String token = stpLogic.getTokenValueNotCut();
         log.info("userId:{},device:{},token:{}", userId, device, token);
@@ -29,7 +32,7 @@ public class SaTokenService implements TokenService {
     }
 
 	@Override
-	public String invalid(String token) {
+	public TokenParams invalid(String token) {
         if (StringUtils.isBlank(token)) {
             return null;
         }
@@ -37,25 +40,31 @@ public class SaTokenService implements TokenService {
         SaTokenInfo tokenInfo = stpLogic.getTokenInfo();
         log.info("tokenInfo:{}", tokenInfo);
         try {
+            // 先获取登录信息，再失效token；反之，token失效后，获取登录信息会抛出NotLoginException异常
+            String userId = stpLogic.getLoginIdAsString();
+            String device = stpLogic.getLoginDeviceType();
+
             StpUtil.logout();
+            return new TokenParams(userId, device);
         } catch (ApiDisabledException e) {
             // log.error("ApiDisabledException", e);
             log.warn("ApiDisabledException:{}", e.getMessage());
         } catch (NotLoginException e) {
             log.error("NotLoginException:{},{},{}", e.getType(), e.getLoginType(), e.getMessage(), e);
-            return null;
         }
-		return tokenInfo.getLoginDeviceType();
+        return null;
 	}
 
     @Override
-    public String checkAndGet(String token) {
+    public TokenParams checkAndGet(String token) {
         if (StringUtils.isBlank(token)) {
             return null;
         }
 
 		try {
-			return stpLogic.getLoginIdAsString();
+            String userId = stpLogic.getLoginIdAsString();
+            String device = stpLogic.getLoginDeviceType();
+            return new TokenParams(userId, device);
 		} catch (NotLoginException e) {
 			log.error("NotLoginException:{},{},{}", e.getType(), e.getLoginType(), e.getMessage(), e);
 			return null;

@@ -9,6 +9,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 
+import com.company.framework.context.SpringContextUtil;
+import com.company.token.TokenParams;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -129,9 +131,9 @@ public class AccountController {
 	}
 
 	private String token(String userId) {
-		String device = "APP"; // 此次登录的客户端设备类型, 用于[同端互斥登录]时指定此次登录的设备类型
-
-		String tokenValue = tokenService.generate(userId, device);
+		String device = SpringContextUtil.getProperty("spring.application.name"); // 此次登录的客户端设备类型, 用于[同端互斥登录]时指定此次登录的设备类型
+		TokenParams tokenParams = new TokenParams(userId, device);
+		String tokenValue = tokenService.generate(tokenParams);
 		if (StringUtils.isNoneBlank(tokenPrefix)) {
 			tokenValue = tokenPrefix + " " + tokenValue;
 		}
@@ -155,12 +157,17 @@ public class AccountController {
             return Collections.singletonMap("value", "登出成功");
 		}
 
-		String device = tokenService.invalid(token);
+        TokenParams tokenParams = tokenService.invalid(token);
+        if (tokenParams == null) {
+            return Collections.singletonMap("value", "登出成功");
+        }
+		String userId = tokenParams.getUserId();
+		String device = tokenParams.getDevice();
 
 		// 发布登出事件
 		Map<String, Object> params = Maps.newHashMap();
 		params.put("device", device);
-		params.put("userId", HeaderContextUtil.currentUserId());
+		params.put("userId", userId);
 		params.put("httpContextHeader", HeaderContextUtil.httpContextHeader());
 		params.put("time", LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
 		messageSender.sendBroadcastMessage(params, BroadcastConstants.USER_LOGOUT.EXCHANGE);

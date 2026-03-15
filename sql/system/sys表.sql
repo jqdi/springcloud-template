@@ -10,9 +10,9 @@ CREATE TABLE `sys_config`  (
   `config_remark` varchar(255) NOT NULL DEFAULT '' COMMENT '参数备注',
   `remark` varchar(255) NOT NULL DEFAULT '' COMMENT '备注',
   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  `create_by` int(11) UNSIGNED NOT NULL DEFAULT 0 COMMENT '创建人',
+  `create_by` varchar(32) NOT NULL DEFAULT '' COMMENT '创建人',
   `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-  `update_by` int(11) UNSIGNED NOT NULL DEFAULT 0 COMMENT '更新人',
+  `update_by` varchar(32) NOT NULL DEFAULT '' COMMENT '更新人',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `uniq_code`(`code`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COMMENT = '参数配置表';
@@ -30,9 +30,9 @@ CREATE TABLE `sys_dept`  (
   `status` varchar(8) NOT NULL DEFAULT '' COMMENT '部门状态(ON:正常,OFF:停用)',
   `remark` varchar(255) NOT NULL DEFAULT '' COMMENT '备注',
   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  `create_by` int(11) UNSIGNED NOT NULL DEFAULT 0 COMMENT '创建人',
+  `create_by` varchar(32) NOT NULL DEFAULT '' COMMENT '创建人',
   `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-  `update_by` int(11) UNSIGNED NOT NULL DEFAULT 0 COMMENT '更新人',
+  `update_by` varchar(32) NOT NULL DEFAULT '' COMMENT '更新人',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COMMENT = '部门表';
 
@@ -51,9 +51,9 @@ CREATE TABLE `sys_dict_data`  (
   `dict_remark` varchar(255) NOT NULL DEFAULT '' COMMENT '字典备注',
   `remark` varchar(255) NOT NULL DEFAULT '' COMMENT '备注',
   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  `create_by` int(11) UNSIGNED NOT NULL DEFAULT 0 COMMENT '创建人',
+  `create_by` varchar(32) NOT NULL DEFAULT '' COMMENT '创建人',
   `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-  `update_by` int(11) UNSIGNED NOT NULL DEFAULT 0 COMMENT '更新人',
+  `update_by` varchar(32) NOT NULL DEFAULT '' COMMENT '更新人',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `uniq_dicttype_dictcode`(`dict_type`, `dict_code`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COMMENT = '字典数据表';
@@ -70,9 +70,9 @@ CREATE TABLE `sys_dict_type`  (
   `dict_remark` varchar(255) NOT NULL DEFAULT '' COMMENT '字典备注',
   `remark` varchar(255) NOT NULL DEFAULT '' COMMENT '备注',
   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  `create_by` int(11) UNSIGNED NOT NULL DEFAULT 0 COMMENT '创建人',
+  `create_by` varchar(32) NOT NULL DEFAULT '' COMMENT '创建人',
   `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-  `update_by` int(11) UNSIGNED NOT NULL DEFAULT 0 COMMENT '更新人',
+  `update_by` varchar(32) NOT NULL DEFAULT '' COMMENT '更新人',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `uniq_dicttype`(`dict_type`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COMMENT = '字典类型表';
@@ -123,9 +123,9 @@ CREATE TABLE `sys_menu`  (
   `perms` varchar(128) NOT NULL DEFAULT '' COMMENT '权限标识',
   `remark` varchar(255) NOT NULL DEFAULT '' COMMENT '备注',
   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  `create_by` int(11) UNSIGNED NOT NULL DEFAULT 0 COMMENT '创建人',
+  `create_by` varchar(32) NOT NULL DEFAULT '' COMMENT '创建人',
   `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-  `update_by` int(11) UNSIGNED NOT NULL DEFAULT 0 COMMENT '更新人',
+  `update_by` varchar(32) NOT NULL DEFAULT '' COMMENT '更新人',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COMMENT = '菜单权限表';
 
@@ -151,9 +151,9 @@ CREATE TABLE `sys_oper_log`  (
   `oper_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '操作时间',
   `remark` varchar(255) NOT NULL DEFAULT '' COMMENT '备注',
   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  `create_by` int(11) UNSIGNED NOT NULL DEFAULT 0 COMMENT '创建人',
+  `create_by` varchar(32) NOT NULL DEFAULT '' COMMENT '创建人',
   `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-  `update_by` int(11) UNSIGNED NOT NULL DEFAULT 0 COMMENT '更新人',
+  `update_by` varchar(32) NOT NULL DEFAULT '' COMMENT '更新人',
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `idx_businesstype`(`business_type`) USING BTREE,
   INDEX `idx_status`(`status`) USING BTREE,
@@ -174,9 +174,9 @@ CREATE TABLE `sys_role`  (
   `role_remark` varchar(255) NOT NULL DEFAULT '' COMMENT '角色备注',
   `remark` varchar(255) NOT NULL DEFAULT '' COMMENT '备注',
   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  `create_by` int(11) UNSIGNED NOT NULL DEFAULT 0 COMMENT '创建人',
+  `create_by` varchar(32) NOT NULL DEFAULT '' COMMENT '创建人',
   `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-  `update_by` int(11) UNSIGNED NOT NULL DEFAULT 0 COMMENT '更新人',
+  `update_by` varchar(32) NOT NULL DEFAULT '' COMMENT '更新人',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COMMENT = '角色信息表';
 
@@ -227,9 +227,9 @@ CREATE TABLE `sys_user`  (
   `user_remark` varchar(255) NOT NULL DEFAULT '' COMMENT '用户备注',
   `remark` varchar(255) NOT NULL DEFAULT '' COMMENT '备注',
   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  `create_by` int(11) UNSIGNED NOT NULL DEFAULT 0 COMMENT '创建人',
+  `create_by` varchar(32) NOT NULL DEFAULT '' COMMENT '创建人',
   `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-  `update_by` int(11) UNSIGNED NOT NULL DEFAULT 0 COMMENT '更新人',
+  `update_by` varchar(32) NOT NULL DEFAULT '' COMMENT '更新人',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `uniq_account`(`account`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COMMENT = '用户信息表';

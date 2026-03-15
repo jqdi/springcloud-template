@@ -1,4 +1,3 @@
-
 DROP TABLE IF EXISTS `popup_pop_condition`;
 CREATE TABLE `popup_pop_condition` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT 'ID',
@@ -8,9 +7,9 @@ CREATE TABLE `popup_pop_condition` (
   `sort` int(4) NOT NULL DEFAULT '0' COMMENT '排序',
   `remark` varchar(255) DEFAULT NULL COMMENT '备注',
   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `create_by` varchar(32) NOT NULL DEFAULT '' COMMENT '创建人',
   `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-  `create_by` varchar(64) DEFAULT '' COMMENT '创建者',
-  `update_by` varchar(64) DEFAULT '' COMMENT '更新者',
+  `update_by` varchar(32) NOT NULL DEFAULT '' COMMENT '更新人',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE KEY `uniq_beanname` (`bean_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='弹窗条件';
@@ -54,7 +53,6 @@ INSERT INTO `popup`(`id`, `begin_time`, `end_time`, `status`, `priority`, `title
 INSERT INTO `popup`(`id`, `begin_time`, `end_time`, `status`, `priority`, `title`, `text`, `bg_img`, `close_btn`, `remark`, `create_time`, `update_time`) VALUES (11, '2023-12-05 16:12:23', '2024-01-02 16:12:23', 'on', 828, '新人有礼', '欢迎注册！！！', '{\"imgUrl\":\"https://images.domain.com/aaa/bbb.jpg\",\"type\":\"redirct\",\"value\":\"/page/aaa/bbb?userId={userId}\"}', '{\"type\":\"close\",\"text\":\"X\",\"value\":\"\"}', '', '2023-09-04 16:13:27', '2023-09-04 16:13:27');
 
 
-
 DROP TABLE IF EXISTS `popup_condition`;
 CREATE TABLE `popup_condition` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT 'ID',
@@ -73,7 +71,6 @@ INSERT INTO `template`.`popup_condition`(`id`, `popup_id`, `pop_condition`, `pop
 INSERT INTO `template`.`popup_condition`(`id`, `popup_id`, `pop_condition`, `pop_condition_value`, `remark`, `create_time`, `update_time`) VALUES (2, 3, 'PushAreaCondition', '{\"areaCodes\":\"0\"}', '', '2023-09-04 11:41:12', '2023-09-04 11:41:42');
 INSERT INTO `template`.`popup_condition`(`id`, `popup_id`, `pop_condition`, `pop_condition_value`, `remark`, `create_time`, `update_time`) VALUES (12205, 10, 'PushAreaCondition', '{\"areaCodes\":\"0\"}', '', '2023-09-04 16:13:27', '2023-09-04 16:13:27');
 INSERT INTO `template`.`popup_condition`(`id`, `popup_id`, `pop_condition`, `pop_condition_value`, `remark`, `create_time`, `update_time`) VALUES (12206, 11, 'PushAreaCondition', '{\"areaCodes\":\"0\"}', '', '2023-09-04 16:13:27', '2023-09-04 16:13:27');
-
 
 
 DROP TABLE IF EXISTS `user_popup`;

@@ -7,9 +7,9 @@ CREATE TABLE `common_i18n` (
   `i18n_text` text COMMENT '国际化文案',
   `remark` varchar(255) NOT NULL DEFAULT '' COMMENT '备注',
   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  `create_by` int unsigned NOT NULL DEFAULT '0' COMMENT '创建人',
+  `create_by` varchar(32) NOT NULL DEFAULT '' COMMENT '创建人',
   `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-  `update_by` int unsigned NOT NULL DEFAULT '0' COMMENT '更新人',
+  `update_by` varchar(32) NOT NULL DEFAULT '' COMMENT '更新人',
   PRIMARY KEY (`id`),
   UNIQUE KEY `uniq_businessid_businesstype_locale` (`business_id`,`business_type`,`locale`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='通用国际化';
@@ -26,9 +26,9 @@ CREATE TABLE `banner_i18n` (
   `title` varchar(32) NOT NULL DEFAULT '' COMMENT '标题',
   `remark` varchar(255) NOT NULL DEFAULT '' COMMENT '备注',
   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  `create_by` int(11) UNSIGNED NOT NULL DEFAULT 0 COMMENT '创建人',
+  `create_by` varchar(32) NOT NULL DEFAULT '' COMMENT '创建人',
   `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-  `update_by` int(11) UNSIGNED NOT NULL DEFAULT 0 COMMENT '更新人',
+  `update_by` varchar(32) NOT NULL DEFAULT '' COMMENT '更新人',
   PRIMARY KEY (`id`),
   UNIQUE KEY `uniq_bannerid_locale` (`banner_id`,`locale`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='轮播图-国际化';
@@ -45,11 +45,12 @@ CREATE TABLE `app_version_i18n` (
   `release_notes` text COMMENT '发布说明',
   `remark` varchar(255) NOT NULL DEFAULT '' COMMENT '备注',
   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  `create_by` int(11) UNSIGNED NOT NULL DEFAULT 0 COMMENT '创建人',
+  `create_by` varchar(32) NOT NULL DEFAULT '' COMMENT '创建人',
   `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-  `update_by` int(11) UNSIGNED NOT NULL DEFAULT 0 COMMENT '更新人',
+  `update_by` varchar(32) NOT NULL DEFAULT '' COMMENT '更新人',
   PRIMARY KEY (`id`),
   UNIQUE KEY `uniq_appversionid_locale` (`app_version_id`,`locale`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='APP版本-国际化';
 
 INSERT INTO `app_version_i18n` (`id`, `app_version_id`, `locale`, `release_notes`, `remark`, `create_time`, `create_by`, `update_time`, `update_by`) VALUES (1, 4, 'en-US', 'Major bugs in version 1.0.0 have been fixed, and version 1.0.0 is no longer supported', '', '2026-02-11 17:47:56', 1, '2026-02-11 17:50:14', 1);
+

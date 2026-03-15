@@ -11,9 +11,3 @@ template:
     message-driven: rocketmq # springevent:spring事件,rabbitmq:RabbitMQ消息队列,rocketmq:RocketMQ消息队列,redis:redis消息队列
   sqllimit:
     max: 9999
-
-# 数据库表字段加密
-encrypt:
-  enable: true
-  key: zraxi5gpkwebsknm
-  type: default

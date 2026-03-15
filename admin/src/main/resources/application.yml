@@ -2,7 +2,7 @@ spring:
   config:
     import: classpath:bootstrap.yml # 在Spring Boot 2.7.x版本中，默认情况下，bootstrap.yml件不再被自动加载
   profiles:
-    include: gracefulresponse,developer,redis,rabbitmq,rocketmq,messagedriven,cachemanager,datasource # 项目中增加配置application-*.yml可覆盖boot-starter-*,framework的默认配置application-*.yml
+    include: gracefulresponse,developer,threadpool,redis,rabbitmq,rocketmq,messagedriven,cachemanager,datasource # 项目中增加配置application-*.yml可覆盖boot-starter-*,framework的默认配置application-*.yml
   main:
     allow-bean-definition-overriding: true
   resources:
@@ -33,14 +33,6 @@ mybatis-plus:
       id-type: 0
 
 template:
-  threadpool:
-    corePoolSize: 10
-    maxPoolSize: 20
-    queueCapacity: 200
-    keepAliveSeconds: 60
-    threadNamePrefix: t-subTask-
-    waitForTasksToCompleteOnShutdown: true
-    awaitTerminationSeconds: 60
   requestFilter:
     # 忽略日志打印匹配表达式，支持?匹配单个字符，*匹配多个字符
     ignoreLogPatterns: /assets/*,/favicon.ico
