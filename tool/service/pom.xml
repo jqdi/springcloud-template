@@ -124,6 +124,28 @@
             <version>${boot-starter-datasource.version}</version>
         </dependency>
 
+        <!-- 重试 -->
+        <!--Memory Retry-->
+        <!--
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>easy-retry-memory-starter</artifactId>
+            <version>1.0.3</version>
+        </dependency>
+        -->
+        <!--Mybatis Retry-->
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>easy-retry-mybatis-starter</artifactId>
+            <version>1.0.3</version>
+        </dependency>
+        <dependency>
+            <groupId>com.caucho</groupId>
+            <artifactId>hessian</artifactId>
+            <version>4.0.60</version>
+        </dependency>
+        <!-- 重试 -->
+
 	</dependencies>
 	<build>
 		<plugins>

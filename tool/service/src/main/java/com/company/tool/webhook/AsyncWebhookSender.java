@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import com.alibaba.easyretry.extension.spring.aop.EasyRetryable;
 import com.company.framework.messagedriven.properties.MessagedrivenProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -80,7 +81,8 @@ public class AsyncWebhookSender {
 	}
 
 	/* 定时任务轮询 */
-	public List<Integer> select4PreTimeSend(int limit) {
+    @EasyRetryable
+	public List<Integer> select4PreTimeSend(Integer limit) {
 		List<Integer> webhookTaskIdList = webhookTaskService.select4PreTimeSend(WebhookTaskEnum.Status.PRE_TIME_SEND,
 				limit);
 		return webhookTaskIdList;
