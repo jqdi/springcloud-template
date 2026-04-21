@@ -3,11 +3,13 @@ package com.company.framework.globalresponse.gracefulresponse.extend.process;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.ValidationException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
+import org.springframework.validation.BindException;
 
 import com.feiniaojin.gracefulresponse.ExceptionAliasRegister;
 import com.feiniaojin.gracefulresponse.GracefulResponseException;
@@ -38,7 +40,8 @@ public class CustomBeforeControllerAdviceProcessImpl implements BeforeController
         Class<? extends Exception> clazz = ex.getClass();
         ExceptionAliasFor exceptionAliasFor = exceptionAliasRegister.getExceptionAliasFor(clazz);
         ExceptionMapper exceptionMapper = clazz.getAnnotation(ExceptionMapper.class);
-        if (!(ex instanceof GracefulResponseException || exceptionAliasFor != null || exceptionMapper != null)) {
+        if (!(ex instanceof GracefulResponseException || ex instanceof BindException || ex instanceof ValidationException
+            || exceptionAliasFor != null || exceptionMapper != null)) {
             // 如果不是GracefulResponseException，则直接打印错误堆栈，方便排查问题
             logger.error("捕获到未知异常,message=[{}]", ex.getMessage(), ex);
             return;
