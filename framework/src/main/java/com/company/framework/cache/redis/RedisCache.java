@@ -2,7 +2,7 @@ package com.company.framework.cache.redis;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.locks.Lock;
 
 import org.springframework.data.redis.connection.PoolException;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -10,6 +10,7 @@ import org.springframework.data.redis.core.ValueOperations;
 
 import com.company.framework.cache.ICache;
 import com.company.framework.cache.exception.ValueRetrievalException;
+import com.google.common.util.concurrent.Striped;
 
 import io.lettuce.core.RedisException;
 
@@ -19,7 +20,7 @@ import io.lettuce.core.RedisException;
 public class RedisCache implements ICache {
 	private static final String NULL_VALUE = "null";// 缓存空值
 
-	private ReentrantLock lock4cache = new ReentrantLock();// 好实现应该根据key来加锁
+    private Striped<Lock> stripedLock = Striped.lock(16);// 分段锁，减少锁竞争
 
 	private StringRedisTemplate stringRedisTemplate;
 
@@ -59,6 +60,8 @@ public class RedisCache implements ICache {
 			}
 
 			// redis没有问题的情况下，加载数据需要做同步操作，防止大量请求执行valueLoader获取数据
+
+            Lock lock4cache = stripedLock.get(key);
 			try {
 				lock4cache.lock();
 				value = opsForValue.get(key);
