@@ -112,6 +112,7 @@ public class HttpContextUtil {
 			lastCurrentUserId = headerEnum.nextElement();
 		}
 		headers.put(HeaderConstants.HEADER_CURRENT_USER_ID, lastCurrentUserId);
+		headers.put(HeaderConstants.HEADER_CURRENT_DEVICE, request.getHeader(HeaderConstants.HEADER_CURRENT_DEVICE));
 
 		headers.put(HeaderConstants.ACCEPT_LANGUAGE, request.getHeader(HeaderConstants.ACCEPT_LANGUAGE));
 		headers.put(HeaderConstants.TRACE_ID, request.getHeader(HeaderConstants.TRACE_ID));

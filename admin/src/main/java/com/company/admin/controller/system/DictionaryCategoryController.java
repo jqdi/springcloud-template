@@ -4,7 +4,7 @@ package com.company.admin.controller.system;
 
 import com.company.admin.service.system.DictionaryCategoryService;
 import com.company.admin.service.system.DictionaryService;
-import com.company.common.api.Result;
+
 import com.company.admin.entity.system.Dictionary;
 import com.company.admin.entity.system.DictionaryCategory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,16 +45,16 @@ public class DictionaryCategoryController {
 
     @PostMapping("/save")
     @ResponseBody
-    public Result<?> save(@Validated(DictionaryCategory.Save.class) DictionaryCategory dictionaryCategory) {
+    public Void save(@Validated(DictionaryCategory.Save.class) DictionaryCategory dictionaryCategory) {
         dictionaryCategoryService.save(dictionaryCategory);
-        return Result.success();
+        return null;
     }
 
     @RequestMapping("/remove")
     @ResponseBody
-    public Result<?> delete(@NotNull Long id) {
+    public Void delete(@NotNull Long id) {
         dictionaryCategoryService.deleteById(id);
-        return Result.success();
+        return null;
     }
 
     @RequestMapping("/get")
@@ -70,15 +70,15 @@ public class DictionaryCategoryController {
 
     @PostMapping("/update")
     @ResponseBody
-    public Result<?> update(@Validated(DictionaryCategory.Update.class) DictionaryCategory dictionaryCategory) {
+    public Void update(@Validated(DictionaryCategory.Update.class) DictionaryCategory dictionaryCategory) {
         dictionaryCategoryService.update(dictionaryCategory);
-        return Result.success();
+        return null;
     }
 
     @RequestMapping("/lock/update")
     @ResponseBody
-    public Result<?> updateLock(@NotNull Long id) {
+    public Void updateLock(@NotNull Long id) {
         dictionaryCategoryService.updateLock(id);
-        return Result.success();
+        return null;
     }
 }

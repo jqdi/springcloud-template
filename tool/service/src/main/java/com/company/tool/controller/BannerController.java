@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.company.common.api.Result;
+
 import com.company.framework.context.HeaderContextUtil;
 import com.company.tool.api.feign.BannerFeign;
 import com.company.tool.api.request.BannerReq;
@@ -25,7 +25,7 @@ public class BannerController implements BannerFeign {
 	private BannerShowService bannerShowService;
 
 	@Override
-	public Result<List<BannerResp>> list(@RequestBody BannerReq bannerReq) {
+	public List<BannerResp> list(@RequestBody BannerReq bannerReq) {
 		Map<String, String> runtimeAttach = bannerReq.getRuntimeAttach();
 
 		// 补充一些请求头参数
@@ -41,6 +41,6 @@ public class BannerController implements BannerFeign {
 			return resp;
 		}).collect(Collectors.toList());
 
-		return Result.success(respList);
+		return respList;
 	}
 }

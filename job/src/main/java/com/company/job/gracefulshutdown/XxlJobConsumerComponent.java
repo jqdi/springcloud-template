@@ -15,11 +15,14 @@ import org.springframework.stereotype.Component;
 @Component
 public class XxlJobConsumerComponent implements ConsumerComponent {
 
-    @Autowired
+    @Autowired(required = false)
     private XxlJobSpringExecutor xxlJobExecutor;
 
     @Override
     public void preStop() {
+        if (xxlJobExecutor == null) {
+            return;
+        }
         // 下线job执行器
         xxlJobExecutor.destroy();
         log.info("job执行器已下线");

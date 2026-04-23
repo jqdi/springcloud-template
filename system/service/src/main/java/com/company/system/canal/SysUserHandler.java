@@ -14,16 +14,16 @@ public class SysUserHandler implements EntryHandler<SysUser> {
 
     @Override
     public void delete(SysUser t) {
-        log.info("删除操作: {}", JsonUtil.toJsonString(t));
+        log.info("删除操作: {}", t);
     }
 
     @Override
     public void insert(SysUser t) {
-        log.info("插入操作: {}", JsonUtil.toJsonString(t));
+        log.info("插入操作: {}", t);
     }
 
     @Override
     public void update(SysUser before, SysUser after) {
-        log.info("更新操作，更新前: {},更新后: {}", JsonUtil.toJsonString(before), JsonUtil.toJsonString(after));
+        log.info("更新操作，更新前: {},更新后: {}", before, after);
     }
 }

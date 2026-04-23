@@ -15,6 +15,6 @@ public class SmsStrategy implements BaseStrategy<Map<String, Object>> {
 
 	@Override
 	public void doStrategy(Map<String, Object> params) {
-		log.info("sms params:{}", JsonUtil.toJsonString(params));
+		log.info("sms params:{}", params);
 	}
 }

@@ -2,7 +2,8 @@ package com.company.tool.controller;
 
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.http.HttpRequest;
-import com.company.common.api.Result;
+
+import com.company.framework.globalresponse.ExceptionUtil;
 import com.company.framework.util.ClasspathUtil;
 import com.company.tool.api.enums.PopupEnum;
 import com.company.tool.api.enums.SmsEnum;
@@ -26,6 +27,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -46,21 +48,21 @@ public class TestController {
 	private PopupFeign popupFeign;
 
 	@GetMapping("/verifyCodeSms")
-	public Result<String> verifyCodeSms(String mobile, String type) {
+	public Map<String, String> verifyCodeSms(String mobile, String type) {
 		return verifyCodeFeign.sms(mobile, type);
 	}
 
 	@GetMapping("/webhook")
-	public Result<String> webhook() {
+	public Map<String, String> webhook() {
 		Map<String, String> templateParamMap = Maps.newHashMap();
 		templateParamMap.put("time", DateUtil.now());
 		templateParamMap.put("orderCode", "d222222222222");
 		asyncWebhookSender.send(WebhookEnum.Type.SYSTEM_ERROR, templateParamMap);
-		return Result.success();
+		return null;
 	}
 
 	@GetMapping("/batchSendSms")
-	public Result<List<Integer>> testBatchSendSms() {
+	public List<Integer> testBatchSendSms() {
 		List<String> mobileList = Lists.newArrayList();
 		mobileList.add("152xxxxxxxx");
 		mobileList.add("153xxxxxxxx");
@@ -68,11 +70,11 @@ public class TestController {
 
 		asyncSmsSender.send0(mobileList, SmsEnum.Type.MARKET);
 
-		return Result.success();
+		return null;
 	}
 	
 	@PostMapping("/upload")
-	public Result<String> upload(@RequestParam("file") MultipartFile file) {
+	public Map<String, String> upload(@RequestParam("file") MultipartFile file) {
 		String name = file.getName();
 		String originalFilename = file.getOriginalFilename();
 		String contentType = file.getContentType();
@@ -80,13 +82,13 @@ public class TestController {
 		log.info("name:{},originalFilename:{},contentType:{},size:{}", name, originalFilename, contentType, size);
 
 		if (size == 0) {
-			return Result.fail("请选择文件");
+			ExceptionUtil.throwException("请选择文件");
 		}
 
 		ClientUploadReq clientUploadReq = new ClientUploadReq();
 		clientUploadReq.setBasePath("web");
 		clientUploadReq.setFileName(originalFilename);
-		ClientUploadResp clientUploadResp = fileFeign.clientUpload(clientUploadReq).dataOrThrow();
+		ClientUploadResp clientUploadResp = fileFeign.clientUpload(clientUploadReq);
 		String fileKey = clientUploadResp.getFileKey();
 		String presignedUrl = clientUploadResp.getPresignedUrl();
 
@@ -94,10 +96,11 @@ public class TestController {
 			// 客户端使用presignedUrl上传文件
 			String result = HttpRequest.put(presignedUrl).body(IOUtils.toByteArray(inputStream)).execute().body();
 			log.info("result:{}", result);
-			return Result.success(fileKey);
+            return Collections.singletonMap("value", fileKey);
 		} catch (IOException e) {
 			log.error("IOException", e);
-			return Result.fail("文件上传失败");
+			ExceptionUtil.throwException("文件上传失败");
+            return null;
 		}
 	}
 
@@ -107,7 +110,7 @@ public class TestController {
 	 * @return
 	 */
 	@GetMapping("/createUserPopup")
-	public Result<?> createUserPopup() {
+	public Void createUserPopup() {
 		PopupEnum.Model model = PopupEnum.Model.simple;
 		String title = "订单配送完成";
 		String text = "订单配送完成，马上去收货吧！";
@@ -147,7 +150,7 @@ public class TestController {
 		
 		popupFeign.cancelUserPopup(cancelUserPopupReq);
 		
-		return Result.success();
+		return null;
 	}
 
 	public static void main(String[] args) {

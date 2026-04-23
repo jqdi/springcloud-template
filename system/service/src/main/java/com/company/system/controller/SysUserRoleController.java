@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.PageDTO;
-import com.company.common.api.Result;
+
 import com.company.framework.util.PropertyUtils;
 import com.company.system.api.constant.Constants;
 import com.company.system.api.feign.SysUserRoleFeign;
@@ -64,7 +64,7 @@ public class SysUserRoleController implements SysUserRoleFeign {
 	}
 
 	@Override
-	public Result<PageResp<SysUserRoleResp>> page(Long current, Long size, Integer userId, Integer roleId, String createTimeStart, String createTimeEnd, String updateTimeStart, String updateTimeEnd) {
+	public PageResp<SysUserRoleResp> page(Long current, Long size, Integer userId, Integer roleId, String createTimeStart, String createTimeEnd, String updateTimeStart, String updateTimeEnd) {
 		QueryWrapper<SysUserRole> queryWrapper = toQueryWrapper(userId, roleId, createTimeStart, createTimeEnd, updateTimeStart, updateTimeEnd);
 
 		long count = sysUserRoleService.count(queryWrapper);
@@ -73,84 +73,84 @@ public class SysUserRoleController implements SysUserRoleFeign {
 		List<SysUserRole> list = sysUserRoleService.list(PageDTO.of(current, size), queryWrapper);
 
 		List<SysUserRoleResp> respList = PropertyUtils.copyArrayProperties(list, SysUserRoleResp.class);
-		return Result.success(PageResp.of(count, respList));
+		return PageResp.of(count, respList);
 	}
 
 	@Override
-	public Result<List<SysUserRoleResp>> list(Integer userId, Integer roleId, String createTimeStart, String createTimeEnd, String updateTimeStart, String updateTimeEnd) {
+	public List<SysUserRoleResp> list(Integer userId, Integer roleId, String createTimeStart, String createTimeEnd, String updateTimeStart, String updateTimeEnd) {
 		QueryWrapper<SysUserRole> queryWrapper = toQueryWrapper(userId, roleId, createTimeStart, createTimeEnd, updateTimeStart, updateTimeEnd);
 
 		queryWrapper.orderByDesc("id");
 		List<SysUserRole> list = sysUserRoleService.list(queryWrapper);
 
 		List<SysUserRoleResp> respList = PropertyUtils.copyArrayProperties(list, SysUserRoleResp.class);
-		return Result.success(respList);
+		return respList;
 	}
 
 	@Override
-	public Result<SysUserRoleResp> query(Integer id) {
+	public SysUserRoleResp query(Integer id) {
 		SysUserRole sysUserRole = sysUserRoleService.getById(id);
 		SysUserRoleResp sysUserRoleResp = PropertyUtils.copyProperties(sysUserRole, SysUserRoleResp.class);
-		return Result.success(sysUserRoleResp);
+		return sysUserRoleResp;
 	}
 
 	@Override
-	public Result<Set<Integer>> listRoleIdByUserId(Integer userId) {
+	public Set<Integer> listRoleIdByUserId(Integer userId) {
 		Set<Integer> roleIds = sysUserRoleService.listRoleIdByUserId(userId);
-		return Result.success(roleIds);
+		return roleIds;
 	}
 
 	@Override
-	public Result<Boolean> save(SysUserRoleReq sysUserRoleReq) {
+	public Boolean save(SysUserRoleReq sysUserRoleReq) {
 		SysUserRole sysUserRole = PropertyUtils.copyProperties(sysUserRoleReq, SysUserRole.class);
 		boolean success = sysUserRoleService.save(sysUserRole);
-		return Result.success(success);
+		return success;
 	}
 
 	@Override
-	public Result<Boolean> update(SysUserRoleReq sysUserRoleReq) {
+	public Boolean update(SysUserRoleReq sysUserRoleReq) {
 		SysUserRole sysUserRole = PropertyUtils.copyProperties(sysUserRoleReq, SysUserRole.class);
 		boolean success = sysUserRoleService.updateById(sysUserRole);
-		return Result.success(success);
+		return success;
 	}
 
 	@Override
-	public Result<Boolean> remove(@RequestBody RemoveReq<Integer> req) {
+	public Boolean remove(@RequestBody RemoveReq<Integer> req) {
 		if (req.getIdList() == null || req.getIdList().isEmpty()) {
-			return Result.success(true);
+			return true;
 		}
 		boolean success = sysUserRoleService.removeBatchByIds(req.getIdList());
-		return Result.success(success);
+		return success;
 	}
 
 	@Override
-	public Result<Boolean> hasPermission(Integer userId, String permission) {
+	public Boolean hasPermission(Integer userId, String permission) {
 		Set<Integer> roleIdSet = sysUserRoleService.listRoleIdByUserId(userId);
 		if (CollectionUtils.isEmpty(roleIdSet)) {
-			return Result.success(false);
+			return false;
 		}
 
 		List<SysRole> sysRoleList = sysRoleService.listByIds(roleIdSet);
 		if (CollectionUtils.isEmpty(sysRoleList)) {
-			return Result.success(false);
+			return false;
 		}
 
 		// 有1个角色是超管角色，则返回有权限
 		for (SysRole sysRole : sysRoleList) {
 			if (Constants.SUPER_ROLE.equalsIgnoreCase(sysRole.getRoleKey())) {
-				return Result.success(true);
+				return true;
 			}
 		}
 
 		Set<Integer> menuIdSet = sysRoleMenuService.listMenuIdByRoleIds(roleIdSet);
 		if (CollectionUtils.isEmpty(menuIdSet)) {
-			return Result.success(false);
+			return false;
 		}
 
 		Set<String> permsSet = sysMenuService.listPermsByMenuIds(menuIdSet);
 		if (CollectionUtils.isEmpty(permsSet)) {
-			return Result.success(false);
+			return false;
 		}
-		return Result.success(permsSet.contains(permission));
+		return permsSet.contains(permission);
 	}
 }

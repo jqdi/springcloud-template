@@ -1,6 +1,5 @@
 package com.company.tool.webhook;
 
-import com.company.framework.util.JsonUtil;
 
 import cn.felord.WeComException;
 import cn.felord.api.WorkWeChatApi;
@@ -18,7 +17,7 @@ public class WeComSDKTest {
 
 		try {
 			WeComResponse send = WorkWeChatApi.webhookApi().send(robot_key, textBody);
-			System.out.println(JsonUtil.toJsonString(send));
+			System.out.println(send);
 		} catch (WeComException e) {
 			e.printStackTrace();
 		}

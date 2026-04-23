@@ -8,10 +8,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.company.common.api.Result;
+
 import com.company.admin.entity.system.City;
 import com.company.admin.service.system.CityService;
 import com.fasterxml.jackson.core.JsonProcessingException;
+
+import java.util.List;
 
 /**
  * 城市Controller
@@ -33,49 +35,49 @@ public class CityController {
 
     @RequestMapping(value = "/admin/system/city/get", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> adminGet(City city) {
-        return Result.success(cityService.get(city));
+    public City adminGet(City city) {
+        return cityService.get(city);
     }
 
     @RequestMapping(value = "/admin/system/city/save", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> adminSave(@Validated(City.Save.class) City city) {
+    public Void adminSave(@Validated(City.Save.class) City city) {
         cityService.save(city);
-        return Result.success();
+        return null;
     }
 
     @RequestMapping(value = "/admin/system/city/remove", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> adminRemove(City city) {
+    public Void adminRemove(City city) {
         cityService.remove(city);
-        return Result.success();
+        return null;
     }
 
     @RequestMapping(value = "/admin/system/city/update", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> adminUpdate(@Validated(City.Update.class) City city) {
+    public Void adminUpdate(@Validated(City.Update.class) City city) {
         cityService.update(city);
-        return Result.success();
+        return null;
     }
 
     @RequestMapping(value = "/admin/system/city/status/update", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> adminUpdateStatus(City city) {
+    public Void adminUpdateStatus(City city) {
         cityService.updateStatus(city);
-        return Result.success();
+        return null;
     }
 
     @RequestMapping(value = "/admin/system/city/district/status/update", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> adminUpdateDistrictStatus(City city) {
+    public Void adminUpdateDistrictStatus(City city) {
         cityService.updateDistrictStatus(city);
-        return Result.success();
+        return null;
     }
 
     @RequestMapping(value = "/admin/system/city/list", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> adminCityList(City city) {
-        return Result.success(cityService.listCombo(city));
+    public List<City> adminCityList(City city) {
+        return cityService.listCombo(city);
     }
 
 }

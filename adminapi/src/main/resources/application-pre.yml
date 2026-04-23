@@ -1,10 +1,12 @@
+logging:
+  file:
+    #日志文件目录。./表示相对于项目根目录，即项目根目录下的logs目录。也可配置绝对路径，如：/home/webapp/logs
+    path: ./logs
+
 template:
   domain: http://p-domain.com
   enable:
     cache: guava # guava:本地缓存,redis:redis缓存,combination:组合缓存,cachemanager:CacheManager缓存
     lock: redisson # jvm:jvm锁,redisson:redisson分布式锁
     message-driven: rocketmq # springevent:spring事件,rabbitmq:RabbitMQ消息队列,rocketmq:RocketMQ消息队列,redis:redis消息队列
-    access-control: true
     permission: true
-  mock:
-    time: true

@@ -20,7 +20,7 @@ import com.company.admin.entity.security.SecRole;
 import com.company.admin.entity.security.SecStaff;
 import com.company.admin.service.security.SecRoleService;
 import com.company.admin.service.security.SecStaffService;
-import com.company.common.api.Result;
+
 
 /**
  * 系统角色Controller
@@ -45,43 +45,43 @@ public class SecRoleController {
 
     @RequestMapping(value = "/admin/security/secRole/get", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> adminGet(SecRole secRole) {
-        return Result.success(secRoleService.get(secRole));
+    public SecRole adminGet(SecRole secRole) {
+        return secRoleService.get(secRole);
     }
 
     @RequestMapping(value = "/admin/security/secRole/save", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> adminSave(@Validated(SecRole.Save.class) SecRole secRole) {
+    public Void adminSave(@Validated(SecRole.Save.class) SecRole secRole) {
         secRoleService.save(secRole);
-        return Result.success();
+        return null;
     }
 
     @RequestMapping(value = "/admin/security/secRole/remove", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> adminRemove(SecRole secRole) {
+    public Void adminRemove(SecRole secRole) {
         secRoleService.remove(secRole);
-        return Result.success();
+        return null;
     }
 
     @RequestMapping(value = "/admin/security/secRole/update", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> adminUpdate(@Validated(SecRole.Update.class) SecRole secRole) {
+    public Void adminUpdate(@Validated(SecRole.Update.class) SecRole secRole) {
         secRoleService.update(secRole);
-        return Result.success();
+        return null;
     }
 
     @RequestMapping(value = "/admin/security/secRole/secResource/tree", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> adminTree(SecRole secRole, HttpServletRequest request) {
+    public List<SecResource> adminTree(SecRole secRole, HttpServletRequest request) {
         SecurityContextImpl securityContextImpl = (SecurityContextImpl) request.getSession()
                 .getAttribute("SPRING_SECURITY_CONTEXT");
         SecStaff secStaff = secStaffService.getByUsername(new SecStaff(((User) securityContextImpl.getAuthentication().getPrincipal()).getUsername()));
-        return Result.success(secRoleService.treeResource(secRole, secStaff));
+        return secRoleService.treeResource(secRole, secStaff);
     }
 
     @RequestMapping(value = "/admin/security/secRole/authorize", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> adminAuthorize(SecRole secRole, Long[] resourceIds, HttpServletRequest request)
+    public Void adminAuthorize(SecRole secRole, Long[] resourceIds, HttpServletRequest request)
             {
         List<SecResource> resourceList = new ArrayList<>();
         for (Long item : resourceIds) {
@@ -92,7 +92,7 @@ public class SecRoleController {
                 .getAttribute("SPRING_SECURITY_CONTEXT");
         SecStaff secStaff = secStaffService.getByUsername(new SecStaff(((User) securityContextImpl.getAuthentication().getPrincipal()).getUsername()));
         secRoleService.authorizeResource(secRole, secStaff);
-        return Result.success();
+        return null;
     }
     //endregion
 }

@@ -115,14 +115,7 @@ public class OrderInfo {
 
 模块提供了以下配置选项：
 
-### 1. 访问控制配置
-```yaml
-template:
-  enable:
-    access-control: true # 是否启用访问控制
-```
-
-### 2. 国际化配置
+### 1. 国际化配置
 模块包含国际化资源文件：
 - [messages.properties](src/main/resources/i18n-framework-edge/messages.properties) - 默认语言
 - [messages_en_US.properties](src/main/resources/i18n-framework-edge/messages_en_US.properties) - 英文
@@ -142,16 +135,7 @@ template:
 </dependency>
 ```
 
-### 2. 启用功能
-通过配置文件启用相应功能：
-
-```yaml
-template:
-  enable:
-    access-control: true # 启用访问控制
-```
-
-### 3. 使用组件
+### 2. 使用组件
 直接使用提供的注解和组件：
 
 ```java

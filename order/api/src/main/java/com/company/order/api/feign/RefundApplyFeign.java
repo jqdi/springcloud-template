@@ -1,6 +1,6 @@
 package com.company.order.api.feign;
 
-import com.company.common.api.Result;
+
 import com.company.order.api.constant.Constants;
 import com.company.order.api.feign.fallback.ThrowExceptionFallback;
 import com.company.order.api.request.PayRefundApplyReq;
@@ -22,10 +22,10 @@ public interface RefundApplyFeign {
 	 * @return
 	 */
 	@PostMapping("/refundApply")
-	Result<Integer> refundApply(@RequestBody PayRefundApplyReq payRefundApplyReq);
+	Integer refundApply(@RequestBody PayRefundApplyReq payRefundApplyReq);
 
 	@GetMapping("/selectId4Deal")
-	Result<List<Integer>> selectId4Deal();
+	List<Integer> selectId4Deal();
 
 	/**
 	 * 处理退款申请
@@ -38,5 +38,5 @@ public interface RefundApplyFeign {
 	 * @return
 	 */
 	@PostMapping("/dealRefundApply")
-	Result<Boolean> dealRefundApply(@RequestParam("id") Integer id);
+	Boolean dealRefundApply(@RequestParam("id") Integer id);
 }

@@ -1,9 +1,9 @@
 package com.company.admin.controller.common;
 
-import com.company.common.api.Result;
+
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.jqdi.filestorage.core.FileStorage;
+import io.github.jqdi.filestorage.core.FileStorage;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,11 +30,11 @@ public class CommonController {
 
     @RequestMapping("/admin/editor/token")
 	@ResponseBody
-	public Result<?> ossTokenEncrypt(String token) {
+	public Map<String, String> ossTokenEncrypt(String token) {
 		Map<String, String> result = Maps.newHashMap();
 //		result.put("accessKeyId", "1");
 //		result.put("accessKeySecret", "1");
-		return Result.success(result);
+		return result;
 	}
 
 
@@ -48,7 +48,7 @@ public class CommonController {
      */
     @RequestMapping(value = "/admin/common/api/file/upload", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> fileUpload(String[] folders, MultipartFile[] files) throws Exception {
+    public List<String> fileUpload(String[] folders, MultipartFile[] files) throws Exception {
     	List<String> resultList = Lists.newArrayList();
 		for (int i = 0; i < files.length; i++) {
     		MultipartFile file = files[i];
@@ -69,7 +69,7 @@ public class CommonController {
     			log.error("IOException", e);
     		}
 		}
-        return Result.success(resultList);
+        return resultList;
     }
     
 

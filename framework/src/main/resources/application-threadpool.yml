@@ -1,0 +1,10 @@
+# 本配置用于线程池
+template:
+  threadpool:
+    corePoolSize: 10
+    maxPoolSize: 20
+    queueCapacity: 200
+    keepAliveSeconds: 60
+    threadNamePrefix: t-subTask-
+    waitForTasksToCompleteOnShutdown: true
+    awaitTerminationSeconds: 60

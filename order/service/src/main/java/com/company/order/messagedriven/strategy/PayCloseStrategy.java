@@ -30,6 +30,6 @@ public class PayCloseStrategy implements BaseStrategy<Map<String, Object>> {
 
 		PayClient payClient = PayFactory.of(OrderPayEnum.Method.of(orderPay.getMethod()));
 		PayCloseResp payCloseResp = payClient.payClose(outTradeNo);// 不管关闭订单结果怎样，都应该当关闭成功处理
-		log.info("关闭订单结果:{}", JsonUtil.toJsonString(payCloseResp));
+		log.info("关闭订单结果:{}", payCloseResp);
 	}
 }

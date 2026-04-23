@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.company.common.api.Result;
+
 import com.company.order.api.constant.Constants;
 import com.company.order.api.enums.OrderEnum;
 import com.company.order.api.feign.fallback.OrderFeignFallback;
@@ -35,7 +35,7 @@ public interface OrderFeign {
 	 * @return
 	 */
 	@PostMapping("/registerOrder")
-	Result<Void> registerOrder(@RequestBody RegisterOrderReq registerOrderReq);
+	Void registerOrder(@RequestBody RegisterOrderReq registerOrderReq);
 
 	/**
 	 * 修改订单状态（用户取消订单）
@@ -44,7 +44,7 @@ public interface OrderFeign {
 	 * @return
 	 */
 	@PostMapping("/cancelByUser")
-	Result<OrderDetailResp> cancelByUser(@RequestBody OrderCancelReq orderCancelReq);
+	OrderDetailResp cancelByUser(@RequestBody OrderCancelReq orderCancelReq);
 	
 	/**
 	 * 修改订单状态（超时取消订单）
@@ -53,7 +53,7 @@ public interface OrderFeign {
 	 * @return
 	 */
 	@PostMapping("/cancelByTimeout")
-	Result<Boolean> cancelByTimeout(@RequestBody OrderCancelReq orderCancelReq);
+	Boolean cancelByTimeout(@RequestBody OrderCancelReq orderCancelReq);
 	
 	/**
 	 * 修改订单状态（支付成功）
@@ -62,7 +62,7 @@ public interface OrderFeign {
 	 * @return
 	 */
 	@PostMapping("/paySuccess")
-	Result<Boolean> paySuccess(@RequestBody OrderPaySuccessReq orderPaySuccessReq);
+	Boolean paySuccess(@RequestBody OrderPaySuccessReq orderPaySuccessReq);
 	
 	/**
 	 * 修改订单状态（确认收货）
@@ -71,7 +71,7 @@ public interface OrderFeign {
 	 * @return
 	 */
 	@PostMapping("/receive")
-	Result<Boolean> receive(@RequestBody OrderReceiveReq orderReceiveReq);
+	Boolean receive(@RequestBody OrderReceiveReq orderReceiveReq);
 	
 	/**
 	 * 修改订单状态（完成订单）
@@ -80,19 +80,19 @@ public interface OrderFeign {
 	 * @return
 	 */
 	@PostMapping("/finish")
-	Result<Boolean> finish(@RequestBody OrderFinishReq orderFinishReq);
+	Boolean finish(@RequestBody OrderFinishReq orderFinishReq);
 
 	@PostMapping("/refundApply")
-	Result<OrderRefundApplyResp> refundApply(@RequestBody OrderRefundApplyReq orderRefundApplyReq);
+	OrderRefundApplyResp refundApply(@RequestBody OrderRefundApplyReq orderRefundApplyReq);
 
 	@PostMapping("/refundFail")
-	Result<Boolean> refundFail(@RequestBody OrderRefundFailReq orderRefundFailReq);
+	Boolean refundFail(@RequestBody OrderRefundFailReq orderRefundFailReq);
 
 	@PostMapping("/refundFinish")
-	Result<Boolean> refundFinish(@RequestBody OrderRefundFinishReq orderRefundFinishReq);
+	Boolean refundFinish(@RequestBody OrderRefundFinishReq orderRefundFinishReq);
 
 	@GetMapping("/deleteOrder")
-	Result<Void> deleteOrder(@RequestParam("orderCode") String orderCode);
+	Void deleteOrder(@RequestParam("orderCode") String orderCode);
 	
 	/**
 	 * 分页查询订单列表
@@ -101,7 +101,7 @@ public interface OrderFeign {
 	 * @return
 	 */
 	@GetMapping("/page")
-	Result<List<OrderResp>> page(@RequestParam("current") Integer current, @RequestParam("size") Integer size,
+	List<OrderResp> page(@RequestParam("current") Integer current, @RequestParam("size") Integer size,
 			@RequestParam(value = "status", required = false) OrderEnum.StatusEnum status);
 
 	/**
@@ -111,7 +111,7 @@ public interface OrderFeign {
 	 * @return
 	 */
 	@GetMapping("/detail")
-	Result<OrderDetailResp> detail(@RequestParam("orderCode") String orderCode);
+	OrderDetailResp detail(@RequestParam("orderCode") String orderCode);
 	
 	/**
 	 * 查询超时未收货订单号改为已收货(job)
@@ -120,7 +120,7 @@ public interface OrderFeign {
 	 * @return
 	 */
 	@GetMapping("/select4OverSendSuccess")
-	Result<List<String>> select4OverSendSuccess(@RequestParam("limit") Integer limit);
+	List<String> select4OverSendSuccess(@RequestParam("limit") Integer limit);
 
 	/**
 	 * 查询超时未评价订单号改为已完成(job)
@@ -129,8 +129,8 @@ public interface OrderFeign {
 	 * @return
 	 */
 	@GetMapping("/select4OverWaitReview")
-	Result<List<String>> select4OverWaitReview(@RequestParam("limit") Integer limit);
+	List<String> select4OverWaitReview(@RequestParam("limit") Integer limit);
 
 	@GetMapping("/selectByOrderCode")
-	Result<Order4Resp> selectByOrderCode(@RequestParam("orderCode") String orderCode);
+	Order4Resp selectByOrderCode(@RequestParam("orderCode") String orderCode);
 }

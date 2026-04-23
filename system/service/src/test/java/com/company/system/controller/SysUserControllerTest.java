@@ -14,7 +14,7 @@ class SysUserControllerTest {
 
 	@Test
 	void getInfo() {
-		SysUserInfoResp resp = sysUserController.getInfo(1).dataOrThrow();
+		SysUserInfoResp resp = sysUserController.getInfo(1);
 		System.out.println(JSONUtil.toJsonPrettyStr(resp));
 	}
 }

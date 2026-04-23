@@ -31,7 +31,7 @@ public class YouxuanCondition implements UseCondition {
 
 		boolean canSee = "youxuan".equals(business);
 		if (!canSee) {
-			log.info("{}条件不满足,当前不是优选套餐货架下单:{}", seeParam.getUserCouponId(), JsonUtil.toJsonString(runtimeAttach));
+			log.info("{}条件不满足,当前不是优选套餐货架下单:{}", seeParam.getUserCouponId(), runtimeAttach);
 			return false;
 		}
 		return true;
@@ -44,7 +44,7 @@ public class YouxuanCondition implements UseCondition {
 		String business = runtimeAttach.get("business");
 		boolean canUse = "youxuan".equals(business);
 		if (!canUse) {
-			log.info("{}条件不满足,当前不是优选套餐货架下单:{}", useParam.getUserCouponId(), JsonUtil.toJsonString(runtimeAttach));
+			log.info("{}条件不满足,当前不是优选套餐货架下单:{}", useParam.getUserCouponId(), runtimeAttach);
 			return MatchResult.builder().canUse(false).reason("该商品不符合此优惠券使用的条件").build();
 		}
 

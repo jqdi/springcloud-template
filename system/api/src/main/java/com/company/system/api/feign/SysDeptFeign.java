@@ -1,6 +1,6 @@
 package com.company.system.api.feign;
 
-import com.company.common.api.Result;
+
 import com.company.system.api.constant.Constants;
 import com.company.system.api.feign.fallback.ThrowExceptionFallback;
 import com.company.system.api.request.RemoveReq;
@@ -19,21 +19,21 @@ import java.util.List;
 public interface SysDeptFeign {
 
 	@GetMapping("/page")
-	Result<PageResp<SysDeptResp>> page(@RequestParam(value = "current") Long current, @RequestParam(value = "size") Long size, @RequestParam(value = "parentId", required = false) Integer parentId, @RequestParam(value = "parentIds", required = false) String parentIds, @RequestParam(value = "name", required = false) String name, @RequestParam(value = "orderNum", required = false) Integer orderNum, @RequestParam(value = "status", required = false) String status);
+	PageResp<SysDeptResp> page(@RequestParam(value = "current") Long current, @RequestParam(value = "size") Long size, @RequestParam(value = "parentId", required = false) Integer parentId, @RequestParam(value = "parentIds", required = false) String parentIds, @RequestParam(value = "name", required = false) String name, @RequestParam(value = "orderNum", required = false) Integer orderNum, @RequestParam(value = "status", required = false) String status);
 
 	@GetMapping("/list")
-	Result<List<SysDeptResp>> list(@RequestParam(value = "parentId", required = false) Integer parentId, @RequestParam(value = "parentIds", required = false) String parentIds, @RequestParam(value = "name", required = false) String name, @RequestParam(value = "orderNum", required = false) Integer orderNum, @RequestParam(value = "status", required = false) String status);
+	List<SysDeptResp> list(@RequestParam(value = "parentId", required = false) Integer parentId, @RequestParam(value = "parentIds", required = false) String parentIds, @RequestParam(value = "name", required = false) String name, @RequestParam(value = "orderNum", required = false) Integer orderNum, @RequestParam(value = "status", required = false) String status);
 
 	@GetMapping("/query")
-	Result<SysDeptResp> query(@RequestParam("id") Integer id);
+	SysDeptResp query(@RequestParam("id") Integer id);
 
 	@PostMapping("/save")
-	Result<Boolean> save(@RequestBody SysDeptReq sysDeptReq);
+	Boolean save(@RequestBody SysDeptReq sysDeptReq);
 
 	@PostMapping("/update")
-	Result<Boolean> update(@RequestBody SysDeptReq sysDeptReq);
+	Boolean update(@RequestBody SysDeptReq sysDeptReq);
 
 	@PostMapping("/remove")
-	Result<Boolean> remove(@RequestBody RemoveReq<Integer> req);
+	Boolean remove(@RequestBody RemoveReq<Integer> req);
 
 }

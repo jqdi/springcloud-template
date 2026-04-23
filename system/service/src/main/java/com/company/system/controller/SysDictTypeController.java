@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.PageDTO;
-import com.company.common.api.Result;
+
 import com.company.system.api.response.PageResp;
 import com.company.framework.util.PropertyUtils;
 import com.company.system.api.feign.SysDictTypeFeign;
@@ -44,7 +44,7 @@ public class SysDictTypeController implements SysDictTypeFeign {
 	}
 
 	@Override
-	public Result<PageResp<SysDictTypeResp>> page(Long current, Long size, String dictName, String dictType, String status, String dictRemark) {
+	public PageResp<SysDictTypeResp> page(Long current, Long size, String dictName, String dictType, String status, String dictRemark) {
 		QueryWrapper<SysDictType> queryWrapper = toQueryWrapper(dictName, dictType, status, dictRemark);
 
 		long count = sysDictTypeService.count(queryWrapper);
@@ -53,47 +53,47 @@ public class SysDictTypeController implements SysDictTypeFeign {
 		List<SysDictType> list = sysDictTypeService.list(PageDTO.of(current, size), queryWrapper);
 
 		List<SysDictTypeResp> respList = PropertyUtils.copyArrayProperties(list, SysDictTypeResp.class);
-		return Result.success(PageResp.of(count, respList));
+		return PageResp.of(count, respList);
 	}
 
 	@Override
-	public Result<List<SysDictTypeResp>> list(String dictName, String dictType, String status, String dictRemark) {
+	public List<SysDictTypeResp> list(String dictName, String dictType, String status, String dictRemark) {
 		QueryWrapper<SysDictType> queryWrapper = toQueryWrapper(dictName, dictType, status, dictRemark);
 
 		queryWrapper.orderByDesc("id");
 		List<SysDictType> list = sysDictTypeService.list(queryWrapper);
 
 		List<SysDictTypeResp> respList = PropertyUtils.copyArrayProperties(list, SysDictTypeResp.class);
-		return Result.success(respList);
+		return respList;
 	}
 
 	@Override
-	public Result<SysDictTypeResp> query(Integer id) {
+	public SysDictTypeResp query(Integer id) {
 		SysDictType sysDictType = sysDictTypeService.getById(id);
 		SysDictTypeResp sysDictTypeResp = PropertyUtils.copyProperties(sysDictType, SysDictTypeResp.class);
-		return Result.success(sysDictTypeResp);
+		return sysDictTypeResp;
 	}
 
 	@Override
-	public Result<Boolean> save(SysDictTypeReq sysDictTypeReq) {
+	public Boolean save(SysDictTypeReq sysDictTypeReq) {
 		SysDictType sysDictType = PropertyUtils.copyProperties(sysDictTypeReq, SysDictType.class);
 		boolean success = sysDictTypeService.save(sysDictType);
-		return Result.success(success);
+		return success;
 	}
 
 	@Override
-	public Result<Boolean> update(SysDictTypeReq sysDictTypeReq) {
+	public Boolean update(SysDictTypeReq sysDictTypeReq) {
 		SysDictType sysDictType = PropertyUtils.copyProperties(sysDictTypeReq, SysDictType.class);
 		boolean success = sysDictTypeService.updateById(sysDictType);
-		return Result.success(success);
+		return success;
 	}
 
 	@Override
-	public Result<Boolean> remove(RemoveReq<Integer> req) {
+	public Boolean remove(RemoveReq<Integer> req) {
 		if (req.getIdList() == null || req.getIdList().isEmpty()) {
-			return Result.success(true);
+			return true;
 		}
 		boolean success = sysDictTypeService.removeBatchByIds(req.getIdList());
-		return Result.success(success);
+		return success;
 	}
 }

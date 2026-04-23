@@ -5,7 +5,7 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-import com.company.common.api.Result;
+
 import com.company.tool.api.constant.Constants;
 import com.company.tool.api.request.AlarmReq;
 import com.company.tool.api.request.WebhookAlarmReq;
@@ -20,7 +20,7 @@ public interface AlarmFeign {
 	 * @return
 	 */
 	@PostMapping("/webhook")
-	Result<Void> webhook(@RequestBody WebhookAlarmReq webhookAlarmReq);
+	Void webhook(@RequestBody WebhookAlarmReq webhookAlarmReq);
 
 	/**
 	 * 邮件告警
@@ -30,7 +30,7 @@ public interface AlarmFeign {
 	 */
 	@Deprecated // 待实现
 	@PostMapping("/email")
-	Result<Void> email(@RequestBody AlarmReq alarmReq);
+	Void email(@RequestBody AlarmReq alarmReq);
 	
 	/**
 	 * 短信告警
@@ -40,7 +40,7 @@ public interface AlarmFeign {
 	 */
 	@Deprecated // 待实现
 	@PostMapping("/sms")
-	Result<Void> sms(@RequestBody AlarmReq alarmReq);
+	Void sms(@RequestBody AlarmReq alarmReq);
 	
 	/**
 	 * 告警(根据告警等级自主判断企微、邮件、短信告警)
@@ -50,5 +50,5 @@ public interface AlarmFeign {
 	 */
 	@Deprecated // 待实现
 	@PostMapping("/warn")
-	Result<Void> warn(@RequestBody AlarmReq alarmReq);
+	Void warn(@RequestBody AlarmReq alarmReq);
 }

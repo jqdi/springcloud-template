@@ -293,7 +293,7 @@ public class SubscribeSenderConsumer {
 //		String paramIndex = "0,2,4,3";
 
 		List<SubscribeMsgData> subscribeMsgDataList = toSubscribeMsgData(valueList, content, paramIndex);
-		System.out.println(JsonUtil.toJsonString(subscribeMsgDataList));
+		System.out.println(subscribeMsgDataList);
 
 		System.out.println(toSubscribeContent(subscribeMsgDataList, content));
 

@@ -2,7 +2,7 @@ package com.company.admin.controller.security;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.company.admin.service.security.SecStaffService;
-import com.company.common.api.Result;
+
 import com.company.admin.entity.security.SecOrganization;
 import com.company.admin.entity.security.SecRole;
 import com.company.admin.entity.security.SecStaff;
@@ -40,7 +40,7 @@ public class SecStaffController {
 
     @RequestMapping(value = "/admin/security/secStaff/get", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> adminGet(SecStaff secStaff, HttpServletRequest request) {
+    public SecStaff adminGet(SecStaff secStaff, HttpServletRequest request) {
         //防止非超级管理员获取超级管理员信息
         SecurityContextImpl securityContextImpl = (SecurityContextImpl) request.getSession()
                 .getAttribute("SPRING_SECURITY_CONTEXT");
@@ -51,26 +51,26 @@ public class SecStaffController {
         else {
             secStaff.setType(11);
         }
-        return Result.success(secStaffService.get(secStaff));
+        return secStaffService.get(secStaff);
     }
 
     @RequestMapping(value = "/admin/security/secStaff/save", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> adminSave(@Validated(SecStaff.Save.class) SecStaff secStaff) throws Exception {
+    public Void adminSave(@Validated(SecStaff.Save.class) SecStaff secStaff) throws Exception {
         secStaffService.save(secStaff);
-        return Result.success();
+        return null;
     }
 
     @RequestMapping(value = "/admin/security/secStaff/remove", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> adminRemove(SecStaff secStaff) {
+    public Void adminRemove(SecStaff secStaff) {
         secStaffService.remove(secStaff);
-        return Result.success();
+        return null;
     }
 
     @RequestMapping(value = "/admin/security/secStaff/update", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> adminUpdate(@Validated(SecStaff.Update.class) SecStaff secStaff, HttpServletRequest request) throws Exception {
+    public Void adminUpdate(@Validated(SecStaff.Update.class) SecStaff secStaff, HttpServletRequest request) throws Exception {
         //防止非超级管理员修改超级管理员信息
         SecurityContextImpl securityContextImpl = (SecurityContextImpl) request.getSession()
                 .getAttribute("SPRING_SECURITY_CONTEXT");
@@ -82,48 +82,48 @@ public class SecStaffController {
             secStaff.setType(11);
         }
         secStaffService.update(secStaff);
-        return Result.success();
+        return null;
     }
 
     @RequestMapping(value = "/admin/security/secStaff/secRole/list", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> adminListRole(SecStaff secStaff) {
-        return Result.success(secStaffService.listRole(secStaff));
+    public List<SecRole> adminListRole(SecStaff secStaff) {
+        return secStaffService.listRole(secStaff);
     }
 
     @RequestMapping(value = "/admin/security/secStaff/secRole/authorize", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> adminAuthorizeRole(SecStaff secStaff, Long[] roleIds) {
+    public Void adminAuthorizeRole(SecStaff secStaff, Long[] roleIds) {
         List<SecRole> roleList = new ArrayList<>();
         for (Long item : roleIds) {
             roleList.add(new SecRole(item));
         }
         secStaff.setRoleList(roleList);
         secStaffService.authorizeRole(secStaff);
-        return Result.success();
+        return null;
     }
 
     @RequestMapping(value = "/admin/security/secStaff/secOrg/tree", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> adminListOrg(SecStaff secStaff) {
-        return Result.success(secStaffService.treeOrganization(secStaff));
+    public List<SecOrganization> adminListOrg(SecStaff secStaff) {
+        return secStaffService.treeOrganization(secStaff);
     }
 
     @RequestMapping(value = "/admin/security/secStaff/secOrg/authorize", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> adminAuthorizeOrg(SecStaff secStaff, Long[] organizationIds) {
+    public Void adminAuthorizeOrg(SecStaff secStaff, Long[] organizationIds) {
         List<SecOrganization> orgList = new ArrayList<>();
         for (Long item : organizationIds) {
             orgList.add(new SecOrganization(item));
         }
         secStaff.setOrganizationList(orgList);
         secStaffService.authorizeOrganization(secStaff);
-        return Result.success();
+        return null;
     }
 
     @RequestMapping(value = "/admin/security/secStaff/info/get", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> adminGetInfo(SecStaff secStaff, HttpServletRequest request) {
+    public SecStaff adminGetInfo(SecStaff secStaff, HttpServletRequest request) {
         //防止非超级管理员获取超级管理员信息
         SecurityContextImpl securityContextImpl = (SecurityContextImpl) request.getSession()
                 .getAttribute("SPRING_SECURITY_CONTEXT");
@@ -134,12 +134,12 @@ public class SecStaffController {
         else {
             secStaff.setType(11);
         }
-        return Result.success(secStaffService.get(secStaff));
+        return secStaffService.get(secStaff);
     }
 
     @RequestMapping(value = "/admin/security/secStaff/info/update", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> adminUpdateInfo(@Validated(SecStaff.Update.class) SecStaff secStaff, HttpServletRequest request) throws Exception {
+    public Void adminUpdateInfo(@Validated(SecStaff.Update.class) SecStaff secStaff, HttpServletRequest request) throws Exception {
         //防止非超级管理员修改超级管理员信息
         SecurityContextImpl securityContextImpl = (SecurityContextImpl) request.getSession()
                 .getAttribute("SPRING_SECURITY_CONTEXT");
@@ -152,6 +152,6 @@ public class SecStaffController {
         }
         secStaff.setId(currentStaff.getId());
         secStaffService.update(secStaff);
-        return Result.success();
+        return null;
     }
 }

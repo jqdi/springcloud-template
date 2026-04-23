@@ -140,7 +140,7 @@ public class ArticleCategoryService {
         return existent;
     }
 
-    public List<?> tree(ArticleCategory articleCategory) {
+    public List<ArticleCategory> tree(ArticleCategory articleCategory) {
         articleCategory.setDefaultSort("seq", "DESC");
         List<ArticleCategory> list = articleCategoryDao.listCombo(articleCategory);
         XSTreeUtil.buildTree(list);

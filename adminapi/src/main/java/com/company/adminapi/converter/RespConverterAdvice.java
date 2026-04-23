@@ -1,19 +1,13 @@
 package com.company.adminapi.converter;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import com.company.common.api.Result;
-import com.company.framework.constant.CommonConstants;
-import com.company.system.api.response.PageResp;
-import com.company.framework.util.JsonUtil;
-import com.company.adminapi.converter.annotation.RespConverter;
-import com.company.adminapi.converter.annotation.RespConverters;
-import com.company.adminapi.converter.ds.ConverterDataSource;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.extern.slf4j.Slf4j;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.MethodParameter;
@@ -26,21 +20,28 @@ import org.springframework.util.ReflectionUtils;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-import java.util.stream.Collectors;
+import com.company.adminapi.converter.annotation.RespConverter;
+import com.company.adminapi.converter.annotation.RespConverters;
+import com.company.adminapi.converter.ds.ConverterDataSource;
+import com.company.framework.constant.CommonConstants;
+import com.company.framework.util.JsonUtil;
+import com.company.system.api.response.PageResp;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 
 /**
- * 对响应的Result中的Resp实体进行字段值转换
+ * 对响应的Resp实体进行字段值转换
  */
 @Slf4j
 @Order(2)
 @RestControllerAdvice(basePackages = { CommonConstants.BASE_PACKAGE }) // 注意哦，这里要加上需要扫描的包
-public class RespConverterAdvice implements ResponseBodyAdvice<Result<Object>> {
+public class RespConverterAdvice implements ResponseBodyAdvice<Object> {
 
 	@Override
 	public boolean supports(MethodParameter returnType, Class<? extends HttpMessageConverter<?>> aClass) {
@@ -50,16 +51,9 @@ public class RespConverterAdvice implements ResponseBodyAdvice<Result<Object>> {
 	}
 
 	@Override
-	public Result<Object> beforeBodyWrite(Result<Object> body, MethodParameter returnType, MediaType mediaType,
+	public Object beforeBodyWrite(Object body, MethodParameter returnType, MediaType mediaType,
 			Class<? extends HttpMessageConverter<?>> aClass, ServerHttpRequest request, ServerHttpResponse response) {
 		if (body == null) {
-			return body;
-		}
-		if (!body.successCode()) {
-			return body;
-		}
-		Object data = body.getData();
-		if (data == null) {
 			return body;
 		}
 
@@ -72,29 +66,29 @@ public class RespConverterAdvice implements ResponseBodyAdvice<Result<Object>> {
 			values = new RespConverter[] { respConverter };
 		}
 
-		if (data instanceof PageResp) {// 分页对象
+		if (body instanceof PageResp) {// 分页对象
 			@SuppressWarnings("unchecked")
-			PageResp<Object> pageResp = (PageResp<Object>) data;
+			PageResp<Object> pageResp = (PageResp<Object>) body;
 			List<Object> list = pageResp.getList();
 			if (CollectionUtils.isEmpty(list)) {
 				return body;
 			}
 			List<Object> newList = exeConvert(list, values);
 			pageResp.setList(newList);
-		} else if (data instanceof List) {// 列表对象
+		} else if (body instanceof List) {// 列表对象
 			@SuppressWarnings("unchecked")
-			List<Object> list = (List<Object>) data;
+			List<Object> list = (List<Object>) body;
 			if (CollectionUtils.isEmpty(list)) {
 				return body;
 			}
 			List<Object> newList = exeConvert(list, values);
-			body.setData(newList);
+			body = newList;
 		} else {// 实体对象
-			Object entity = data;
+			Object entity = body;
 			List<Object> list = Lists.newArrayList(entity);
 			List<Object> newList = exeConvert(list, values);
 			Object newObject = newList.get(0);
-			body.setData(newObject);
+			body = newObject;
 		}
 		return body;
 	}

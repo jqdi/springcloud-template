@@ -1,0 +1,76 @@
+spring:
+  datasource:
+    dynamic: # 使用动态数据源
+      primary: master # 设置默认的数据源或者数据源组,默认master
+      strict: false # 是否启用严格模式,默认不启动. 严格模式下未匹配到数据源直接报错, 非严格模式下则使用默认数据源primary所设置的数据源
+      lazy: ${custom.lazy} # 是否懒加载数据源
+      datasource:
+        master:
+          driver-class-name: com.mysql.cj.jdbc.Driver
+          url: jdbc:mysql://${custom.ip_port}/template_admin?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&tinyInt1isBit=false&allowPublicKeyRetrieval=true
+          username: ${custom.username}
+          password: ${custom.password}
+        slave_1: # 下划线具有分组功能，@Slave注解对应slave数据源或slave分组
+          driver-class-name: com.mysql.cj.jdbc.Driver
+          url: jdbc:mysql://${custom.ip_port}/template_slave1?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&tinyInt1isBit=false&allowPublicKeyRetrieval=true
+          username: ${custom.username}
+          password: ${custom.password}
+        slave_2: # 下划线具有分组功能，@Slave注解对应slave数据源或slave分组
+          driver-class-name: com.mysql.cj.jdbc.Driver
+          url: jdbc:mysql://${custom.ip_port}/template_slave2?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&tinyInt1isBit=false&allowPublicKeyRetrieval=true
+          username: ${custom.username}
+          password: ${custom.password}
+        common: # 下划线具有分组功能，@Slave注解对应slave数据源或slave分组
+          driver-class-name: com.mysql.cj.jdbc.Driver
+          url: jdbc:mysql://${custom.ip_port}/template_common?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&tinyInt1isBit=false&allowPublicKeyRetrieval=true
+          username: ${custom.username}
+          password: ${custom.password}
+
+# 下面是环境区分，多个配置以 ‘---’ 分开
+---
+# dev环境配置
+spring:
+  config:
+    activate:
+      on-profile: dev
+custom:
+  ip_port: 127.0.0.1:3306
+  username: root
+  password: 12345678
+  lazy: true # 是否懒加载数据源
+
+---
+# test环境配置
+spring:
+  config:
+    activate:
+      on-profile: test
+custom:
+  ip_port: 127.0.0.1:3306
+  username: root
+  password: 12345678
+  lazy: false # 是否懒加载数据源
+
+---
+# pre环境配置
+spring:
+  config:
+    activate:
+      on-profile: pre
+custom:
+  ip_port: 127.0.0.1:3306
+  username: root
+  password: 12345678
+  lazy: false # 是否懒加载数据源
+
+---
+# prod环境配置
+spring:
+  config:
+    activate:
+      on-profile: prod
+custom:
+  ip_port: 127.0.0.1:3306
+  username: root
+  password: 12345678
+  lazy: false # 是否懒加载数据源

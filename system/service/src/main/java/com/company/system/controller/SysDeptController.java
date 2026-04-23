@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.PageDTO;
-import com.company.common.api.Result;
+
 import com.company.system.api.response.PageResp;
 import com.company.framework.util.PropertyUtils;
 import com.company.system.api.feign.SysDeptFeign;
@@ -47,7 +47,7 @@ public class SysDeptController implements SysDeptFeign {
 	}
 
 	@Override
-	public Result<PageResp<SysDeptResp>> page(Long current, Long size, Integer parentId, String parentIds, String name, Integer orderNum, String status) {
+	public PageResp<SysDeptResp> page(Long current, Long size, Integer parentId, String parentIds, String name, Integer orderNum, String status) {
 		QueryWrapper<SysDept> queryWrapper = toQueryWrapper(parentId, parentIds, name, orderNum, status);
 
 		long count = sysDeptService.count(queryWrapper);
@@ -56,47 +56,47 @@ public class SysDeptController implements SysDeptFeign {
 		List<SysDept> list = sysDeptService.list(PageDTO.of(current, size), queryWrapper);
 
 		List<SysDeptResp> respList = PropertyUtils.copyArrayProperties(list, SysDeptResp.class);
-		return Result.success(PageResp.of(count, respList));
+		return PageResp.of(count, respList);
 	}
 
 	@Override
-	public Result<List<SysDeptResp>> list(Integer parentId, String parentIds, String name, Integer orderNum, String status) {
+	public List<SysDeptResp> list(Integer parentId, String parentIds, String name, Integer orderNum, String status) {
 		QueryWrapper<SysDept> queryWrapper = toQueryWrapper(parentId, parentIds, name, orderNum, status);
 
 		queryWrapper.orderByDesc("id");
 		List<SysDept> list = sysDeptService.list(queryWrapper);
 
 		List<SysDeptResp> respList = PropertyUtils.copyArrayProperties(list, SysDeptResp.class);
-		return Result.success(respList);
+		return respList;
 	}
 
 	@Override
-	public Result<SysDeptResp> query(Integer id) {
+	public SysDeptResp query(Integer id) {
 		SysDept sysDept = sysDeptService.getById(id);
 		SysDeptResp sysDeptResp = PropertyUtils.copyProperties(sysDept, SysDeptResp.class);
-		return Result.success(sysDeptResp);
+		return sysDeptResp;
 	}
 
 	@Override
-	public Result<Boolean> save(SysDeptReq sysDeptReq) {
+	public Boolean save(SysDeptReq sysDeptReq) {
 		SysDept sysDept = PropertyUtils.copyProperties(sysDeptReq, SysDept.class);
 		boolean success = sysDeptService.save(sysDept);
-		return Result.success(success);
+		return success;
 	}
 
 	@Override
-	public Result<Boolean> update(SysDeptReq sysDeptReq) {
+	public Boolean update(SysDeptReq sysDeptReq) {
 		SysDept sysDept = PropertyUtils.copyProperties(sysDeptReq, SysDept.class);
 		boolean success = sysDeptService.updateById(sysDept);
-		return Result.success(success);
+		return success;
 	}
 
 	@Override
-	public Result<Boolean> remove(RemoveReq<Integer> req) {
+	public Boolean remove(RemoveReq<Integer> req) {
 		if (req.getIdList() == null || req.getIdList().isEmpty()) {
-			return Result.success(true);
+			return true;
 		}
 		boolean success = sysDeptService.removeBatchByIds(req.getIdList());
-		return Result.success(success);
+		return success;
 	}
 }

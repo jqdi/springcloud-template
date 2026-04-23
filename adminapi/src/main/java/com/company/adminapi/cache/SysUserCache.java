@@ -19,7 +19,7 @@ public class SysUserCache {
     public SysUserResp getById(Integer id) {
         String key = String.format("admin:sysuser:%s", id);
         return cache.get(key, () -> {
-            SysUserResp sysUserResp = sysUserFeign.getById(id).dataOrThrow();
+            SysUserResp sysUserResp = sysUserFeign.getById(id);
             if (sysUserResp == null) {
                 sysUserResp = new SysUserResp();
             }
@@ -29,6 +29,6 @@ public class SysUserCache {
 
     @Cacheable(value = "admin:sysuser", key = "#id")
     public SysUserResp getById2(Integer id) {
-        return sysUserFeign.getById(id).dataOrThrow();
+        return sysUserFeign.getById(id);
     }
 }

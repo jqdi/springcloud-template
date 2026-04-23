@@ -34,7 +34,7 @@ spring:
   cloud:
     nacos:
       discovery:
-        enabled: true # nacos注册中心开关
+        enabled: false # nacos注册中心开关
         server-addr: 127.0.0.1:8848 # discovery-server的请求路径
         username:  # 用户名
         password:  # 密码
@@ -57,7 +57,7 @@ spring:
   cloud:
     nacos:
       discovery:
-        enabled: true # nacos注册中心开关
+        enabled: false # nacos注册中心开关
         server-addr: 127.0.0.1:8848 # discovery-server的请求路径
         username:  # 用户名
         password:  # 密码
@@ -80,7 +80,7 @@ spring:
   cloud:
     nacos:
       discovery:
-        enabled: true # nacos注册中心开关
+        enabled: false # nacos注册中心开关
         server-addr: 127.0.0.1:8848 # discovery-server的请求路径
         username:  # 用户名
         password:  # 密码

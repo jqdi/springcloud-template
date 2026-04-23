@@ -78,7 +78,7 @@ public class PayNotifyStrategy implements BaseStrategy<Map<String, Object>> {
 		payNotifyReq.setTime(time);
 		payNotifyReq.setAttach(orderPay.getNotifyAttach());
 
-		log.info("支付回调,请求地址:{},参数:{}", notifyUrl, JsonUtil.toJsonString(payNotifyReq));
+		log.info("支付回调,请求地址:{},参数:{}", notifyUrl, payNotifyReq);
 		RetryerInfoReq retryerInfoReq = RetryerInfoReq.builder().feignUrl(notifyUrl).jsonParams(payNotifyReq).waitStrategy(RetryerEnum.WaitStrategy.WECHAT).build();
 		retryerFeign.call(retryerInfoReq);
 	}

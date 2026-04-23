@@ -80,7 +80,7 @@ public class MemberBuyStrategy implements BaseStrategy<Map<String, Object>> {
 
 //			Boolean refundAll = MapUtils.getBoolean(params, "refundAll");// 如果退款需扣手续费，则需按业务的规则计算是否已全额退款
 			// TODO 可能需要扣除一些手续费
-			Order4Resp order4Resp = orderFeign.selectByOrderCode(orderCode).dataOrThrow();
+			Order4Resp order4Resp = orderFeign.selectByOrderCode(orderCode);
 			BigDecimal needPayAmount = order4Resp.getNeedPayAmount();
 
 //			BigDecimal totalRefundAmount = new BigDecimal(MapUtils.getString(params, "totalRefundAmount"));
@@ -96,7 +96,7 @@ public class MemberBuyStrategy implements BaseStrategy<Map<String, Object>> {
 //			BigDecimal totalRefundAmount = new BigDecimal(MapUtils.getString(params, "totalRefundAmount"));
 			orderRefundFinishReq.setTotalRefundAmount(totalRefundAmount);
 			orderRefundFinishReq.setRefundAll(refundAll);
-			Boolean updateSuccess = orderFeign.refundFinish(orderRefundFinishReq).dataOrThrow();
+			Boolean updateSuccess = orderFeign.refundFinish(orderRefundFinishReq);
 			if (!updateSuccess) {
 				log.warn("修改‘订单中心’数据失败");
 				return;
@@ -153,7 +153,7 @@ public class MemberBuyStrategy implements BaseStrategy<Map<String, Object>> {
 			String message = MapUtils.getString(params, "message");
 			orderRefundFailReq.setFailReason(message);
 
-			Boolean updateSuccess = orderFeign.refundFail(orderRefundFailReq).dataOrThrow();
+			Boolean updateSuccess = orderFeign.refundFail(orderRefundFailReq);
 			if (!updateSuccess) {
 				log.warn("修改‘订单中心’数据失败");
 			}

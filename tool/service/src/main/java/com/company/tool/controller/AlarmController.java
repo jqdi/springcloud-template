@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.company.common.api.Result;
+
 import com.company.tool.api.enums.EmailEnum;
 import com.company.tool.api.enums.SmsEnum;
 import com.company.tool.api.enums.WebhookEnum;
@@ -34,34 +34,34 @@ public class AlarmController implements AlarmFeign {
 	private AsyncEmailSender asyncEmailSender;
 
 	@Override
-	public Result<Void> webhook(@RequestBody WebhookAlarmReq webhookAlarmReq) {
+	public Void webhook(@RequestBody WebhookAlarmReq webhookAlarmReq) {
 		WebhookEnum.Type type = webhookAlarmReq.getType();
 		Map<String, String> templateParamMap = webhookAlarmReq.getTemplateParamMap();
 		asyncWebhookSender.send(type, templateParamMap);
-		return Result.success();
+		return null;
 	}
 
 	@Override
-	public Result<Void> email(@RequestBody AlarmReq alarmReq) {
+	public Void email(@RequestBody AlarmReq alarmReq) {
 		// TODO
 		List<EmailTemplateParam> emailTemplateParamList = Lists.newArrayList();
 		EmailEnum.Type type = EmailEnum.Type.of(alarmReq.getType());
 		asyncEmailSender.send(emailTemplateParamList, type);
-		return Result.success();
+		return null;
 	}
 
 	@Override
-	public Result<Void> sms(@RequestBody AlarmReq alarmReq) {
+	public Void sms(@RequestBody AlarmReq alarmReq) {
 		// TODO
 		List<MobileTemplateParam> mobileTemplateParamList = Lists.newArrayList();
 		SmsEnum.Type type = SmsEnum.Type.of(alarmReq.getType());
 		asyncSmsSender.send(mobileTemplateParamList, type);
-		return Result.success();
+		return null;
 	}
 
 	@Override
-	public Result<Void> warn(@RequestBody AlarmReq alarmReq) {
+	public Void warn(@RequestBody AlarmReq alarmReq) {
 		// TODO
-		return Result.success();
+		return null;
 	}
 }

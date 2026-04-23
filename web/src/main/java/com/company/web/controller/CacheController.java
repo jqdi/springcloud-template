@@ -1,6 +1,6 @@
 package com.company.web.controller;
 
-import com.company.common.api.Result;
+
 import com.company.web.service.TimeService;
 import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
@@ -22,21 +22,21 @@ public class CacheController {
 
 	@Cacheable(value = "getById", key = "#id")
 	@GetMapping(value = "/getById")
-	public Result<String> getById(String id) {
+	public String getById(String id) {
 		Map<String, Object> params = Maps.newHashMap();
 		params.put("id", id);
-		return Result.success("success");
+		return "success";
 	}
 
 	@GetMapping(value = "/time")
-	public Result<String> time() {
+	public String time() {
 		String time = timeService.getTime();
-		return Result.success(time);
+		return time;
 	}
 
 	@GetMapping(value = "/cachetime")
-	public Result<String> cachetime() {
+	public String cachetime() {
 		String time = timeService.getCacheTime();
-		return Result.success(time);
+		return time;
 	}
 }

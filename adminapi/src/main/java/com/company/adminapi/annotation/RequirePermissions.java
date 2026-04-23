@@ -7,7 +7,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import com.company.framework.annotation.RequireLogin;
+import com.company.token.accesscontrol.annotation.RequireLogin;
 
 /**
  * 有指定权限可访问的API

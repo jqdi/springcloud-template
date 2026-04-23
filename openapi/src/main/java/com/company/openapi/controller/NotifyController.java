@@ -17,10 +17,12 @@ import com.company.order.api.feign.AliActivityNotifyFeign;
 import com.company.order.api.feign.AliNotifyFeign;
 import com.company.order.api.feign.WxNotifyFeign;
 import com.company.order.api.response.SpiOrderSendNotifyResp;
+import com.feiniaojin.gracefulresponse.api.ExcludeFromGracefulResponse;
 
 /**
  * 接收第三方回调请求
  */
+@ExcludeFromGracefulResponse
 @NoSign // 第三方回调请求有自己的验签，所以这里跳过验签，由后续业务进行验签
 @RestController
 @RequestMapping(value = "/notify")
@@ -35,18 +37,18 @@ public class NotifyController {
 
 	@PostMapping(value = "/wxPay", produces = MediaType.APPLICATION_XML_VALUE)
 	public String wxPay(@RequestBody String xmlString) {
-		return wxNotifyFeign.wxPayNotify(xmlString).dataOrThrow();
+		return wxNotifyFeign.wxPayNotify(xmlString).values().iterator().next();
 	}
 
 	@PostMapping(value = "/wxPayRefund", produces = MediaType.APPLICATION_XML_VALUE)
 	public String wxPayRefund(@RequestBody String xmlString) {
-		return wxNotifyFeign.wxPayRefundNotify(xmlString).dataOrThrow();
+		return wxNotifyFeign.wxPayRefundNotify(xmlString).values().iterator().next();
 	}
 
 	@PostMapping(value = "/aliPay")
 	public String aliPay(HttpServletRequest request) {
 		Map<String, String> params = WebUtil.getReqParam(request);
-		return aliNotifyFeign.aliPayNotify(params).dataOrThrow();
+		return aliNotifyFeign.aliPayNotify(params).values().iterator().next();
 	}
 
 	/**
@@ -55,7 +57,7 @@ public class NotifyController {
 	@PostMapping("/spiOrderSend")
 	public SpiOrderSendNotifyResp spiOrderSend(HttpServletRequest request) {
 		Map<String, String> params = WebUtil.getReqParam(request);
-		return aliActivityNotifyFeign.spiOrderSendNotify(params).dataOrThrow();
+		return aliActivityNotifyFeign.spiOrderSendNotify(params);
 	}
 
 	/**
@@ -64,6 +66,6 @@ public class NotifyController {
 	@PostMapping("/from")
 	public String from(HttpServletRequest request) {
 		Map<String, String> params = WebUtil.getReqParam(request);
-		return aliActivityNotifyFeign.fromNotify(params).dataOrThrow();
+		return aliActivityNotifyFeign.fromNotify(params).values().iterator().next();
 	}
 }

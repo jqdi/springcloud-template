@@ -64,7 +64,7 @@ public class PermissionInterceptor implements AsyncHandlerInterceptor {
 		RequirePermissions requirePermissions = method.getAnnotation(RequirePermissions.class);
 
 		Boolean hasPermission = sysUserRoleFeign.hasPermission(Integer.valueOf(userId), requirePermissions.value())
-				.dataOrThrow();
+				;
 		if (hasPermission) {
 			return true;
 		}

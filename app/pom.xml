@@ -43,27 +43,19 @@
 		</dependency>
 
 		<!-- 授权登录 -->
-		<!-- 源码：https://gitee.com/jq_di/easy-login -->
+		<!-- 源码：https://github.com/jqdi/easy-login -->
 		<dependency>
-		    <groupId>com.jqdi</groupId>
-		    <artifactId>easy-login-spring-boot-starter</artifactId>
-		    <version>1.0.0</version>
+			<groupId>io.github.jqdi</groupId>
+			<artifactId>easy-login-spring-boot-starter</artifactId>
+			<version>1.0.3</version>
 		</dependency>
 		<!-- 微信sdk -->
 		<dependency>
 			<groupId>com.github.binarywang</groupId>
 			<artifactId>weixin-java-mp</artifactId>
-			<version>4.3.0</version>
-			<scope>provided</scope>
+			<version>4.6.0</version>
 		</dependency>
 		<!-- 授权登录 -->
-
-        <!-- token -->
-        <dependency>
-            <groupId>com.company</groupId>
-            <artifactId>boot-starter-token</artifactId>
-            <version>${boot-starter-token.version}</version>
-        </dependency>
 
 		<!-- knife4j文档：https://doc.xiaominfo.com/knife4j -->
 		<dependency>

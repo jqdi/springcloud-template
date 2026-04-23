@@ -3,7 +3,7 @@ package com.company.order.controller;
 import com.alipay.api.AlipayApiException;
 import com.alipay.api.internal.util.AlipaySignature;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
-import com.company.common.api.Result;
+
 import com.company.framework.messagedriven.MessageSender;
 import com.company.framework.messagedriven.properties.MessagedrivenProperties;
 import com.company.framework.util.JsonUtil;
@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Collections;
 import java.util.Map;
 
 @Slf4j
@@ -53,7 +54,7 @@ public class AliNotifyController implements AliNotifyFeign {
 	private AliPayConfiguration aliPayConfiguration;
 
 	@Override
-	public Result<String> aliPayNotify(@RequestBody Map<String, String> aliParams) {
+	public Map<String, String> aliPayNotify(@RequestBody Map<String, String> aliParams) {
 		String notifyData = JsonUtil.toJsonString(aliParams);
 		// 记录原始数据
 		log.info("ali notify data:{}", notifyData);
@@ -68,12 +69,12 @@ public class AliNotifyController implements AliNotifyFeign {
 					AliConstants.CHARSET, AliConstants.SIGNTYPE);
 			if (!signVerified) {
 				payNotifyMapper.updateRemarkById("验签失败", payNotify.getId());
-				return Result.success("fail");
+				return Collections.singletonMap("value", "fail");
 			}
 		} catch (AlipayApiException e) {
 			log.error(">>>解析支付宝回调参数异常，直接返回", e);
 			payNotifyMapper.updateRemarkById(e.getMessage(), payNotify.getId());
-			return Result.success("fail");
+            return Collections.singletonMap("value", "fail");
 		}
 
 		String tradeStatus = aliParams.get("trade_status");
@@ -154,7 +155,7 @@ public class AliNotifyController implements AliNotifyFeign {
 			if (affect == 0) {
 				// 订单回调已处理完成，无需重复处理
 				payNotifyMapper.updateRemarkById("订单回调已处理完成，无需重复处理", payNotify.getId());
-				return Result.success("success");
+                return Collections.singletonMap("value", "success");
 			}
 
 			// MQ异步处理
@@ -218,7 +219,7 @@ public class AliNotifyController implements AliNotifyFeign {
 			if (affect == 0) {
 				// 订单回调已处理完成，无需重复处理
 				payNotifyMapper.updateRemarkById("订单回调已处理完成，无需重复处理", payNotify.getId());
-				return Result.success("success");
+                return Collections.singletonMap("value", "success");
 			}
 
 			// MQ异步处理
@@ -236,6 +237,6 @@ public class AliNotifyController implements AliNotifyFeign {
 			messageSender.sendNormalMessage(StrategyConstants.PAY_NOTIFY_STRATEGY, params, messagedrivenProperties.getExchange().getDirect(),
 					Constants.QUEUE.PAY_NOTIFY.KEY);
 		}
-		return Result.success("success");
+        return Collections.singletonMap("value", "success");
 	}
 }

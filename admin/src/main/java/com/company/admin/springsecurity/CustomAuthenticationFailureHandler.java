@@ -25,7 +25,7 @@ public class CustomAuthenticationFailureHandler implements AuthenticationFailure
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
                                         AuthenticationException exception) throws IOException, ServletException {
         String exceptionMsg = exception.getMessage();
-        Integer code = ResultCode.FAIL.getCode();
+        String code = ResultCode.FAIL.getCode();
         String msg = ResultCode.FAIL.getMessage();
 
         if (exception instanceof UsernameNotFoundException) {
@@ -54,7 +54,7 @@ public class CustomAuthenticationFailureHandler implements AuthenticationFailure
         Map<String, Object> errorMap = Maps.newHashMap();
         errorMap.put("status", false);
         errorMap.put("code", code);
-        errorMap.put("message", msg);
+        errorMap.put("msg", msg);
         String errorMsg = JsonUtil.toJsonString(errorMap);
         response.setCharacterEncoding("UTF-8");
         response.setContentType("application/json;charset=utf-8");

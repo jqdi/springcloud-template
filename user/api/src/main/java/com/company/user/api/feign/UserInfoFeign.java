@@ -1,6 +1,6 @@
 package com.company.user.api.feign;
 
-import com.company.common.api.Result;
+
 import com.company.user.api.constant.Constants;
 import com.company.user.api.feign.fallback.ThrowExceptionFallback;
 import com.company.user.api.request.UserInfoReq;
@@ -17,11 +17,11 @@ import java.util.Map;
 public interface UserInfoFeign {
 
 	@RequestMapping("/findOrCreateUser")
-	Result<UserInfoResp> findOrCreateUser(@RequestBody UserInfoReq userInfoReq);
+	UserInfoResp findOrCreateUser(@RequestBody UserInfoReq userInfoReq);
 
 	@RequestMapping("/getById")
-	Result<UserInfoResp> getById(@RequestParam("id") Integer id);
+	UserInfoResp getById(@RequestParam("id") Integer id);
 
-	@RequestMapping("/mapUidById")
-	Result<Map<Integer, String>> mapUidById(@RequestBody Collection<Integer> idList);
+	@RequestMapping("/mapNicknameById")
+	Map<Integer, String> mapNicknameById(@RequestBody Collection<Integer> idList);
 }

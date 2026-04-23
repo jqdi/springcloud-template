@@ -37,7 +37,7 @@ public class WalletIncomeUseRecordService {
 
 		int limit = 1000;
 		do {
-			idList = walletIncomeUseRecordFeign.selectId4Expire(limit).dataOrThrow();
+			idList = walletIncomeUseRecordFeign.selectId4Expire(limit);
 
 			XxlJobHelper.log("size:{}", idList.size());
 			for (Integer id : idList) {

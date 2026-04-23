@@ -25,8 +25,8 @@ import com.company.adminapi.annotation.RequirePermissions;
 import com.company.adminapi.easyexcel.ExcelUtil;
 import com.company.adminapi.enums.OperationLogEnum.BusinessType;
 import com.company.adminapi.excel.SysMenuExcel;
-import com.company.common.api.Result;
-import com.company.framework.annotation.RequireLogin;
+
+import com.company.token.accesscontrol.annotation.RequireLogin;
 import com.company.framework.context.HeaderContextUtil;
 import com.company.framework.util.PropertyUtils;
 import com.company.system.api.feign.SysMenuFeign;
@@ -46,7 +46,7 @@ public class SysMenuController {
 
 	@RequirePermissions("system:sysMenu:query")
 	@GetMapping("/page")
-	public Result<PageResp<SysMenuResp>> page(@NotNull @Min(value = 1) Long current, @NotNull Long size, Integer parentId,
+	public PageResp<SysMenuResp> page(@NotNull @Min(value = 1) Long current, @NotNull Long size, Integer parentId,
 											  String menuName, String menuType, String status, Integer visible, String perms,
 											  String createTimeStart, String createTimeEnd) {
 		return sysMenuFeign.page(current, size, parentId, menuName, menuType, status, visible, perms, createTimeStart, createTimeEnd);
@@ -54,11 +54,11 @@ public class SysMenuController {
 
 	@RequirePermissions("system:sysMenu:query")
 	@GetMapping("/tree")
-	public Result<List<SysMenuResp>> tree(Integer parentId, String menuName, Integer orderNum, String menuType,
+	public List<SysMenuResp> tree(Integer parentId, String menuName, Integer orderNum, String menuType,
 										  String status, Integer visible, String perms,
 										  String createTimeStart, String createTimeEnd) {
 		List<SysMenuResp> sysMenuResps = sysMenuFeign.list(parentId, menuName, orderNum, menuType, status, visible, perms,
-				createTimeStart, createTimeEnd).dataOrThrow();
+				createTimeStart, createTimeEnd);
 		Map<Integer, SysMenuResp> menuMap = sysMenuResps.stream().collect(Collectors.toMap(SysMenuResp::getId, Function.identity()));
 		Set<Integer> childrenId = new HashSet<>();
 		sysMenuResps.forEach(menu -> {
@@ -75,33 +75,33 @@ public class SysMenuController {
 			}
 		});
 		List<SysMenuResp> rootList = sysMenuResps.stream().filter(m -> !childrenId.contains(m.getId())).collect(Collectors.toList());
-		return Result.success(rootList);
+		return rootList;
 	}
 
 	@RequirePermissions("system:sysMenu:query")
 	@GetMapping("/query")
-	public Result<SysMenuResp> query(@NotNull Integer id) {
+	public SysMenuResp query(@NotNull Integer id) {
 		return sysMenuFeign.query(id);
 	}
 
 	@OperationLog(title = "菜单权限保存", businessType = BusinessType.INSERT)
 	@RequirePermissions("system:sysMenu:save")
 	@PostMapping("/save")
-	public Result<Boolean> save(@RequestBody SysMenuReq sysMenuReq) {
+	public Boolean save(@RequestBody SysMenuReq sysMenuReq) {
 		return sysMenuFeign.save(sysMenuReq);
 	}
 
 	@OperationLog(title = "菜单权限更新", businessType = BusinessType.UPDATE)
 	@RequirePermissions("system:sysMenu:update")
 	@PostMapping("/update")
-	public Result<Boolean> update(@RequestBody SysMenuReq sysMenuReq) {
+	public Boolean update(@RequestBody SysMenuReq sysMenuReq) {
 		return sysMenuFeign.update(sysMenuReq);
 	}
 
 	@OperationLog(title = "菜单权限删除", businessType = BusinessType.DELETE)
 	@RequirePermissions("system:sysMenu:remove")
 	@PostMapping("/remove")
-	public Result<Boolean> remove(@RequestBody RemoveReq<Integer> req) {
+	public Boolean remove(@RequestBody RemoveReq<Integer> req) {
 		return sysMenuFeign.remove(req);
 	}
 
@@ -111,14 +111,14 @@ public class SysMenuController {
 	public void export(HttpServletResponse response, Integer parentId, String menuName, Integer orderNum, String menuType,
 					   String status, Integer visible, String perms, String createTimeStart, String createTimeEnd) {
 		List<SysMenuResp> listResp = sysMenuFeign.list(parentId, menuName, orderNum, menuType, status, visible, perms,
-				createTimeStart, createTimeEnd).dataOrThrow();
+				createTimeStart, createTimeEnd);
 		List<SysMenuExcel> excelList = PropertyUtils.copyArrayProperties(listResp, SysMenuExcel.class);
 		ExcelUtil.write2httpResponse(response, "菜单权限", SysMenuExcel.class, excelList);
 	}
 
 	@RequireLogin
 	@GetMapping(value = "/getRouters")
-	public Result<List<RouterResp>> getRouters() {
+	public List<RouterResp> getRouters() {
 		Integer userId = HeaderContextUtil.currentUserIdInt();
 		return sysMenuFeign.getRouters(userId);
 	}

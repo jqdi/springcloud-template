@@ -75,7 +75,7 @@ public class ConsumerUtils {
 
 	private static void handle(String jsonStrMsg, Map<String, String> properties, Consumer<Object> consumer,
 							   boolean unAckIfException) {
-		log.info("jsonStrMsg:{},properties:{}", jsonStrMsg, JsonUtil.toJsonString(properties));
+		log.info("jsonStrMsg:{},properties:{}", jsonStrMsg, properties);
 		if (jsonStrMsg == null) {
 			return;
 		}

@@ -18,9 +18,9 @@ public class I18nMessage implements IMessage {
     @Override
     public String getMessage(String code, Object... args) {
         Locale locale = LocaleContextHolder.getLocale();
-        MessageFormat messageFormat = new MessageFormat(code, locale);
         String defaultMessage = code;
         if (args != null && args.length > 0) {
+            MessageFormat messageFormat = new MessageFormat(code, locale);
             defaultMessage = messageFormat.format(args);
         }
         return messageSource.getMessage(code, args, defaultMessage, locale);

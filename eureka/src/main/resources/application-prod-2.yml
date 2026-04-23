@@ -16,8 +16,6 @@ eureka:
       defaultZone: http://127.0.0.1:7010/eureka/
 
 logging:
-  #为了避免日志目录生成{APP_NAME}_IS_UNDEFINED目录，不能使用默认配置logback.xml或logback-spring.xml命名，详细参考：http://www.itersblog.com/archives/5.html
-  config: classpath:logback-conf.xml
   file:
     #日志文件目录。./表示相对于项目根目录，即项目根目录下的logs目录。也可配置绝对路径，如：/home/webapp/logs
-    path: ./logs/${spring.application.name}-${server.port}
+    path: ./logs/${server.port}

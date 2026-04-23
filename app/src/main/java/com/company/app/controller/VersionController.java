@@ -1,6 +1,6 @@
 package com.company.app.controller;
 
-import com.company.common.api.Result;
+
 import com.company.tool.api.feign.AppVersionFeign;
 import com.company.tool.api.response.AppVersionCheckResp;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +28,7 @@ public class VersionController {
      * 检查
      */
     @GetMapping("/check")
-    public Result<AppVersionCheckResp> check(@NotBlank(message = "appCode不能为空") String appCode, @NotBlank(message = "version不能为空") String version) {
+    public AppVersionCheckResp check(@NotBlank(message = "appCode不能为空") String appCode, @NotBlank(message = "version不能为空") String version) {
         return appVersionFeign.check(appCode, version);
     }
 }

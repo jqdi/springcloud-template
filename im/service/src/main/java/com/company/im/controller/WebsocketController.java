@@ -1,6 +1,6 @@
 package com.company.im.controller;
 
-import com.company.common.api.Result;
+
 import com.company.im.api.feign.WebsocketFeign;
 import com.company.im.api.request.AllReq;
 import com.company.im.api.request.GroupReq;
@@ -20,25 +20,25 @@ public class WebsocketController implements WebsocketFeign {
     private WebSocketLoadBalanceConcept concept;
 
     @Override
-    public Result<Void> sendToAll(@RequestBody AllReq allReq) {
+    public Void sendToAll(@RequestBody AllReq allReq) {
         String message = allReq.getMessage();
         concept.send(message);
-        return Result.success();
+        return null;
     }
 
     @Override
-    public Result<Void> sendToUser(@RequestBody UserReq userReq) {
+    public Void sendToUser(@RequestBody UserReq userReq) {
         String message = userReq.getMessage();
         String userId = userReq.getUserId();
         concept.send(new UserMessage(message, userId));
-        return Result.success();
+        return null;
     }
 
     @Override
-    public Result<Void> sendToGroup(@RequestBody GroupReq groupReq) {
+    public Void sendToGroup(@RequestBody GroupReq groupReq) {
         String message = groupReq.getMessage();
         String group = groupReq.getGroup();
         concept.send(new GroupMessage(message, group));// 框架未实现
-        return Result.success();
+        return null;
     }
 }

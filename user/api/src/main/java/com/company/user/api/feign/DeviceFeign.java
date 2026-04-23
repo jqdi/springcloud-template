@@ -1,6 +1,6 @@
 package com.company.user.api.feign;
 
-import com.company.common.api.Result;
+
 import com.company.user.api.constant.Constants;
 import com.company.user.api.feign.fallback.ThrowExceptionFallback;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -17,5 +17,5 @@ public interface DeviceFeign {
      * @return
      */
     @RequestMapping("/isOnline")
-    Result<Boolean> isOnline(@RequestParam("deviceid") String deviceid);
+    Boolean isOnline(@RequestParam("deviceid") String deviceid);
 }

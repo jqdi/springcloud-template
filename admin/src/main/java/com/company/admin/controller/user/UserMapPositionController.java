@@ -5,7 +5,7 @@ package com.company.admin.controller.user;
 import com.company.admin.service.system.ConfigService;
 import com.company.admin.service.user.UserMapPositionService;
 import com.company.admin.annotation.Pagination;
-import com.company.common.api.Result;
+
 import com.company.admin.entity.user.User;
 import com.company.admin.entity.user.UserMapPosition;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,28 +41,28 @@ public class UserMapPositionController {
 
     @RequestMapping(value = "/admin/user/userMapPosition/get", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> get(UserMapPosition userMapPosition) {
-        return Result.success(userMapPositionService.get(userMapPosition));
+    public UserMapPosition get(UserMapPosition userMapPosition) {
+        return userMapPositionService.get(userMapPosition);
     }
 
 //	@RequestMapping(value = "/admin/user/userMapPosition/save", method = RequestMethod.POST)
 //	@ResponseBody
-//	public Result<?> save(@Validated(UserMapPosition.Save.class) UserMapPosition userMapPosition) {
+//	public Void save(@Validated(UserMapPosition.Save.class) UserMapPosition userMapPosition) {
 //		userMapPositionService.save(userMapPosition);
-//		return Result.success();
+//		return null;
 //	}
 
     @RequestMapping(value = "/admin/user/userMapPosition/remove", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> remove(UserMapPosition userMapPosition) {
+    public Void remove(UserMapPosition userMapPosition) {
         userMapPositionService.remove(userMapPosition);
-        return Result.success();
+        return null;
     }
 
     @RequestMapping(value = "/admin/user/userMapPosition/update", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> update(@Validated(UserMapPosition.Update.class) UserMapPosition userMapPosition) {
+    public Void update(@Validated(UserMapPosition.Update.class) UserMapPosition userMapPosition) {
         userMapPositionService.update(userMapPosition);
-        return Result.success();
+        return null;
     }
 }

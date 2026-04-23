@@ -3,7 +3,7 @@ package com.company.admin.controller.stats;
 
 
 import com.company.admin.service.stats.UserStatsService;
-import com.company.common.api.Result;
+
 import com.company.admin.entity.stats.StatsCond;
 
 import com.company.framework.globalresponse.ExceptionUtil;
@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Map;
 
 /**
  * 用户统计Controller
@@ -44,9 +45,9 @@ public class UserStatsController {
 	 */
 	@RequestMapping(value = "/diagram", method = RequestMethod.GET)
 	@ResponseBody
-	public Result<?> diagram(StatsCond statsCond) throws ParseException {
+	public Map<String, Object> diagram(StatsCond statsCond) throws ParseException {
 		checkCond(statsCond);
-		return Result.success(userStatsService.diagram(statsCond));
+		return userStatsService.diagram(statsCond);
 	}
 
 	/**
@@ -63,9 +64,9 @@ public class UserStatsController {
 	 */
 	@RequestMapping(value = "/sex/diagram", method = RequestMethod.GET)
 	@ResponseBody
-	public Result<?> sexDiagram(StatsCond statsCond) throws ParseException {
+	public Map<String, Object> sexDiagram(StatsCond statsCond) throws ParseException {
 		checkCond(statsCond);
-		return Result.success(userStatsService.sexDiagram(statsCond));
+		return userStatsService.sexDiagram(statsCond);
 	}
 
 	/**
@@ -82,9 +83,9 @@ public class UserStatsController {
 	 */
 	@RequestMapping(value = "/age/diagram", method = RequestMethod.GET)
 	@ResponseBody
-	public Result<?> ageDiagram(StatsCond statsCond) throws ParseException {
+	public Map<String, Object> ageDiagram(StatsCond statsCond) throws ParseException {
 		checkCond(statsCond);
-		return Result.success(userStatsService.ageDiagram(statsCond));
+		return userStatsService.ageDiagram(statsCond);
 	}
 
 	/**

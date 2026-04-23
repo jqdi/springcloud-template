@@ -1,12 +1,13 @@
 package com.company.tool.retry;
 
 import cn.hutool.core.date.LocalDateTimeUtil;
-import com.company.common.api.Result;
+
 import com.company.framework.globalresponse.ExceptionUtil;
 import com.company.framework.trace.TraceManager;
 import com.company.framework.util.JsonUtil;
 import com.company.framework.util.Utils;
 import com.company.tool.api.enums.RetryerEnum;
+import com.company.tool.api.response.RetryerResp;
 import com.company.tool.entity.RetryTask;
 import com.company.tool.enums.RetryTaskEnum;
 import com.company.tool.mapper.RetryTaskMapper;
@@ -112,29 +113,18 @@ public class FeignRetryer {
 		long start = System.currentTimeMillis();
 		try {
 			HttpEntity<Object> httpEntity = new HttpEntity<>(paramObject);
-			@SuppressWarnings("rawtypes")
-			ResponseEntity<Result> responseEntity = restTemplate.postForEntity(retryTask.getUrl(), httpEntity,
-					Result.class);
-			if (responseEntity.getStatusCode() == HttpStatus.OK) {
-				@SuppressWarnings("unchecked")
-				Result<Boolean> result = responseEntity.getBody();
-				log.info("{}ms,调用结果:{}", System.currentTimeMillis() - start, JsonUtil.toJsonString(result));
-				remark = result.getMessage();
-				if (result.successCode()) {
-					remark = Utils.rightRemark(retryTask.getRemark(), remark);
+            RetryerResp retryerResp = restTemplate.postForObject(retryTask.getUrl(), httpEntity, RetryerResp.class);
+            assert retryerResp != null;
+            if (retryerResp.getHasResult()) {
+                abandonCall = true;
+                remark = Utils.rightRemark(retryTask.getRemark(), remark);
 
-					baseMapper.retrySuccess(RetryTaskEnum.Status.CALL_SUCCESS, JsonUtil.toJsonString(result),
-							remark, retryTask.getId());
-					return;
-				} else {
-					Boolean stopCall = result.getData();
-					if (stopCall != null) {
-						abandonCall = stopCall;
-					}
-				}
-			} else {
-				remark = "响应码:" + responseEntity.getStatusCodeValue();
-			}
+                baseMapper.retrySuccess(RetryTaskEnum.Status.CALL_SUCCESS, JsonUtil.toJsonString(retryerResp),
+                        remark, retryTask.getId());
+                return;
+            } else {
+                remark = retryerResp.getRemark();
+            }
 		} catch (Exception e) {
 			log.error("{}ms,调用异常", System.currentTimeMillis() - start, e);
 			remark = ExceptionUtils.getMessage(e);

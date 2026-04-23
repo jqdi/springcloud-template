@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import com.company.admin.annotation.Pagination;
-import com.company.common.api.Result;
+
 
 /**
  * 提现Controller
@@ -33,21 +33,21 @@ public class WithdrawalController {
 
 //	@RequestMapping(value = "/admin/user/withdrawal/get", method = RequestMethod.POST)
 //	@ResponseBody
-//	public Result<?> get(Withdrawal withdrawal) {
-//		return Result.success(withdrawalService.get(withdrawal));
+//	public Withdrawal get(Withdrawal withdrawal) {
+//		return withdrawalService.get(withdrawal);
 //	}
 
 	@RequestMapping(value = "/admin/user/withdrawal/remove", method = RequestMethod.POST)
 	@ResponseBody
-	public Result<?> remove(Withdrawal withdrawal) {
+	public Void remove(Withdrawal withdrawal) {
 		withdrawalService.remove(withdrawal);
-		return Result.success();
+		return null;
 	}
 
 	@RequestMapping(value = "/admin/user/withdrawal/audit", method = RequestMethod.POST)
 	@ResponseBody
-	public Result<?> audit(Withdrawal withdrawal) {
+	public Void audit(Withdrawal withdrawal) {
 		withdrawalService.update(withdrawal);
-		return Result.success();
+		return null;
 	}
 }

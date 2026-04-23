@@ -1,7 +1,7 @@
 package com.company.tool.controller;
 
 import cn.hutool.core.text.CharSequenceUtil;
-import com.company.common.api.Result;
+
 import com.company.tool.api.feign.AppVersionFeign;
 import com.company.tool.api.response.AppVersionCheckResp;
 import com.company.tool.entity.AppVersion;
@@ -17,13 +17,13 @@ public class AppVersionController implements AppVersionFeign {
     private AppVersionService appVersionService;
 
     @Override
-    public Result<AppVersionCheckResp> check(String appCode, String currentVersion) {
+    public AppVersionCheckResp check(String appCode, String currentVersion) {
         AppVersion lastAppVersion = appVersionService.selectLastByAppCode(appCode);
         if (lastAppVersion == null) {
             // 未找到应用版本信息，无需更新
             AppVersionCheckResp resp = new AppVersionCheckResp();
             resp.setHasUpdate(false);
-            return Result.success(resp);
+            return resp;
         }
 
         String version = lastAppVersion.getVersion();
@@ -33,7 +33,7 @@ public class AppVersionController implements AppVersionFeign {
             // 当前版本是最新版本，无需更新
             AppVersionCheckResp resp = new AppVersionCheckResp();
             resp.setHasUpdate(false);
-            return Result.success(resp);
+            return resp;
         }
 
         // 需要更新
@@ -49,6 +49,6 @@ public class AppVersionController implements AppVersionFeign {
         resp.setLatestVersion(version);
         resp.setDownloadUrl(lastAppVersion.getDownloadUrl());
         resp.setReleaseNotes(lastAppVersion.getReleaseNotes());
-        return Result.success(resp);
+        return resp;
     }
 }

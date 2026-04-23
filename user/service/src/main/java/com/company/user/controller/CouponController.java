@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.company.common.api.Result;
+
 import com.company.framework.util.PropertyUtils;
 import com.company.user.api.feign.CouponFeign;
 import com.company.user.api.response.UserCouponResp;
@@ -19,26 +19,26 @@ public class CouponController implements CouponFeign {
 	private UserCouponService userCouponService;
 
 	@Override
-	public Result<UserCouponResp> getUserCouponById(Integer userCouponId) {
+	public UserCouponResp getUserCouponById(Integer userCouponId) {
 		UserCoupon userCoupon = userCouponService.getById(userCouponId);
-		return Result.success(PropertyUtils.copyProperties(userCoupon, UserCouponResp.class));
+		return PropertyUtils.copyProperties(userCoupon, UserCouponResp.class);
 	}
 
 	@Override
-	public Result<Boolean> isMatchTemplate(Integer userCouponId, Integer couponTemplateId) {
+	public Boolean isMatchTemplate(Integer userCouponId, Integer couponTemplateId) {
 		UserCoupon userCoupon = userCouponService.getById(userCouponId);
 		if (userCoupon == null) {
-			return Result.success(false);
+			return false;
 		}
-		return Result.success(userCoupon.getCouponTemplateId().equals(couponTemplateId));
+		return userCoupon.getCouponTemplateId().equals(couponTemplateId);
 	}
 
 //	@Override
-	public Result<UserCouponResp> select4Expire(Integer days) {
+	public UserCouponResp select4Expire(Integer days) {
 		// days天后即将过期的优惠券
 //		LocalDateTime time = null;
 //		userCouponService.selectWillExpire(time);
 		UserCoupon userCoupon = userCouponService.getById(1);
-		return Result.success(PropertyUtils.copyProperties(userCoupon, UserCouponResp.class));
+		return PropertyUtils.copyProperties(userCoupon, UserCouponResp.class);
 	}
 }

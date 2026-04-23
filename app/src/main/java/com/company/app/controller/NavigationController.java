@@ -1,6 +1,6 @@
 package com.company.app.controller;
 
-import com.company.common.api.Result;
+
 import com.company.framework.context.HeaderContextUtil;
 import com.company.framework.context.HttpContextUtil;
 import com.company.framework.util.PropertyUtils;
@@ -44,18 +44,15 @@ public class NavigationController {
 	 * 金刚位列表
 	 */
 	@GetMapping("/nav")
-	public Result<List<com.company.app.resp.NavResp>> nav(HttpServletRequest request) {
+	public List<com.company.app.resp.NavResp> nav(HttpServletRequest request) {
 
 		NavReq navReq = new NavReq();
 
 		Map<String, String> runtimeAttach = WebUtil.getReqParam(request);
 
-		/* 补充一些系统可自动获取的参数 */
-		// 需要取token的话可能要在最外层取
-		// if (!runtimeAttach.containsKey("token")) {
-		// String token = HeaderContextUtil.head("x-token");
-		// runtimeAttach.put("token", token);
-		// }
+        /* 补充一些系统可自动获取的参数 */
+        Map<String, String> headerMap = HeaderContextUtil.headerMap();
+        runtimeAttach.putAll(headerMap);
 
 		/* 补充一些展示替换的参数 */
 
@@ -65,7 +62,7 @@ public class NavigationController {
 			String deviceid = HeaderContextUtil.deviceid();
 			if (StringUtils.isNotBlank(deviceid)) {
 				UserOauthResp userOauthResp = userOauthFeign
-						.selectOauth(UserOauthEnum.IdentityType.WX_OPENID_MINIAPP, deviceid).dataOrThrow();
+						.selectOauth(UserOauthEnum.IdentityType.WX_OPENID_MINIAPP, deviceid);
 				if (userOauthResp != null) {
 					userId = String.valueOf(userOauthResp.getUserId());
 				}
@@ -76,27 +73,24 @@ public class NavigationController {
 		navReq.setRuntimeAttach(runtimeAttach);
 		navReq.setMaxSize(4);
 
-		List<NavResp> navRespList = navFeign.list(navReq).dataOrThrow();
+		List<NavResp> navRespList = navFeign.list(navReq);
 		List<com.company.app.resp.NavResp> respList = PropertyUtils.copyArrayProperties(navRespList, com.company.app.resp.NavResp.class);
-		return Result.success(respList);
+		return respList;
 	}
 
 	/**
 	 * 轮播图列表
 	 */
 	@GetMapping("/banner")
-	public Result<List<com.company.app.resp.BannerResp>> banner(HttpServletRequest request) {
+	public List<com.company.app.resp.BannerResp> banner(HttpServletRequest request) {
 
 		BannerReq bannerReq = new BannerReq();
 
 		Map<String, String> runtimeAttach = WebUtil.getReqParam(request);
 
-		/* 补充一些系统可自动获取的参数 */
-		// 需要取token的话可能要在最外层取
-		// if (!runtimeAttach.containsKey("token")) {
-		// String token = HeaderContextUtil.head("x-token");
-		// runtimeAttach.put("token", token);
-		// }
+        /* 补充一些系统可自动获取的参数 */
+        Map<String, String> headerMap = HeaderContextUtil.headerMap();
+        runtimeAttach.putAll(headerMap);
 
 		/* 补充一些展示替换的参数 */
 
@@ -106,7 +100,7 @@ public class NavigationController {
 			String deviceid = HeaderContextUtil.deviceid();
 			if (StringUtils.isNotBlank(deviceid)) {
 				UserOauthResp userOauthResp = userOauthFeign
-						.selectOauth(UserOauthEnum.IdentityType.WX_OPENID_MINIAPP, deviceid).dataOrThrow();
+						.selectOauth(UserOauthEnum.IdentityType.WX_OPENID_MINIAPP, deviceid);
 				if (userOauthResp != null) {
 					userId = String.valueOf(userOauthResp.getUserId());
 				}
@@ -116,8 +110,8 @@ public class NavigationController {
 
 		bannerReq.setRuntimeAttach(runtimeAttach);
 
-		List<BannerResp> bannerRespList = bannerFeign.list(bannerReq).dataOrThrow();
+		List<BannerResp> bannerRespList = bannerFeign.list(bannerReq);
 		List<com.company.app.resp.BannerResp> respList = PropertyUtils.copyArrayProperties(bannerRespList, com.company.app.resp.BannerResp.class);
-		return Result.success(respList);
+		return respList;
 	}
 }

@@ -1,7 +1,5 @@
 package com.company.framework.threadpool;
 
-import com.company.framework.threadpool.context.HeaderContextTraceTaskDecorator;
-import com.company.framework.trace.TraceManager;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -12,37 +10,25 @@ import org.springframework.core.task.AsyncTaskExecutor;
 import org.springframework.core.task.TaskDecorator;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
-import java.util.concurrent.RejectedExecutionHandler;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @ConditionalOnProperty(prefix = "template", name = "threadpool.maxPoolSize")
 @EnableConfigurationProperties(ThreadPoolProperties.class)
 public class ThreadPoolAutoConfiguration {
 
-	/*
-	SpringBoot中建议使用ThreadPoolTaskExecutor
-	@Bean
+//	@Bean // SpringBoot中建议使用ThreadPoolTaskExecutor
 	@ConditionalOnMissingBean
-	public ExecutorService executorService(ThreadPoolProperties properties, TraceManager traceManager) {
-		int corePoolSize = properties.getCorePoolSize();
-		int maximumPoolSize = properties.getMaxPoolSize();
-		long keepAliveTime = properties.getKeepAliveSeconds();
-		BlockingQueue<Runnable> workQueue = new ArrayBlockingQueue<>(properties.getQueueCapacity());
-		ExecutorService executor = new TraceThreadPoolExecutor(corePoolSize, maximumPoolSize,
-				keepAliveTime, TimeUnit.SECONDS, workQueue, new CustomDefaultThreadFactory(), new CustomCallerRunsPolicy(), traceManager);
-		return executor;
-	}
-	*/
-
-	@Bean
-	@ConditionalOnMissingBean
-	public TaskDecorator taskDecorator(TraceManager traceManager) {
-//		return new TraceTaskDecorator(traceManager);// 传递日志id
-		return new HeaderContextTraceTaskDecorator(traceManager);// 传递日志id+上下文
-	}
+    public ExecutorService executorService(ThreadPoolProperties properties, TaskDecorator taskDecorator) {
+        int corePoolSize = properties.getCorePoolSize();
+        int maximumPoolSize = properties.getMaxPoolSize();
+        long keepAliveTime = properties.getKeepAliveSeconds();
+        BlockingQueue<Runnable> workQueue = new ArrayBlockingQueue<>(properties.getQueueCapacity());
+        ExecutorService executor = new TaskDecoratorThreadPoolExecutor(corePoolSize, maximumPoolSize, keepAliveTime,
+            TimeUnit.SECONDS, workQueue, new CustomDefaultThreadFactory(), new CustomCallerRunsPolicy(), taskDecorator);
+        return executor;
+    }
 
 	@Bean
 	@ConditionalOnMissingBean

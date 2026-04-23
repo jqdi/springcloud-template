@@ -4,7 +4,7 @@ package com.company.admin.controller.marketing;
 
 import com.company.admin.service.marketing.HotWordService;
 import com.company.admin.annotation.Pagination;
-import com.company.common.api.Result;
+
 import com.company.admin.entity.marketing.HotWord;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -34,35 +34,35 @@ public class HotWordController {
 
     @RequestMapping(value = "/admin/marketing/hotWord/get", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> get(HotWord hotWord) {
-        return Result.success(hotWordService.get(hotWord));
+    public HotWord get(HotWord hotWord) {
+        return hotWordService.get(hotWord);
     }
 
     @RequestMapping(value = "/admin/marketing/hotWord/save", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> save(@Validated(HotWord.Save.class) HotWord hotWord) {
+    public Void save(@Validated(HotWord.Save.class) HotWord hotWord) {
         hotWordService.save(hotWord);
-        return Result.success();
+        return null;
     }
 
     @RequestMapping(value = "/admin/marketing/hotWord/remove", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> remove(HotWord hotWord) {
+    public Void remove(HotWord hotWord) {
         hotWordService.remove(hotWord);
-        return Result.success();
+        return null;
     }
 
     @RequestMapping(value = "/admin/marketing/hotWord/update", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> update(@Validated(HotWord.Update.class) HotWord hotWord) {
+    public Void update(@Validated(HotWord.Update.class) HotWord hotWord) {
         hotWordService.update(hotWord);
-        return Result.success();
+        return null;
     }
 
     @RequestMapping(value = "/admin/marketing/hotWord/status/update", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> updateStatus(HotWord hotWord) {
+    public Void updateStatus(HotWord hotWord) {
         hotWordService.update(hotWord);
-        return Result.success();
+        return null;
     }
 }

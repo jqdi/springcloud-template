@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.MethodParameter;
+import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
@@ -20,7 +21,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 /**
  * 响应数据增加traceId
  */
-@Order(1000)
+@Order(Ordered.LOWEST_PRECEDENCE) // 要加在最外层，所以优先级最低
 @ControllerAdvice
 @Slf4j
 @RestControllerAdvice(basePackages = {CommonConstants.BASE_PACKAGE}) // 注意哦，这里要加上需要扫描的包

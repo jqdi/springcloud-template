@@ -1,18 +1,19 @@
 package com.company.tool.api.feign;
 
-import com.company.tool.api.feign.fallback.ThrowExceptionFallback;
-import com.company.tool.api.request.ClientUploadReq;
-import com.company.tool.api.response.ClientUploadResp;
+import java.util.Map;
+
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-
-import com.company.common.api.Result;
-import com.company.tool.api.constant.Constants;
-import com.company.tool.api.request.UploadReq;
-import com.company.tool.api.response.UploadResp;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import com.company.tool.api.constant.Constants;
+import com.company.tool.api.feign.fallback.ThrowExceptionFallback;
+import com.company.tool.api.request.ClientUploadReq;
+import com.company.tool.api.request.UploadReq;
+import com.company.tool.api.response.ClientUploadResp;
+import com.company.tool.api.response.UploadResp;
 
 @FeignClient(value = Constants.FEIGNCLIENT_VALUE, path = "/file", fallbackFactory = ThrowExceptionFallback.class)
 public interface FileFeign {
@@ -27,7 +28,7 @@ public interface FileFeign {
      * @return
      */
     @PostMapping("/upload")
-    Result<UploadResp> upload(@RequestBody UploadReq uploadReq);
+    UploadResp upload(@RequestBody UploadReq uploadReq);
 
     /**
      * <pre>
@@ -41,7 +42,7 @@ public interface FileFeign {
      * @return 预签名链接
      */
     @PostMapping(value = "/clientUpload")
-    Result<ClientUploadResp> clientUpload(@RequestBody ClientUploadReq clientUploadReq);
+    ClientUploadResp clientUpload(@RequestBody ClientUploadReq clientUploadReq);
 
     /**
      * 获取预签名链接
@@ -50,5 +51,5 @@ public interface FileFeign {
      * @return 预签名链接
      */
     @GetMapping(value = "/presignedUrl")
-    Result<String> presignedUrl(@RequestParam("fileKey") String fileKey);
+    Map<String, String> presignedUrl(@RequestParam("fileKey") String fileKey);
 }

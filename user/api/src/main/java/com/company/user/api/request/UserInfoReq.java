@@ -13,12 +13,13 @@ import lombok.experimental.Accessors;
 public class UserInfoReq {
 	@NotNull(message = "账号类型不能为空")
 	private UserOauthEnum.IdentityType identityType;
-	
+
 	@NotBlank(message = "账号不能为空")
 	private String identifier;
-	
+
 	private String certificate;
-	
+	private String password;
+
 	private String nickname;
 	private String avatar;
 }

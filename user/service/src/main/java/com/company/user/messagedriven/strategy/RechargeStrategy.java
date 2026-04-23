@@ -78,7 +78,7 @@ public class RechargeStrategy implements BaseStrategy<Map<String, Object>> {
 			BigDecimal totalRefundAmount = new BigDecimal(MapUtils.getString(params, "totalRefundAmount"));
 			orderRefundFinishReq.setTotalRefundAmount(totalRefundAmount);
 			orderRefundFinishReq.setRefundAll(refundAll);
-			Boolean updateSuccess = orderFeign.refundFinish(orderRefundFinishReq).dataOrThrow();
+			Boolean updateSuccess = orderFeign.refundFinish(orderRefundFinishReq);
 			if (!updateSuccess) {
 				log.warn("修改‘订单中心’数据失败");
 				return;
@@ -120,8 +120,8 @@ public class RechargeStrategy implements BaseStrategy<Map<String, Object>> {
 				// 冻结的余额无法处理，所以这里只需要用MainChargeGiftWallet的逻辑就行了
 				Integer walletRecordId = mainChargeGiftWallet.outcome(uniqueCode, walletId, amount, attachMap);
 				if (walletRecordId <= 0) {
-					log.warn("{}充值订单退款扣减余额失败,balance:{},amount:{}", JsonUtil.toJsonString(walletId),
-							JsonUtil.toJsonString(balance), JsonUtil.toJsonString(amount));
+					log.warn("{}充值订单退款扣减余额失败,balance:{},amount:{}", walletId,
+							balance, amount);
 				}
 
 				// 扣回wallet_use_seq
@@ -132,7 +132,7 @@ public class RechargeStrategy implements BaseStrategy<Map<String, Object>> {
 				// TODO 根据业务需求，充值订单全退的情况下，决定是否要退回业务订单
 				MemberBuyOrder memberBuyOrder = memberBuyOrderService.selectByOrderCode(orderCode);
 				if (memberBuyOrder != null) {
-					Order4Resp order4Resp = orderFeign.selectByOrderCode(orderCode).dataOrThrow();
+					Order4Resp order4Resp = orderFeign.selectByOrderCode(orderCode);
 					// TODO 这里可以加订单状态、时间等逻辑来判断业务订单是否要退
 					BigDecimal needPayAmount = order4Resp.getNeedPayAmount();
 					BigDecimal refundAmount = order4Resp.getRefundAmount();
@@ -170,7 +170,7 @@ public class RechargeStrategy implements BaseStrategy<Map<String, Object>> {
 			String message = MapUtils.getString(params, "message");
 			orderRefundFailReq.setFailReason(message);
 
-			Boolean updateSuccess = orderFeign.refundFail(orderRefundFailReq).dataOrThrow();
+			Boolean updateSuccess = orderFeign.refundFail(orderRefundFailReq);
 			if (!updateSuccess) {
 				log.warn("修改‘订单中心’数据失败");
 			}

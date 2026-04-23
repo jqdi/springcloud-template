@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.company.common.api.Result;
 import com.company.openapi.annotation.NoSign;
 import com.google.common.collect.Maps;
 
@@ -19,14 +18,14 @@ import cn.hutool.core.util.RandomUtil;
 public class AccountController {
 
 	@GetMapping(value = "/appsecret")
-	public Result<?> appsecret() {
+	public Map<String, String> appsecret() {
 		String appid = RandomUtil.randomNumbers(8);
 		String appsecret = IdUtil.fastSimpleUUID();
 
 		Map<String, String> result = Maps.newHashMap();
 		result.put("appid", appid);
 		result.put("appsecret", appsecret);
-		return Result.success(result);
+		return result;
 	}
 
 	public static void main(String[] args) {

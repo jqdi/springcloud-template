@@ -7,7 +7,7 @@ import com.company.adminapi.converter.annotation.RespConverter;
 import com.company.adminapi.easyexcel.ExcelUtil;
 import com.company.adminapi.enums.OperationLogEnum.BusinessType;
 import com.company.adminapi.excel.SysOperLogExcel;
-import com.company.common.api.Result;
+
 import com.company.system.api.request.RemoveReq;
 import com.company.system.api.response.PageResp;
 import com.company.framework.util.PropertyUtils;
@@ -34,34 +34,34 @@ public class SysOperLogController {
 	@RespConverter(field = "sysUserId", dataSource = SysUserIdNicknameConverter.class)
 	@RequirePermissions("system:sysOperLog:query")
 	@GetMapping("/page")
-	public Result<PageResp<SysOperLogResp>> page(@NotNull @Min(value = 1) Long current, @NotNull Long size, Integer sysUserId, String title, Integer businessType, String method, String requestMethod, String operUrl, String operIp, String operLocation, String operParam, String jsonResult, Integer status, String errorMsg, Integer costTime, String operTimeStart, String operTimeEnd, String createTimeStart, String createTimeEnd, String updateTimeStart, String updateTimeEnd) {
+	public PageResp<SysOperLogResp> page(@NotNull @Min(value = 1) Long current, @NotNull Long size, Integer sysUserId, String title, Integer businessType, String method, String requestMethod, String operUrl, String operIp, String operLocation, String operParam, String jsonResult, Integer status, String errorMsg, Integer costTime, String operTimeStart, String operTimeEnd, String createTimeStart, String createTimeEnd, String updateTimeStart, String updateTimeEnd) {
 		return sysOperLogFeign.page(current, size, sysUserId, title, businessType, method, requestMethod, operUrl, operIp, operLocation, operParam, jsonResult, status, errorMsg, costTime, operTimeStart, operTimeEnd, createTimeStart, createTimeEnd, updateTimeStart, updateTimeEnd);
 	}
 
 	@RequirePermissions("system:sysOperLog:query")
 	@GetMapping("/query")
-	public Result<SysOperLogResp> query(@NotNull Integer id) {
+	public SysOperLogResp query(@NotNull Integer id) {
 		return sysOperLogFeign.query(id);
 	}
 
     @OperationLog(title = "操作日志记录保存", businessType = BusinessType.INSERT)
 	@RequirePermissions("system:sysOperLog:save")
 	@PostMapping("/save")
-	public Result<Boolean> save(@RequestBody SysOperLogReq sysOperLogReq) {
+	public Boolean save(@RequestBody SysOperLogReq sysOperLogReq) {
 		return sysOperLogFeign.save(sysOperLogReq);
 	}
 
     @OperationLog(title = "操作日志记录更新", businessType = BusinessType.UPDATE)
 	@RequirePermissions("system:sysOperLog:update")
 	@PostMapping("/update")
-	public Result<Boolean> update(@RequestBody SysOperLogReq sysOperLogReq) {
+	public Boolean update(@RequestBody SysOperLogReq sysOperLogReq) {
 		return sysOperLogFeign.update(sysOperLogReq);
 	}
 
     @OperationLog(title = "操作日志记录删除", businessType = BusinessType.DELETE)
 	@RequirePermissions("system:sysOperLog:remove")
 	@PostMapping("/remove")
-	public Result<Boolean> remove(@RequestBody RemoveReq<Integer> req) {
+	public Boolean remove(@RequestBody RemoveReq<Integer> req) {
 		return sysOperLogFeign.remove(req);
 	}
 
@@ -69,7 +69,7 @@ public class SysOperLogController {
 	@RequirePermissions("system:sysOperLog:export")
 	@GetMapping("/export")
 	public void export(HttpServletResponse response, Integer sysUserId, String title, Integer businessType, String method, String requestMethod, String operUrl, String operIp, String operLocation, String operParam, String jsonResult, Integer status, String errorMsg, Integer costTime, String operTimeStart, String operTimeEnd, String createTimeStart, String createTimeEnd, String updateTimeStart, String updateTimeEnd) {
-		List<SysOperLogResp> listResp = sysOperLogFeign.list(sysUserId, title, businessType, method, requestMethod, operUrl, operIp, operLocation, operParam, jsonResult, status, errorMsg, costTime, operTimeStart, operTimeEnd, createTimeStart, createTimeEnd, updateTimeStart, updateTimeEnd).dataOrThrow();
+		List<SysOperLogResp> listResp = sysOperLogFeign.list(sysUserId, title, businessType, method, requestMethod, operUrl, operIp, operLocation, operParam, jsonResult, status, errorMsg, costTime, operTimeStart, operTimeEnd, createTimeStart, createTimeEnd, updateTimeStart, updateTimeEnd);
 		List<SysOperLogExcel> excelList = PropertyUtils.copyArrayProperties(listResp, SysOperLogExcel.class);
 		ExcelUtil.write2httpResponse(response, "操作日志记录", SysOperLogExcel.class, excelList);
 	}

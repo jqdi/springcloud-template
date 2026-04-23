@@ -327,7 +327,7 @@ public class AliPayClient extends BasePayClient {
 
         	refundResult2AliPayRefund(aliPayRefundId, aliPay, outRefundNo, refundAmount, null);
 			AlipayTradeRefundResponse response = alipayClient.execute(request);
-			log.info("refund response:{}", JsonUtil.toJsonString(response));
+			log.info("refund response:{}", response);
 			updateRefundResult(outRefundNo, response);
 
 			if (!response.isSuccess()) {
@@ -413,7 +413,7 @@ public class AliPayClient extends BasePayClient {
 	                AliConstants.SIGNTYPE);
 
 			AlipayTradeCloseResponse response = alipayClient.execute(closeRequest);
-			log.info("requestPayCloseOrder is {}", JsonUtil.toJsonString(response));
+			log.info("requestPayCloseOrder is {}", response);
 			// 未支付的订单支付宝不会创建订单，所以响应‘交易不存在’，保留调用该接口，或许其他支付业务会用到
 			String subCode = response.getSubCode();
 			if ("ACQ.TRADE_NOT_EXIST".equals(subCode)) {// 交易不存在（可认为是关闭成功）

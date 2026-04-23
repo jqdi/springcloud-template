@@ -1,6 +1,6 @@
 package com.company.tool.api.feign;
 
-import com.company.common.api.Result;
+
 import com.company.tool.api.constant.Constants;
 import com.company.tool.api.feign.fallback.ThrowExceptionFallback;
 import com.company.tool.api.response.AppVersionCheckResp;
@@ -19,5 +19,5 @@ public interface AppVersionFeign {
      * @return
      */
     @GetMapping("/check")
-    Result<AppVersionCheckResp> check(@RequestParam("appCode") String appCode, @RequestParam("currentVersion") String currentVersion);
+    AppVersionCheckResp check(@RequestParam("appCode") String appCode, @RequestParam("currentVersion") String currentVersion);
 }

@@ -4,7 +4,7 @@ import org.springframework.context.annotation.Configuration;
 
 import com.github.linyuzai.connection.loadbalance.websocket.EnableWebSocketLoadBalanceConcept;
 
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @EnableWebSocketLoadBalanceConcept
 public class ConceptConfig {
 }

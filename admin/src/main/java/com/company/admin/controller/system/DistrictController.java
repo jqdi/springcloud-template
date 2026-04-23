@@ -9,10 +9,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.company.admin.annotation.Pagination;
-import com.company.common.api.Result;
+
 import com.company.admin.entity.system.District;
 import com.company.admin.service.system.DistrictService;
 import com.fasterxml.jackson.core.JsonProcessingException;
+
+import java.util.List;
 
 /**
  * 区县Controller
@@ -34,41 +36,41 @@ public class DistrictController {
 
     @RequestMapping(value = "/admin/system/district/get", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> get(District district) {
-        return Result.success(districtService.get(district));
+    public District get(District district) {
+        return districtService.get(district);
     }
 
     @RequestMapping(value = "/admin/system/district/save", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> save(@Validated(District.Save.class) District district) {
+    public Void save(@Validated(District.Save.class) District district) {
         districtService.save(district);
-        return Result.success();
+        return null;
     }
 
     @RequestMapping(value = "/admin/system/district/remove", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> remove(District district) {
+    public Void remove(District district) {
         districtService.remove(district);
-        return Result.success();
+        return null;
     }
 
     @RequestMapping(value = "/admin/system/district/update", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> update(@Validated(District.Update.class) District district) {
+    public Void update(@Validated(District.Update.class) District district) {
         districtService.update(district);
-        return Result.success();
+        return null;
     }
 
     @RequestMapping(value = "/admin/system/district/status/update", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> adminUpdateStatus(District district) {
+    public Void adminUpdateStatus(District district) {
         districtService.updateStatus(district);
-        return Result.success();
+        return null;
     }
 
     @RequestMapping(value = "/admin/system/district/list", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> adminDistrictList(District district) {
-        return Result.success(districtService.listCombo(district));
+    public List<District> adminDistrictList(District district) {
+        return districtService.listCombo(district);
     }
 }

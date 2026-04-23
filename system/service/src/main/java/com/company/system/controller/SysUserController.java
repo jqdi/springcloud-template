@@ -2,7 +2,7 @@ package com.company.system.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.PageDTO;
-import com.company.common.api.Result;
+
 import com.company.system.api.request.RemoveReq;
 import com.company.system.api.response.PageResp;
 import com.company.framework.util.PropertyUtils;
@@ -85,7 +85,7 @@ public class SysUserController implements SysUserFeign {
 	}
 
 	@Override
-	public Result<PageResp<SysUserResp>> page(Long current, Long size, String account, String nickname, String email, String phonenumber, String sex, String avatar, String status, Integer deptId, String userRemark, String createTimeStart, String createTimeEnd, String updateTimeStart, String updateTimeEnd) {
+	public PageResp<SysUserResp> page(Long current, Long size, String account, String nickname, String email, String phonenumber, String sex, String avatar, String status, Integer deptId, String userRemark, String createTimeStart, String createTimeEnd, String updateTimeStart, String updateTimeEnd) {
 		QueryWrapper<SysUser> queryWrapper = toQueryWrapper(account, nickname, email, phonenumber, sex, avatar, status, deptId, userRemark, createTimeStart, createTimeEnd, updateTimeStart, updateTimeEnd);
 
 		long count = sysUserService.count(queryWrapper);
@@ -94,64 +94,64 @@ public class SysUserController implements SysUserFeign {
 		List<SysUser> list = sysUserService.list(PageDTO.of(current, size), queryWrapper);
 
 		List<SysUserResp> respList = PropertyUtils.copyArrayProperties(list, SysUserResp.class);
-		return Result.success(PageResp.of(count, respList));
+		return PageResp.of(count, respList);
 	}
 
 	@Override
-	public Result<List<SysUserResp>> list(String account, String nickname, String email, String phonenumber, String sex, String avatar, String status, Integer deptId, String userRemark, String createTimeStart, String createTimeEnd, String updateTimeStart, String updateTimeEnd) {
+	public List<SysUserResp> list(String account, String nickname, String email, String phonenumber, String sex, String avatar, String status, Integer deptId, String userRemark, String createTimeStart, String createTimeEnd, String updateTimeStart, String updateTimeEnd) {
 		QueryWrapper<SysUser> queryWrapper = toQueryWrapper(account, nickname, email, phonenumber, sex, avatar, status, deptId, userRemark, createTimeStart, createTimeEnd, updateTimeStart, updateTimeEnd);
 
 		queryWrapper.orderByDesc("id");
 		List<SysUser> list = sysUserService.list(queryWrapper);
 
 		List<SysUserResp> respList = PropertyUtils.copyArrayProperties(list, SysUserResp.class);
-		return Result.success(respList);
+		return respList;
 	}
 
 	@Override
-	public Result<SysUserResp> query(Integer id) {
+	public SysUserResp query(Integer id) {
 		SysUser sysUser = sysUserService.getById(id);
 		SysUserResp sysUserResp = PropertyUtils.copyProperties(sysUser, SysUserResp.class);
-		return Result.success(sysUserResp);
+		return sysUserResp;
 	}
 
 	@Override
-	public Result<Boolean> save(SysUserReq sysUserReq) {
+	public Boolean save(SysUserReq sysUserReq) {
 		SysUser sysUser = PropertyUtils.copyProperties(sysUserReq, SysUser.class);
 		boolean success = sysUserService.save(sysUser);
-		return Result.success(success);
+		return success;
 	}
 
 	@Override
-	public Result<Boolean> update(SysUserReq sysUserReq) {
+	public Boolean update(SysUserReq sysUserReq) {
 		SysUser sysUser = PropertyUtils.copyProperties(sysUserReq, SysUser.class);
 		boolean success = sysUserService.updateById(sysUser);
-		return Result.success(success);
+		return success;
 	}
 
 	@Override
-	public Result<Boolean> remove(@RequestBody RemoveReq<Integer> req) {
+	public Boolean remove(@RequestBody RemoveReq<Integer> req) {
 		if (req.getIdList() == null || req.getIdList().isEmpty()) {
-			return Result.success(true);
+			return true;
 		}
 		boolean success = sysUserService.removeByIds(req.getIdList());
-		return Result.success(success);
+		return success;
 	}
 
 	@Override
-	public Result<SysUserResp> getByAccount(String account) {
+	public SysUserResp getByAccount(String account) {
 		SysUser sysUser = sysUserService.getByAccount(account);
-		return Result.success(PropertyUtils.copyProperties(sysUser, SysUserResp.class));
+		return PropertyUtils.copyProperties(sysUser, SysUserResp.class);
 	}
 
 	@Override
-	public Result<SysUserResp> getById(Integer id) {
+	public SysUserResp getById(Integer id) {
 		SysUser sysUser = sysUserService.getById(id);
-		return Result.success(PropertyUtils.copyProperties(sysUser, SysUserResp.class));
+		return PropertyUtils.copyProperties(sysUser, SysUserResp.class);
 	}
 
 	@Override
-	public Result<SysUserInfoResp> getInfo(Integer userId) {
+	public SysUserInfoResp getInfo(Integer userId) {
 		SysUser user = sysUserService.getById(userId);
 		Set<String> permissions = new HashSet<>();
 		boolean isAdmin = sysRoleService.hasRole(userId, Constants.SUPER_ROLE);
@@ -167,29 +167,29 @@ public class SysUserController implements SysUserFeign {
 		}
 		SysUserInfoResp resp = new SysUserInfoResp().setUser(PropertyUtils.copyProperties(user, SysUserInfoResp.User.class))
 				.setPermissions(permissions);
-		return Result.success(resp);
+		return resp;
 	}
 
 	@Override
-	public Result<List<SysUserResp>> getByBatchId(@RequestBody List<Integer> ids) {
+	public List<SysUserResp> getByBatchId(@RequestBody List<Integer> ids) {
 		if (ids == null || ids.isEmpty()) {
-			return Result.success(new ArrayList<>());
+			return new ArrayList<>();
 		}
 		List<SysUser> sysUsers = sysUserService.listByIds(ids);
-		return Result.success(PropertyUtils.copyArrayProperties(sysUsers, SysUserResp.class));
+		return PropertyUtils.copyArrayProperties(sysUsers, SysUserResp.class);
 	}
 
 	@Override
-	public Result<Map<Integer, String>> mapNicknameById(Collection<Integer> ids) {
+	public Map<Integer, String> mapNicknameById(Collection<Integer> ids) {
 		List<SysUser> sysUserList = sysUserService.selectByIds(ids);
 		Map<Integer, String> idNicknameMap = sysUserList.stream()
 				.collect(Collectors.toMap(SysUser::getId, SysUser::getNickname));
-		return Result.success(idNicknameMap);
+		return idNicknameMap;
 	}
 
 	@Override
-	public Result<Boolean> assignRole(@RequestBody SysUserAssignRoleReq req) {
+	public Boolean assignRole(@RequestBody SysUserAssignRoleReq req) {
 		sysUserRoleService.assignRole(req.getSysUserId(), req.getSysRoleIds());
-		return Result.success(true);
+		return true;
 	}
 }

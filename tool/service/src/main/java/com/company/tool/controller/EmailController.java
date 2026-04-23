@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.company.common.api.Result;
+
 import com.company.tool.api.enums.EmailEnum;
 import com.company.tool.api.feign.EmailFeign;
 import com.company.tool.api.request.SendEmailReq;
@@ -23,19 +23,19 @@ public class EmailController implements EmailFeign {
 	private AsyncEmailSender asyncEmailSender;
 
 	@Override
-	public Result<List<Integer>> select4PreTimeSend(Integer limit) {
+	public List<Integer> select4PreTimeSend(Integer limit) {
 		List<Integer> idList = asyncEmailSender.select4PreTimeSend(limit);
-		return Result.success(idList);
+		return idList;
 	}
 	
 	@Override
-	public Result<Void> exePreTimeSend(Integer id) {
+	public Void exePreTimeSend(Integer id) {
 		asyncEmailSender.exePreTimeSend(id);
-		return Result.success();
+		return null;
 	}
 
 	@Override
-	public Result<Void> send(@RequestBody SendEmailReq sendEmailReq) {
+	public Void send(@RequestBody SendEmailReq sendEmailReq) {
 		String email = sendEmailReq.getEmail();
 		Map<String, String> templateParamMap = sendEmailReq.getTemplateParamMap();
 		LocalDateTime planSendTime = sendEmailReq.getPlanSendTime();
@@ -49,6 +49,6 @@ public class EmailController implements EmailFeign {
 		}
 
 		asyncEmailSender.send(email, templateParamMap, type, planSendTime, overTime);
-		return Result.success();
+		return null;
 	}
 }

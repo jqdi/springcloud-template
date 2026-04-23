@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.company.common.api.Result;
+
 import com.company.admin.entity.system.Country;
 import com.company.admin.service.system.CountryService;
 
@@ -33,36 +33,36 @@ public class CountryController {
 
     @RequestMapping(value = "/admin/system/country/get", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> adminGet(Country country) {
-        return Result.success(countryService.get(country));
+    public Country adminGet(Country country) {
+        return countryService.get(country);
     }
 
     @RequestMapping(value = "/admin/system/country/save", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> adminSave(@Validated(Country.Save.class) Country country) {
+    public Void adminSave(@Validated(Country.Save.class) Country country) {
         countryService.save(country);
-        return Result.success();
+        return null;
     }
 
     @RequestMapping(value = "/admin/system/country/remove", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> adminRemove(Country country) {
+    public Void adminRemove(Country country) {
         countryService.remove(country);
-        return Result.success();
+        return null;
     }
 
     @RequestMapping(value = "/admin/system/country/update", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> adminUpdate(@Validated(Country.Update.class) Country country) {
+    public Void adminUpdate(@Validated(Country.Update.class) Country country) {
         countryService.update(country);
-        return Result.success();
+        return null;
     }
 
     @RequestMapping(value = "/admin/system/country/status/update", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> adminUpdateStatus(Country country) {
+    public Void adminUpdateStatus(Country country) {
         countryService.updateStatus(country);
-        return Result.success();
+        return null;
     }
 
 }

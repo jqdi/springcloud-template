@@ -1,6 +1,5 @@
 package com.company.admin.aspect;
 
-import com.company.framework.util.JsonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,7 +33,7 @@ public class XSLogger {
     private String executionDuration;
 
     public void log() {
-        logger.info(JsonUtil.toJsonString(this));
+        logger.info("{}", this);
     }
 
     public String getRequestIp() {

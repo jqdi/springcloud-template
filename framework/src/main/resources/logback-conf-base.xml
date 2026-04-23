@@ -4,10 +4,15 @@
 	<springProperty scope="context" name="FILE_PATH" source="logging.file.path"/>
 	<!--日志文件的保存路径 -->
 	<property name="LOG_HOME" value="${FILE_PATH}" />
-	<!-- 日志输出格式 -->
-	<property name="ENCODER_PATTERN" value="%d{HH:mm:ss.SSS} [%X{trace-id}] [%t] %5p %logger{0}.%M[%L] - %m%n" />
 
-	<!-- 替换普通MDC，利用transmittable-thread-local解决ForkJoinPool日志ID传递问题，启动参数加上：-javaagent:path/to/transmittable-thread-local-2.x.x.jar -->
+    <!-- 注册自定义转换器，统一将对象转为json字符串，定义转换词为 'm,msg,message' 覆盖原来的MessageConverter -->
+    <conversionRule conversionWord="m" converterClass="com.company.framework.logback.ArgumentToJsonConverter"/>
+    <conversionRule conversionWord="msg" converterClass="com.company.framework.logback.ArgumentToJsonConverter"/>
+    <conversionRule conversionWord="message" converterClass="com.company.framework.logback.ArgumentToJsonConverter"/>
+    <!-- 日志输出格式 -->
+    <property name="ENCODER_PATTERN" value="%d{HH:mm:ss.SSS} [%X{trace-id}] [%t] %5p %logger{0}.%M[%L] - %m%n"/>
+
+    <!-- 替换普通MDC，利用transmittable-thread-local解决ForkJoinPool日志ID传递问题，启动参数加上：-javaagent:path/to/transmittable-thread-local-2.x.x.jar -->
 	<contextListener class="com.ofpay.logback.TtlMdcListener"/>
 
 	<!-- 控制台日志：输出全部日志到控制台 -->

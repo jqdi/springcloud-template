@@ -1,6 +1,6 @@
 package com.company.im.api.feign;
 
-import com.company.common.api.Result;
+
 import com.company.im.api.constant.Constants;
 import com.company.im.api.feign.fallback.ThrowExceptionFallback;
 import com.company.im.api.request.AllReq;
@@ -20,7 +20,7 @@ public interface WebsocketFeign {
      * @return
      */
     @PostMapping("/sendToAll")
-    Result<Void> sendToAll(@RequestBody AllReq allReq);
+    Void sendToAll(@RequestBody AllReq allReq);
 
     /**
      * 发消息给指定用户
@@ -29,7 +29,7 @@ public interface WebsocketFeign {
      * @return
      */
     @PostMapping("/sendToUser")
-    Result<Void> sendToUser(@RequestBody UserReq userReq);
+    Void sendToUser(@RequestBody UserReq userReq);
 
     /**
      * 发消息到组
@@ -38,6 +38,6 @@ public interface WebsocketFeign {
      * @return
      */
     @PostMapping("/sendToGroup")
-    Result<Void> sendToGroup(@RequestBody GroupReq groupReq);
+    Void sendToGroup(@RequestBody GroupReq groupReq);
 
 }

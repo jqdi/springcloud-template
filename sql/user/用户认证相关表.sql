@@ -23,7 +23,7 @@ CREATE TABLE `user_oauth` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'id',
   `user_id` int(11) NOT NULL COMMENT 'user_info.id',
   `identity_type` varchar(32) NOT NULL COMMENT '账号类型(mobile:手机号,wx-unionid:微信unionid,wx-openid-miniapp:微信小程序openid,wx-openid-mp:微信公众号openid,email:邮箱,username:用户名,sina:新浪微博,qq:QQ)',
-  `identifier` varchar(32) NOT NULL COMMENT '手机号、邮箱、用户名或第三方应用的唯一标识',
+  `identifier` varchar(64) NOT NULL COMMENT '手机号、邮箱、用户名或第三方应用的唯一标识',
   `certificate` varchar(255) DEFAULT NULL COMMENT '凭证(站内的保存密码，站外的不保存或保存token)',
   `remark` varchar(255) DEFAULT NULL COMMENT '备注',
   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',

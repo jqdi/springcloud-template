@@ -5,7 +5,7 @@ import com.company.adminapi.annotation.RequirePermissions;
 import com.company.adminapi.easyexcel.ExcelUtil;
 import com.company.adminapi.enums.OperationLogEnum.BusinessType;
 import com.company.adminapi.excel.SysDictDataExcel;
-import com.company.common.api.Result;
+
 import com.company.system.api.request.RemoveReq;
 import com.company.system.api.response.PageResp;
 import com.company.system.api.response.SelectResp;
@@ -33,34 +33,34 @@ public class SysDictDataController {
 
 	@RequirePermissions("system:sysDictData:query")
 	@GetMapping("/page")
-	public Result<PageResp<SysDictDataResp>> page(@NotNull @Min(value = 1) Long current, @NotNull Long size, String dictType, String dictCode, String dictValue, Integer dictSort, String isDefault, String status, String dictRemark) {
+	public PageResp<SysDictDataResp> page(@NotNull @Min(value = 1) Long current, @NotNull Long size, String dictType, String dictCode, String dictValue, Integer dictSort, String isDefault, String status, String dictRemark) {
 		return sysDictDataFeign.page(current, size, dictType, dictCode, dictValue, dictSort, isDefault, status, dictRemark);
 	}
 
 	@RequirePermissions("system:sysDictData:query")
 	@GetMapping("/query")
-	public Result<SysDictDataResp> query(@NotNull Integer id) {
+	public SysDictDataResp query(@NotNull Integer id) {
 		return sysDictDataFeign.query(id);
 	}
 
     @OperationLog(title = "字典数据保存", businessType = BusinessType.INSERT)
 	@RequirePermissions("system:sysDictData:save")
 	@PostMapping("/save")
-	public Result<Boolean> save(@RequestBody SysDictDataReq sysDictDataReq) {
+	public Boolean save(@RequestBody SysDictDataReq sysDictDataReq) {
 		return sysDictDataFeign.save(sysDictDataReq);
 	}
 
     @OperationLog(title = "字典数据更新", businessType = BusinessType.UPDATE)
 	@RequirePermissions("system:sysDictData:update")
 	@PostMapping("/update")
-	public Result<Boolean> update(@RequestBody SysDictDataReq sysDictDataReq) {
+	public Boolean update(@RequestBody SysDictDataReq sysDictDataReq) {
 		return sysDictDataFeign.update(sysDictDataReq);
 	}
 
     @OperationLog(title = "字典数据删除", businessType = BusinessType.DELETE)
 	@RequirePermissions("system:sysDictData:remove")
 	@PostMapping("/remove")
-	public Result<Boolean> remove(@RequestBody RemoveReq<Integer> req) {
+	public Boolean remove(@RequestBody RemoveReq<Integer> req) {
 		return sysDictDataFeign.remove(req);
 	}
 
@@ -68,17 +68,17 @@ public class SysDictDataController {
 	@RequirePermissions("system:sysDictData:export")
 	@GetMapping("/export")
 	public void export(HttpServletResponse response, String dictType, String dictCode, String dictValue, Integer dictSort, String isDefault, String status, String dictRemark) {
-		List<SysDictDataResp> listResp = sysDictDataFeign.list(dictType, dictCode, dictValue, dictSort, isDefault, status, dictRemark).dataOrThrow();
+		List<SysDictDataResp> listResp = sysDictDataFeign.list(dictType, dictCode, dictValue, dictSort, isDefault, status, dictRemark);
 		List<SysDictDataExcel> excelList = PropertyUtils.copyArrayProperties(listResp, SysDictDataExcel.class);
 		ExcelUtil.write2httpResponse(response, "字典数据", SysDictDataExcel.class, excelList);
 	}
 
 	@GetMapping("/queryByType")
-	public Result<List<SelectResp<String>>> queryByType(String type) {
-		List<SysDictDataResp> dataList = sysDictDataFeign.getByType(type).dataOrThrow();
+	public List<SelectResp<String>> queryByType(String type) {
+		List<SysDictDataResp> dataList = sysDictDataFeign.getByType(type);
 		List<SelectResp<String>> respList = dataList.stream().map(v ->
 				new SelectResp<String>().setCode(v.getDictCode()).setName(v.getDictValue())).collect(Collectors.toList());
-		return Result.success(respList);
+		return respList;
 	}
 
 }

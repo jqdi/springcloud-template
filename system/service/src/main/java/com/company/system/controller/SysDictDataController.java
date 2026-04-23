@@ -1,6 +1,8 @@
 package com.company.system.controller;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import com.company.system.api.request.RemoveReq;
 import org.apache.commons.lang3.StringUtils;
@@ -12,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.PageDTO;
-import com.company.common.api.Result;
+
 import com.company.system.api.response.PageResp;
 import com.company.framework.util.PropertyUtils;
 import com.company.system.api.feign.SysDictDataFeign;
@@ -55,7 +57,7 @@ public class SysDictDataController implements SysDictDataFeign {
 	}
 
 	@Override
-	public Result<PageResp<SysDictDataResp>> page(Long current, Long size, String dictType, String dictCode, String dictValue, Integer dictSort, String isDefault, String status, String dictRemark) {
+	public PageResp<SysDictDataResp> page(Long current, Long size, String dictType, String dictCode, String dictValue, Integer dictSort, String isDefault, String status, String dictRemark) {
 		QueryWrapper<SysDictData> queryWrapper = toQueryWrapper(dictType, dictCode, dictValue, dictSort, isDefault, status, dictRemark);
 
 		long count = sysDictDataService.count(queryWrapper);
@@ -64,63 +66,63 @@ public class SysDictDataController implements SysDictDataFeign {
 		List<SysDictData> list = sysDictDataService.list(PageDTO.of(current, size), queryWrapper);
 
 		List<SysDictDataResp> respList = PropertyUtils.copyArrayProperties(list, SysDictDataResp.class);
-		return Result.success(PageResp.of(count, respList));
+		return PageResp.of(count, respList);
 	}
 
 	@Override
-	public Result<List<SysDictDataResp>> list(String dictType, String dictCode, String dictValue, Integer dictSort, String isDefault, String status, String dictRemark) {
+	public List<SysDictDataResp> list(String dictType, String dictCode, String dictValue, Integer dictSort, String isDefault, String status, String dictRemark) {
 		QueryWrapper<SysDictData> queryWrapper = toQueryWrapper(dictType, dictCode, dictValue, dictSort, isDefault, status, dictRemark);
 
 		queryWrapper.orderByDesc("id");
 		List<SysDictData> list = sysDictDataService.list(queryWrapper);
 
 		List<SysDictDataResp> respList = PropertyUtils.copyArrayProperties(list, SysDictDataResp.class);
-		return Result.success(respList);
+		return respList;
 	}
 
 	@Override
-	public Result<SysDictDataResp> query(Integer id) {
+	public SysDictDataResp query(Integer id) {
 		SysDictData sysDictData = sysDictDataService.getById(id);
 		SysDictDataResp sysDictDataResp = PropertyUtils.copyProperties(sysDictData, SysDictDataResp.class);
-		return Result.success(sysDictDataResp);
+		return sysDictDataResp;
 	}
 
 	@Override
-	public Result<Boolean> save(SysDictDataReq sysDictDataReq) {
+	public Boolean save(SysDictDataReq sysDictDataReq) {
 		SysDictData sysDictData = PropertyUtils.copyProperties(sysDictDataReq, SysDictData.class);
 		boolean success = sysDictDataService.save(sysDictData);
-		return Result.success(success);
+		return success;
 	}
 
 	@Override
-	public Result<Boolean> update(SysDictDataReq sysDictDataReq) {
+	public Boolean update(SysDictDataReq sysDictDataReq) {
 		SysDictData sysDictData = PropertyUtils.copyProperties(sysDictDataReq, SysDictData.class);
 		boolean success = sysDictDataService.updateById(sysDictData);
-		return Result.success(success);
+		return success;
 	}
 
 	@Override
-	public Result<Boolean> remove(RemoveReq<Integer> req) {
+	public Boolean remove(RemoveReq<Integer> req) {
 		if (req.getIdList() == null || req.getIdList().isEmpty()) {
-			return Result.success(true);
+			return true;
 		}
 		boolean success = sysDictDataService.removeBatchByIds(req.getIdList());
-		return Result.success(success);
+		return success;
 	}
 
 	@Override
-	public Result<List<SysDictDataResp>> getByType(@RequestParam("type") String type) {
+	public List<SysDictDataResp> getByType(@RequestParam("type") String type) {
 		LambdaQueryWrapper<SysDictData> wrapper = new LambdaQueryWrapper<>();
 		wrapper.eq(SysDictData::getDictType, type);
 		wrapper.orderByAsc(SysDictData::getDictSort);
 		List<SysDictData> dictDataList = sysDictDataService.list(wrapper);
-		return Result.success(PropertyUtils.copyArrayProperties(dictDataList, SysDictDataResp.class));
+		return PropertyUtils.copyArrayProperties(dictDataList, SysDictDataResp.class);
 	}
 
 	@Override
-	public Result<String> getValueByTypeCode(String type, String code) {
+	public Map<String, String> getValueByTypeCode(String type, String code) {
 		String value = sysDictDataService.getValueByTypeCode(type, code);
-		return Result.success(value);
+        return Collections.singletonMap("value", value);
 	}
 
 }

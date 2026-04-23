@@ -28,9 +28,9 @@ public class CustomWebSocketMessageHandler implements WebSocketMessageHandler {
 	@Override
 	public void onMessage(Message message, Connection connection, ConnectionLoadBalanceConcept concept) {
 		traceManager.put();
-		log.info("message:{}", JsonUtil.toJsonString(message));
+		log.info("message:{}", message);
 		Map<Object, Object> metadata = connection.getMetadata();
-		log.info("connection metadata:{}", JsonUtil.toJsonString(metadata));
+		log.info("connection metadata:{}", metadata);
 
 		String userId = MapUtils.getString(metadata, UserSelector.KEY);
 

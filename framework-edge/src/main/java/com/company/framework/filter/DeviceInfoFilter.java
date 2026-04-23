@@ -7,8 +7,10 @@ import com.company.framework.messagedriven.constants.BroadcastConstants;
 import com.company.framework.util.IpUtil;
 import com.google.common.collect.Maps;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.concurrent.EventCountCircuitBreaker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
+import org.springframework.core.task.AsyncTaskExecutor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -20,6 +22,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  * <pre>
@@ -30,17 +33,24 @@ import java.util.Map;
 @Order(CommonConstants.FilterOrdered.DEVICE)
 public class DeviceInfoFilter extends OncePerRequestFilter {
 
-	@Autowired
-	private MessageSender messageSender;
+    @Autowired
+    private MessageSender messageSender;
+    @Autowired
+    private AsyncTaskExecutor executor;
 
-	@Override
-	protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
-		return false;
-	}
+    // 创建断路器，用于发送MQ失败次数达到阈值时自动关闭发送
+    private final EventCountCircuitBreaker circuitBreaker =
+        new EventCountCircuitBreaker(10, 10, TimeUnit.SECONDS, 5, 10, TimeUnit.SECONDS);
 
-	@Override
+    @Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
+
+        if (!circuitBreaker.checkState()) {
+            // 断路器已打开
+            chain.doFilter(request, response);
+            return;
+        }
 
 		String deviceid = request.getHeader(HeaderConstants.HEADER_DEVICEID);
 		if (StringUtils.isBlank(deviceid)) {
@@ -94,7 +104,15 @@ public class DeviceInfoFilter extends OncePerRequestFilter {
 		params.put("requestip", requestip);
 		params.put("userAgent", userAgent);
 		params.put("time", time);
-		messageSender.sendBroadcastMessage(params, BroadcastConstants.DEVICE_INFO.EXCHANGE);
+        // 异步防止阻塞，保证性能
+        executor.submit(() -> {
+            try {
+                messageSender.sendBroadcastMessage(params, BroadcastConstants.DEVICE_INFO.EXCHANGE);
+            } catch (Exception ignore) {
+                // 异常不影响主线程
+                circuitBreaker.incrementAndCheckState();
+            }
+        });
 
 		chain.doFilter(request, response);
 	}

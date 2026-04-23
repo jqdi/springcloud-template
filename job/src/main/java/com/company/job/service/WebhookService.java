@@ -37,7 +37,7 @@ public class WebhookService {
 
 		int limit = 1000;
 		do {
-			idList = webhookFeign.select4PreTimeSend(limit).dataOrThrow();
+			idList = webhookFeign.select4PreTimeSend(limit);
 
 			XxlJobHelper.log("size:{}", idList.size());
 			for (Integer id : idList) {

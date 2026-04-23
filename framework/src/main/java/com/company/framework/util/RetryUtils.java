@@ -4,19 +4,11 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.github.rholder.retry.Attempt;
-import com.github.rholder.retry.RetryException;
-import com.github.rholder.retry.RetryListener;
-import com.github.rholder.retry.Retryer;
-import com.github.rholder.retry.RetryerBuilder;
-import com.github.rholder.retry.StopStrategies;
-import com.github.rholder.retry.WaitStrategies;
+import com.github.rholder.retry.*;
 import com.google.common.base.Predicates;
-
 
 public class RetryUtils {
 	private static final Logger logger = LoggerFactory.getLogger(RetryUtils.class);
@@ -40,9 +32,9 @@ public class RetryUtils {
 							logger.error("retry {} times,delaySinceFirstAttempt:{},has error", attemptNumber,
 									delaySinceFirstAttempt, attempt.getExceptionCause());
 						} else {
-							String result = JsonUtil.toJsonString(attempt.getResult());
+							T result = attempt.getResult();
 							logger.info("retry {} times,delaySinceFirstAttempt:{},result:{}", attemptNumber,
-									delaySinceFirstAttempt, StringUtils.substring(result, 0, 350));
+									delaySinceFirstAttempt, result);
 						}
 					}
 				}).build();

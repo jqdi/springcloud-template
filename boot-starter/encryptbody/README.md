@@ -126,10 +126,10 @@ public class UserController {
     
     // 自动解密AES加密的请求体
     @PostMapping("/update")
-    public Result<String> updateUser(@RequestBody @AESDecryptBody UserInfo userInfo) {
+    public String updateUser(@RequestBody @AESDecryptBody UserInfo userInfo) {
         // userInfo中的加密字段会被自动解密
         userService.updateUser(userInfo);
-        return Result.success("更新成功");
+        return "更新成功";
     }
 }
 ```
@@ -192,14 +192,14 @@ public String getShaData() {
 
 ## 与 Result 封装类集成
 
-该 Starter 特别优化了与统一返回结果类 [Result<T>](../../common/src/main/java/com/company/common/api/Result.java) 的集成，能够正确处理泛型类型的加密：
+该 Starter 特别优化了与统一返回结果类 [T](../../common/src/main/java/com/company/common/api/Result.java) 的集成，能够正确处理泛型类型的加密：
 
 ```java
 @GetMapping("/user-list")
 @AESEncryptBody
-public Result<List<UserInfo>> getUserList() {
+public List<UserInfo> getUserList() {
     List<UserInfo> userList = userService.getUserList();
-    return Result.success(userList);
+    return userList;
 }
 ```
 

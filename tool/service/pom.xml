@@ -20,7 +20,7 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>com.company</groupId>
 			<artifactId>template-framework</artifactId>
@@ -36,16 +36,11 @@
 			<artifactId>template-user-api</artifactId>
 			<version>${user-api.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>com.company</groupId>
-			<artifactId>template-order-api</artifactId>
-			<version>${order-api.version}</version>
-		</dependency>
 
 		<!-- 文件系统 -->
-		<!-- 源码：https://gitee.com/jq_di/file-storage -->
+		<!-- 源码：https://github.com/jqdi/file-storage -->
 		<dependency>
-		    <groupId>com.jqdi</groupId>
+		    <groupId>io.github.jqdi</groupId>
 		    <artifactId>file-storage-spring-boot-starter</artifactId>
 		    <version>2.0.0</version>
 		</dependency>
@@ -53,15 +48,14 @@
 		<dependency>
 		    <groupId>io.minio</groupId>
 		    <artifactId>minio</artifactId>
-		    <version>7.1.4</version>
-			<!-- 8.0.x版本会报错：Unsupported OkHttp library found. Must use okhttp >= 4.8.1 -->
+			<version>8.5.17</version>
 		</dependency>
 		<!-- 文件系统 -->
 
 		<!-- 短信SMS -->
-		<!-- 源码：https://gitee.com/jq_di/sms-sender -->
+		<!-- 源码：https://github.com/jqdi/sms-sender -->
 		<dependency>
-			<groupId>com.jqdi</groupId>
+			<groupId>io.github.jqdi</groupId>
 			<artifactId>sms-sender-spring-boot-starter</artifactId>
 			<version>1.0.0</version>
 		</dependency>
@@ -78,14 +72,14 @@
 			<version>[4.4.9,5.0.0)</version>
 		</dependency>
 		<!-- 短信SMS -->
-		
+
 		<!-- 邮件发送 -->
 		<dependency>
 		    <groupId>org.springframework.boot</groupId>
 		    <artifactId>spring-boot-starter-mail</artifactId>
 		</dependency>
         <!-- 邮件发送 -->
-		
+
 		<!-- 微信小程序订阅消息 -->
 		<dependency>
 			<groupId>com.github.binarywang</groupId>
@@ -93,7 +87,7 @@
 			<version>4.3.0</version>
 		</dependency>
 		<!-- 微信小程序订阅消息 -->
-		
+
 		<!-- 企微机器人：https://gitee.com/felord/wecom-sdk -->
 		<dependency>
 		    <groupId>cn.felord</groupId>

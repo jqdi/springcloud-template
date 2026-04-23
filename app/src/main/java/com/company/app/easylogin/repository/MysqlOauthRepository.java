@@ -10,7 +10,7 @@ import com.company.user.api.request.UserInfoReq;
 import com.company.user.api.request.UserOauthReq;
 import com.company.user.api.response.UserInfoResp;
 import com.company.user.api.response.UserOauthResp;
-import com.jqdi.easylogin.core.repository.OauthRepository;
+import io.github.jqdi.easylogin.core.repository.OauthRepository;
 
 @Component
 public class MysqlOauthRepository implements OauthRepository {
@@ -23,8 +23,15 @@ public class MysqlOauthRepository implements OauthRepository {
 	@Override
 	public String getUserId(String identityType, String identifier) {
 		UserOauthResp userOauthResp = userOauthFeign
-				.selectOauth(UserOauthEnum.IdentityType.of(identityType), identifier).dataOrThrow();
-		return String.valueOf(userOauthResp.getUserId());
+				.selectOauth(UserOauthEnum.IdentityType.of(identityType), identifier);
+		if (userOauthResp == null) {
+			return null;
+		}
+		Integer userId = userOauthResp.getUserId();
+		if (userId == null) {
+			return null;
+		}
+		return String.valueOf(userId);
 	}
 
 	@Override
@@ -46,7 +53,14 @@ public class MysqlOauthRepository implements OauthRepository {
 		userInfoReq.setNickname(nickname);
 		userInfoReq.setAvatar(avatar);
 
-		UserInfoResp userInfoResp = userInfoFeign.findOrCreateUser(userInfoReq).dataOrThrow();
-		return String.valueOf(userInfoResp.getId());
+		UserInfoResp userInfoResp = userInfoFeign.findOrCreateUser(userInfoReq);
+		if (userInfoResp == null) {
+			return null;
+		}
+		Integer id = userInfoResp.getId();
+		if (id == null) {
+			return null;
+		}
+		return String.valueOf(id);
 	}
 }

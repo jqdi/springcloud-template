@@ -10,8 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.company.common.api.Result;
-import com.company.framework.util.JsonUtil;
+
 import com.google.common.collect.Maps;
 
 @Controller
@@ -25,11 +24,11 @@ public class AuthController {
 
 	@PostMapping("tologin")
 	@ResponseBody
-	public Result<Map<String, String>> tologin(@RequestBody Map<String, String> params) {
-		System.out.println(JsonUtil.toJsonString(params));
+	public Map<String, String> tologin(@RequestBody Map<String, String> params) {
+		System.out.println(params);
 		Map<String, String> result = Maps.newHashMap();
 		result.put("token", "111111");
 		result.put("url", "/index");
-		return Result.success(result);
+		return result;
 	}
 }

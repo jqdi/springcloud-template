@@ -3,6 +3,11 @@ spring:
     #用于告诉springboot应该在何处寻找静态资源，springboot默认的位置和优先级：spring.resources.static-locations=classpath:/static,classpath:/public,classpath:/resources,classpath:/META-INF/resources
     static-locations: file:D:/home/data/oss/buket-template-test/
 
+logging:
+  file:
+    #日志文件目录。./表示相对于项目根目录，即项目根目录下的logs目录。也可配置绝对路径，如：/home/webapp/logs
+    path: ./logs
+
 template:
   domain: http://t-domain.com
   enable:
@@ -53,10 +58,3 @@ wx:
         token: 1111 #微信小程序消息服务器配置的token
         aesKey: 1111 #微信小程序消息服务器配置的EncodingAESKey
         msgDataFormat: JSON
-
-
-# 数据库表字段加密
-encrypt:
-  enable: true
-  key: ublp45r318fr4xr7
-  type: default

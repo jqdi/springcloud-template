@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.company.common.api.Result;
+
 import com.company.admin.entity.user.Level;
 import com.company.admin.service.user.LevelService;
 
@@ -34,28 +34,28 @@ public class LevelController {
 
     @RequestMapping(value = "/admin/user/level/get", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> get(Level level) {
-        return Result.success(levelService.get(level));
+    public Level get(Level level) {
+        return levelService.get(level);
     }
 
     @RequestMapping(value = "/admin/user/level/save", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> save(@Validated(Level.Save.class) Level level) {
+    public Void save(@Validated(Level.Save.class) Level level) {
         levelService.save(level);
-        return Result.success();
+        return null;
     }
 
     @RequestMapping(value = "/admin/user/level/remove", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> remove(Level level) {
+    public Void remove(Level level) {
         levelService.remove(level);
-        return Result.success();
+        return null;
     }
 
     @RequestMapping(value = "/admin/user/level/update", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> update(@Validated(Level.Update.class) Level level) {
+    public Void update(@Validated(Level.Update.class) Level level) {
         levelService.update(level);
-        return Result.success();
+        return null;
     }
 }

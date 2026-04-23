@@ -13,7 +13,7 @@ import com.company.framework.context.SpringContextUtil;
 import com.company.user.api.response.UserInfoResp;
 
 /**
- * C端用户（id转uid）
+ * C端用户（id转nickname）
  */
 public class UserInfoConverter implements Converter<Integer> {
 
@@ -37,10 +37,10 @@ public class UserInfoConverter implements Converter<Integer> {
 	public WriteCellData<?> convertToExcelData(WriteConverterContext<Integer> context) {
 		UserInfoCache userInfoCache = SpringContextUtil.getBean(UserInfoCache.class);
 		UserInfoResp userInfoResp = userInfoCache.getById(context.getValue());
-		if (userInfoResp == null || userInfoResp.getUid() == null) {
+		if (userInfoResp == null || userInfoResp.getId() == null) {
 			return NumberUtils.formatToCellData(context.getValue(), context.getContentProperty());
 		}
-		return new WriteCellData<>(userInfoResp.getUid());
+		return new WriteCellData<>(userInfoResp.getNickname());
 	}
 
 }

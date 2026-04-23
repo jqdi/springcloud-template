@@ -1,27 +1,13 @@
-# Token Starter 使用指南
+# Token 模块
 
-## 简介
+## 概述
 
-Token Starter 是一个基于 Spring Boot 的自动化配置模块，提供了统一的 Token 管理服务。该 Starter 集成了 Sa-Token 和 JWT 两种 Token 实现方案，默认使用 Sa-Token 作为 Token 服务实现。
+Token模块是一个Spring Boot Starter，提供了一套完整的基于Token的身份验证解决方案。该模块同时支持JWT和Sa-Token两种主流的Token实现方式，开发者可以根据需要选择合适的方案。模块还集成了访问控制功能，可以轻松实现接口级别的权限保护。
 
 ## 功能特性
 
-### 1. 多种 Token 实现
-- **Sa-Token**：功能强大的权限认证框架，默认启用
-- **JWT**：基于 JSON Web Token 的轻量级实现，可选
-
-### 2. 核心功能
-- Token 生成
-- Token 验证与解析
-- Token 失效处理
-- 多设备登录支持
-- 统一的 Token 服务接口
-
-### 3. 安全特性
-- 支持 Token 过期时间配置
-- 支持密钥配置
-- 支持访问控制开关
-- 支持同端互斥登录
+- ✅ **双重Token实现**：同时支持JWT和Sa-Token两种Token实现方式
+- ✅ **访问控制**：提供`@RequireLogin`注解实现接口级别的访问控制
 
 ## 快速开始
 
@@ -30,15 +16,14 @@ Token Starter 是一个基于 Spring Boot 的自动化配置模块，提供了�
 在您的模块的 `pom.xml` 中添加以下依赖：
 
 ```xml
-<!-- token -->
 <dependency>
-   <groupId>com.company</groupId>
-   <artifactId>boot-starter-token</artifactId>
-   <version>${boot-starter-token.version}</version>
+    <groupId>com.company</groupId>
+    <artifactId>boot-starter-token</artifactId>
+    <version>${boot-starter-token.version}</version>
 </dependency>
 ```
 
-### 2. 配置参数
+### 2. 配置Token参数
 
 在 `application.yml` 中导入token默认配置：
 
@@ -53,139 +38,123 @@ spring:
 ```yaml
 token:
    # 密钥
-   secret: hxqhjvtam5
+   secret: 52ae521312f6461083435e045900486e
 ```
 
-### 3. 使用 Token 服务
+### 3. 使用访问控制
 
-在需要使用 Token 服务的地方注入 `TokenService`：
+**如需自定义访问控制开关**：复制[application-token.yml](src/main/resources/application-token.yml)到你的模块的 `resources` 目录下，并修改以下内容：
+
+```yaml
+# 访问控制开关
+template:
+  enable:
+    access-control: true
+```
+
+在需要进行身份验证的接口上添加`@RequireLogin`注解：
 
 ```java
-@Service
-public class UserService {
-    
-    @Autowired
-    private TokenService tokenService;
-    
-    public LoginResult login(LoginRequest request) {
-        // 验证用户身份逻辑...
-        User user = validateUser(request);
-        
-        if (user != null) {
-            // 生成token
-            String token = tokenService.generate(user.getId().toString(), request.getDevice());
-            
-            LoginResult result = new LoginResult();
-            result.setToken(token);
-            result.setUser(user);
-            return result;
-        }
-        
-        return null;
+@RestController
+@RequestMapping("/api/user")
+public class UserController {
+
+    @GetMapping("/profile")
+    @RequireLogin
+    public Object getUserProfile() {
+        // 业务逻辑
+        return "User Profile";
     }
     
-    public void logout(String token) {
-        // 失效token
-        tokenService.invalid(token);
-    }
-    
-    public User getCurrentUser(HttpServletRequest request) {
-        // 从请求头中获取token
-        String token = request.getHeader("x-token");
-        
-        // 验证并获取用户ID
-        String userId = tokenService.checkAndGet(token);
-        
-        if (userId != null) {
-            return userService.getById(Long.valueOf(userId));
-        }
-        
-        return null;
+    @PostMapping("/update")
+    @RequireLogin
+    public Object updateUser(@RequestBody User user) {
+        // 业务逻辑
+        return "Update Success";
     }
 }
 ```
 
-## 核心接口说明
+## 核心组件
 
 ### TokenService 接口
 
-TokenService 是统一的 Token 服务接口，提供了三个核心方法：
+提供统一的Token操作接口：
+- `generate(String userId, String device)`：生成Token
+- `invalid(String token)`：使Token失效
+- `checkAndGet(String token)`：验证Token并获取用户ID
+- `getTokenName()`：获取Token名称
 
-1. **generate(String userId, String device)**：生成 Token
-   - `userId`：用户唯一标识
-   - `device`：登录设备类型（如 APP、WEB、MINIPROGRAM 等）
-   - 返回值：生成的 Token 字符串
+### 两种实现方式
 
-2. **invalid(String token)**：使 Token 失效
-   - `token`：要失效的 Token
-   - 返回值：登录设备类型
+#### 1. JWT 实现 ([JsonWebTokenService](src/main/java/com/company/token/jsonwebtoken/JsonWebTokenService.java))
 
-3. **checkAndGet(String token)**：验证 Token 并获取用户 ID
-   - `token`：待验证的 Token
-   - 返回值：用户 ID，如果验证失败返回 null
+基于JWT标准实现，具有无状态、可扩展的特点。
 
-## 高级配置
+#### 2. Sa-Token 实现 ([SaTokenService](src/main/java/com/company/token/satoken/SaTokenService.java))
 
-### 1. 切换 Token 实现方案
+基于Sa-Token框架实现，功能更加强大，支持更多高级特性。
 
-默认使用 Sa-Token 实现，如需切换为 JWT 实现，可在 [TokenAutoConfiguration.java](src/main/java/com/company/token/TokenAutoConfiguration.java) 中修改：
+### 访问控制
+
+- `@RequireLogin`：注解用于标识需要登录才能访问的方法或类
+- `AccessControlInterceptor`：访问控制拦截器，自动验证Token
+- `UnauthorizedHandler`：未授权处理器，处理未授权请求
+
+## 配置详解
+
+| 配置项 | 默认值 | 说明 |
+|--------|--------|------|
+| token.name | Authorization | Token在HTTP Header中的名称 |
+| token.prefix | | Token前缀，例如"Bearer" |
+| token.secret | defaultsecret | JWT加密密钥 |
+| token.timeout | 2592000 | Token超时时间（秒），-1表示永不过期 |
+| template.enable.access-control | true | 是否启用访问控制功能 |
+
+## 使用示例
+
+### 1. 生成Token
 
 ```java
-@Bean
-@ConditionalOnMissingBean
-public TokenService tokenService() {
-    // 使用 JWT 实现
-    TokenService tokenService = new JsonWebTokenService();
-    // 使用 Sa-Token 实现（默认）
-    // TokenService tokenService = new SaTokenService();
-    return tokenService;
+@Autowired
+private TokenService tokenService;
+
+public String login(String userId, String device) {
+    // 生成Token
+    String token = tokenService.generate(userId, device);
+    return token;
 }
 ```
 
-### 2. 访问控制配置
+### 2. 验证Token
 
-可以通过配置项控制是否启用访问控制：
+```java
+@Autowired
+private TokenService tokenService;
 
-```yaml
-template:
-  enable:
-    access-control: true  # 默认为true，设为false时不会校验token有效性
+public String validateToken(String token) {
+    // 验证Token并获取用户ID
+    String userId = tokenService.checkAndGet(token);
+    if (userId != null) {
+        return "User ID: " + userId;
+    }
+    return "Invalid Token";
+}
 ```
 
-### 3. 多环境密钥配置
+### 3. 使Token失效
 
-不同环境使用不同的密钥：
+```java
+@Autowired
+private TokenService tokenService;
 
-```yaml
----
-# dev环境配置
-spring:
-  config:
-    activate:
-      on-profile: dev
-token:
-  secret: dev-secret-key
-
----
-# prod环境配置
-spring:
-  config:
-    activate:
-      on-profile: prod
-token:
-  secret: prod-secret-key
+public void logout(String token) {
+    // 使Token失效
+    tokenService.invalid(token);
+}
 ```
 
-## Sa-Token 特性配置
+## 注意事项
 
-当使用 Sa-Token 作为实现时，可以配置以下参数：
-
-```yaml
-sa-token:
-  # token临时有效期 (指定时间内无操作就视为token过期) 单位: 秒
-  active-timeout: -1
-  # 是否输出操作日志
-  is-log: false
-  # jwt秘钥
-  jwt-secret-key: ${token.secret}
-```
+1. **安全设置**：生产环境中务必修改默认的token.secret配置，使用强密钥
+3. **访问控制**：通过`template.enable.access-control`配置生产环境必须保持开启

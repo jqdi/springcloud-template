@@ -1,6 +1,6 @@
 package com.company.system.api.feign;
 
-import com.company.common.api.Result;
+
 import com.company.system.api.constant.Constants;
 import com.company.system.api.feign.fallback.ThrowExceptionFallback;
 import com.company.system.api.request.RemoveReq;
@@ -20,24 +20,24 @@ import java.util.List;
 public interface SysRoleFeign {
 
 	@GetMapping("/page")
-	Result<PageResp<SysRoleResp>> page(@RequestParam(value = "current") Long current, @RequestParam(value = "size") Long size, @RequestParam(value = "roleName", required = false) String roleName, @RequestParam(value = "roleKey", required = false) String roleKey, @RequestParam(value = "roleSort", required = false) Integer roleSort, @RequestParam(value = "dataScope", required = false) String dataScope, @RequestParam(value = "status", required = false) String status, @RequestParam(value = "roleRemark", required = false) String roleRemark, @RequestParam(value = "createTimeStart", required = false) String createTimeStart, @RequestParam(value = "createTimeEnd", required = false) String createTimeEnd, @RequestParam(value = "updateTimeStart", required = false) String updateTimeStart, @RequestParam(value = "updateTimeEnd", required = false) String updateTimeEnd);
+	PageResp<SysRoleResp> page(@RequestParam(value = "current") Long current, @RequestParam(value = "size") Long size, @RequestParam(value = "roleName", required = false) String roleName, @RequestParam(value = "roleKey", required = false) String roleKey, @RequestParam(value = "roleSort", required = false) Integer roleSort, @RequestParam(value = "dataScope", required = false) String dataScope, @RequestParam(value = "status", required = false) String status, @RequestParam(value = "roleRemark", required = false) String roleRemark, @RequestParam(value = "createTimeStart", required = false) String createTimeStart, @RequestParam(value = "createTimeEnd", required = false) String createTimeEnd, @RequestParam(value = "updateTimeStart", required = false) String updateTimeStart, @RequestParam(value = "updateTimeEnd", required = false) String updateTimeEnd);
 
 	@GetMapping("/list")
-	Result<List<SysRoleResp>> list(@RequestParam(value = "roleName", required = false) String roleName, @RequestParam(value = "roleKey", required = false) String roleKey, @RequestParam(value = "roleSort", required = false) Integer roleSort, @RequestParam(value = "dataScope", required = false) String dataScope, @RequestParam(value = "status", required = false) String status, @RequestParam(value = "roleRemark", required = false) String roleRemark, @RequestParam(value = "createTimeStart", required = false) String createTimeStart, @RequestParam(value = "createTimeEnd", required = false) String createTimeEnd, @RequestParam(value = "updateTimeStart", required = false) String updateTimeStart, @RequestParam(value = "updateTimeEnd", required = false) String updateTimeEnd);
+	List<SysRoleResp> list(@RequestParam(value = "roleName", required = false) String roleName, @RequestParam(value = "roleKey", required = false) String roleKey, @RequestParam(value = "roleSort", required = false) Integer roleSort, @RequestParam(value = "dataScope", required = false) String dataScope, @RequestParam(value = "status", required = false) String status, @RequestParam(value = "roleRemark", required = false) String roleRemark, @RequestParam(value = "createTimeStart", required = false) String createTimeStart, @RequestParam(value = "createTimeEnd", required = false) String createTimeEnd, @RequestParam(value = "updateTimeStart", required = false) String updateTimeStart, @RequestParam(value = "updateTimeEnd", required = false) String updateTimeEnd);
 
 	@GetMapping("/query")
-	Result<SysRoleResp> query(@RequestParam("id") Integer id);
+	SysRoleResp query(@RequestParam("id") Integer id);
 
 	@PostMapping("/save")
-	Result<Boolean> save(@RequestBody SysRoleReq sysRoleReq);
+	Boolean save(@RequestBody SysRoleReq sysRoleReq);
 
 	@PostMapping("/update")
-	Result<Boolean> update(@RequestBody SysRoleReq sysRoleReq);
+	Boolean update(@RequestBody SysRoleReq sysRoleReq);
 
 	@PostMapping("/remove")
-	Result<Boolean> remove(@RequestBody RemoveReq<Integer> req);
+	Boolean remove(@RequestBody RemoveReq<Integer> req);
 
 	@PostMapping("/grantMenu")
-	Result<Boolean> grantMenu(@RequestBody SysRoleGrantMenuReq req);
+	Boolean grantMenu(@RequestBody SysRoleGrantMenuReq req);
 
 }

@@ -10,7 +10,7 @@
      -->
 
 	<!-- 打印mybatis拦截器插件日志 -->
-	<logger name="com.company.datasource.mybatisplus.plugins" level="DEBUG" additivity="false">
+	<logger name="com.company.datasource" level="DEBUG" additivity="false">
 		<appender-ref ref="STDOUT" />
 		<appender-ref ref="FILE" />
 		<appender-ref ref="ERROR_FILE" />
@@ -22,4 +22,11 @@
 		<appender-ref ref="FILE" />
 		<appender-ref ref="ERROR_FILE" />
 	</logger>
+
+    <!-- 打印JDBC操作日志 -->
+    <logger name="org.springframework.jdbc" level="DEBUG" additivity="false">
+        <appender-ref ref="STDOUT" />
+        <appender-ref ref="FILE" />
+        <appender-ref ref="ERROR_FILE" />
+    </logger>
 </included>

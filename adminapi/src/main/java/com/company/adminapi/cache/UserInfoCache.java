@@ -19,7 +19,7 @@ public class UserInfoCache {
 	public UserInfoResp getById(Integer id) {
 		String key = String.format("admin:userinfo:%s", id);
 		return cache.get(key, () -> {
-			UserInfoResp userInfoResp = userInfoFeign.getById(id).dataOrThrow();
+			UserInfoResp userInfoResp = userInfoFeign.getById(id);
 			if (userInfoResp == null) {
 				userInfoResp = new UserInfoResp();
 			}
@@ -29,6 +29,6 @@ public class UserInfoCache {
 
 	@Cacheable(value = "adminapi:userinfo", key = "#id")
 	public UserInfoResp getById2(Integer id) {
-		return userInfoFeign.getById(id).dataOrThrow();
+		return userInfoFeign.getById(id);
 	}
 }

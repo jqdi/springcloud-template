@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.PageDTO;
 import com.google.common.collect.Sets;
-import com.company.common.api.Result;
+
 import com.company.system.api.request.RemoveReq;
 import com.company.system.api.response.PageResp;
 import com.company.framework.util.PropertyUtils;
@@ -69,7 +69,7 @@ public class SysRoleController implements SysRoleFeign {
 	}
 
 	@Override
-	public Result<PageResp<SysRoleResp>> page(Long current, Long size, String roleName, String roleKey, Integer roleSort, String dataScope, String status, String roleRemark, String createTimeStart, String createTimeEnd, String updateTimeStart, String updateTimeEnd) {
+	public PageResp<SysRoleResp> page(Long current, Long size, String roleName, String roleKey, Integer roleSort, String dataScope, String status, String roleRemark, String createTimeStart, String createTimeEnd, String updateTimeStart, String updateTimeEnd) {
 		QueryWrapper<SysRole> queryWrapper = toQueryWrapper(roleName, roleKey, roleSort, dataScope, status, roleRemark, createTimeStart, createTimeEnd, updateTimeStart, updateTimeEnd);
 
 		long count = sysRoleService.count(queryWrapper);
@@ -78,59 +78,59 @@ public class SysRoleController implements SysRoleFeign {
 		List<SysRole> list = sysRoleService.list(PageDTO.of(current, size), queryWrapper);
 
 		List<SysRoleResp> respList = PropertyUtils.copyArrayProperties(list, SysRoleResp.class);
-		return Result.success(PageResp.of(count, respList));
+		return PageResp.of(count, respList);
 	}
 
 	@Override
-	public Result<List<SysRoleResp>> list(String roleName, String roleKey, Integer roleSort, String dataScope, String status, String roleRemark, String createTimeStart, String createTimeEnd, String updateTimeStart, String updateTimeEnd) {
+	public List<SysRoleResp> list(String roleName, String roleKey, Integer roleSort, String dataScope, String status, String roleRemark, String createTimeStart, String createTimeEnd, String updateTimeStart, String updateTimeEnd) {
 		QueryWrapper<SysRole> queryWrapper = toQueryWrapper(roleName, roleKey, roleSort, dataScope, status, roleRemark, createTimeStart, createTimeEnd, updateTimeStart, updateTimeEnd);
 
 		queryWrapper.orderByDesc("id");
 		List<SysRole> list = sysRoleService.list(queryWrapper);
 
 		List<SysRoleResp> respList = PropertyUtils.copyArrayProperties(list, SysRoleResp.class);
-		return Result.success(respList);
+		return respList;
 	}
 
 	@Override
-	public Result<SysRoleResp> query(Integer id) {
+	public SysRoleResp query(Integer id) {
 		SysRole sysRole = sysRoleService.getById(id);
 		SysRoleResp sysRoleResp = PropertyUtils.copyProperties(sysRole, SysRoleResp.class);
 
 		Set<Integer> menuIds = sysRoleMenuService.listMenuIdByRoleIds(Sets.newHashSet(id));
 		sysRoleResp.setMenuIds(menuIds);
 
-		return Result.success(sysRoleResp);
+		return sysRoleResp;
 	}
 
 	@Override
-	public Result<Boolean> save(SysRoleReq sysRoleReq) {
+	public Boolean save(SysRoleReq sysRoleReq) {
 		SysRole sysRole = PropertyUtils.copyProperties(sysRoleReq, SysRole.class);
 		boolean success = sysRoleService.save(sysRole);
 
-		return Result.success(success);
+		return success;
 	}
 
 	@Override
-	public Result<Boolean> update(SysRoleReq sysRoleReq) {
+	public Boolean update(SysRoleReq sysRoleReq) {
 		SysRole sysRole = PropertyUtils.copyProperties(sysRoleReq, SysRole.class);
 		boolean success = sysRoleService.updateById(sysRole);
 
-		return Result.success(success);
+		return success;
 	}
 
 	@Override
-	public Result<Boolean> remove(@RequestBody RemoveReq<Integer> req) {
+	public Boolean remove(@RequestBody RemoveReq<Integer> req) {
 		if (req.getIdList() == null || req.getIdList().isEmpty()) {
-			return Result.success(true);
+			return true;
 		}
 		boolean success = sysRoleService.removeBatchByIds(req.getIdList());
-		return Result.success(success);
+		return success;
 	}
 
 	@Override
-	public Result<Boolean> grantMenu(@RequestBody SysRoleGrantMenuReq req) {
+	public Boolean grantMenu(@RequestBody SysRoleGrantMenuReq req) {
 		sysRoleMenuService.grantMenu(req.getRoleId(), req.getMenuIds());
-		return Result.success(true);
+		return true;
 	}
 }

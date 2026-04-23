@@ -13,11 +13,9 @@ import lombok.experimental.Accessors;
 public class UserInfo {
 	private Integer id;
 
-	private String uid;
-
 	private String nickname;
 	private String avatar;
-	
+
 	private String remark;
 	private LocalDateTime createTime;
 	private LocalDateTime updateTime;

@@ -36,7 +36,7 @@ public class PlatformCondition implements UseCondition {
 
 		boolean canSee = platformList.contains(platform);
 		if (!canSee) {
-			log.info("{}条件不满足,配置平台{},实际平台:{}", seeParam.getUserCouponId(), JsonUtil.toJsonString(platformList),
+			log.info("{}条件不满足,配置平台{},实际平台:{}", seeParam.getUserCouponId(), platformList,
 					platform);
 			return false;
 		}
@@ -57,7 +57,7 @@ public class PlatformCondition implements UseCondition {
 
 		boolean canUse = platformList.contains(platform);
 		if (!canUse) {
-			log.info("{}条件不满足,配置平台{},实际平台:{}", useParam.getUserCouponId(), JsonUtil.toJsonString(platformList),
+			log.info("{}条件不满足,配置平台{},实际平台:{}", useParam.getUserCouponId(), platformList,
 					platform);
 			return MatchResult.builder().canUse(false).reason("该优惠券只允许在APP上使用").build();
 		}

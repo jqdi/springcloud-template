@@ -1,6 +1,6 @@
 package com.company.system.api.feign;
 
-import com.company.common.api.Result;
+
 import com.company.system.api.constant.Constants;
 import com.company.system.api.feign.fallback.ThrowExceptionFallback;
 import com.company.system.api.request.RemoveReq;
@@ -19,21 +19,21 @@ import java.util.List;
 public interface SysRoleDeptFeign {
 
 	@GetMapping("/page")
-	Result<PageResp<SysRoleDeptResp>> page(@RequestParam(value = "current") Long current, @RequestParam(value = "size") Long size, @RequestParam(value = "roleId", required = false) Integer roleId, @RequestParam(value = "deptId", required = false) Integer deptId);
+	PageResp<SysRoleDeptResp> page(@RequestParam(value = "current") Long current, @RequestParam(value = "size") Long size, @RequestParam(value = "roleId", required = false) Integer roleId, @RequestParam(value = "deptId", required = false) Integer deptId);
 
 	@GetMapping("/list")
-	Result<List<SysRoleDeptResp>> list(@RequestParam(value = "roleId", required = false) Integer roleId, @RequestParam(value = "deptId", required = false) Integer deptId);
+	List<SysRoleDeptResp> list(@RequestParam(value = "roleId", required = false) Integer roleId, @RequestParam(value = "deptId", required = false) Integer deptId);
 
 	@GetMapping("/query")
-	Result<SysRoleDeptResp> query(@RequestParam("id") Integer id);
+	SysRoleDeptResp query(@RequestParam("id") Integer id);
 
 	@PostMapping("/save")
-	Result<Boolean> save(@RequestBody SysRoleDeptReq sysRoleDeptReq);
+	Boolean save(@RequestBody SysRoleDeptReq sysRoleDeptReq);
 
 	@PostMapping("/update")
-	Result<Boolean> update(@RequestBody SysRoleDeptReq sysRoleDeptReq);
+	Boolean update(@RequestBody SysRoleDeptReq sysRoleDeptReq);
 
 	@PostMapping("/remove")
-	Result<Boolean> remove(@RequestBody RemoveReq<Integer> req);
+	Boolean remove(@RequestBody RemoveReq<Integer> req);
 
 }

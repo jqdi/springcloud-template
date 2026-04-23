@@ -1,6 +1,6 @@
 package com.company.system.api.feign;
 
-import com.company.common.api.Result;
+
 import com.company.system.api.constant.Constants;
 import com.company.system.api.feign.fallback.ThrowExceptionFallback;
 import com.company.system.api.request.RemoveReq;
@@ -19,21 +19,21 @@ import java.util.List;
 public interface SysDictTypeFeign {
 
 	@GetMapping("/page")
-	Result<PageResp<SysDictTypeResp>> page(@RequestParam(value = "current") Long current, @RequestParam(value = "size") Long size, @RequestParam(value = "dictName", required = false) String dictName, @RequestParam(value = "dictType", required = false) String dictType, @RequestParam(value = "status", required = false) String status, @RequestParam(value = "dictRemark", required = false) String dictRemark);
+	PageResp<SysDictTypeResp> page(@RequestParam(value = "current") Long current, @RequestParam(value = "size") Long size, @RequestParam(value = "dictName", required = false) String dictName, @RequestParam(value = "dictType", required = false) String dictType, @RequestParam(value = "status", required = false) String status, @RequestParam(value = "dictRemark", required = false) String dictRemark);
 
 	@GetMapping("/list")
-	Result<List<SysDictTypeResp>> list(@RequestParam(value = "dictName", required = false) String dictName, @RequestParam(value = "dictType", required = false) String dictType, @RequestParam(value = "status", required = false) String status, @RequestParam(value = "dictRemark", required = false) String dictRemark);
+	List<SysDictTypeResp> list(@RequestParam(value = "dictName", required = false) String dictName, @RequestParam(value = "dictType", required = false) String dictType, @RequestParam(value = "status", required = false) String status, @RequestParam(value = "dictRemark", required = false) String dictRemark);
 
 	@GetMapping("/query")
-	Result<SysDictTypeResp> query(@RequestParam("id") Integer id);
+	SysDictTypeResp query(@RequestParam("id") Integer id);
 
 	@PostMapping("/save")
-	Result<Boolean> save(@RequestBody SysDictTypeReq sysDictTypeReq);
+	Boolean save(@RequestBody SysDictTypeReq sysDictTypeReq);
 
 	@PostMapping("/update")
-	Result<Boolean> update(@RequestBody SysDictTypeReq sysDictTypeReq);
+	Boolean update(@RequestBody SysDictTypeReq sysDictTypeReq);
 
 	@PostMapping("/remove")
-	Result<Boolean> remove(@RequestBody RemoveReq<Integer> req);
+	Boolean remove(@RequestBody RemoveReq<Integer> req);
 
 }

@@ -1,6 +1,6 @@
 package com.company.tool.api.feign;
 
-import com.company.common.api.Result;
+
 import com.company.tool.api.constant.Constants;
 import com.company.tool.api.feign.fallback.ThrowExceptionFallback;
 import com.company.tool.api.request.RetryerInfoReq;
@@ -15,11 +15,11 @@ import java.util.List;
 @FeignClient(value = Constants.FEIGNCLIENT_VALUE, path = "/retryer", fallbackFactory = ThrowExceptionFallback.class)
 public interface RetryerFeign {
 	@PostMapping("/call")
-	Result<Void> call(@RequestBody RetryerInfoReq req);
+	Void call(@RequestBody RetryerInfoReq req);
 
 	@GetMapping("/selectId4Call")
-	Result<List<Integer>> selectId4Call();
+	List<Integer> selectId4Call();
 
 	@PostMapping("/callById")
-	Result<Void> callById(@RequestParam("id") Integer id);
+	Void callById(@RequestParam("id") Integer id);
 }

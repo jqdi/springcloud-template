@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration debug="false">
+	<!--引用框架日志 -->
+	<include resource="logback-conf-framework.xml" />
+</configuration>

@@ -1,1 +1,2 @@
 com.company.token.TokenAutoConfiguration
+com.company.token.AccessControlConfiguration

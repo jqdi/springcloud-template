@@ -37,7 +37,7 @@ public class EmailService {
 
 		int limit = 1000;
 		do {
-			idList = emailFeign.select4PreTimeSend(limit).dataOrThrow();
+			idList = emailFeign.select4PreTimeSend(limit);
 
 			XxlJobHelper.log("size:{}", idList.size());
 			for (Integer id : idList) {

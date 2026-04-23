@@ -38,8 +38,8 @@
 	            console.log(res);
 	            if (res.code == 0) {
 	            	// 登录成功
-	            	window.localStorage.setItem("x-token", res.data.token);
-	            	window.location.href = res.data.url + "?x-token="+res.data.token;
+	            	window.localStorage.setItem("Authorization", res.data.token);
+	            	window.location.href = res.data.url + "?Authorization="+res.data.token;
 	            }else{
 	            	alert(res.message);
 	            }

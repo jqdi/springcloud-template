@@ -37,7 +37,7 @@ public class SubscribeService {
 
 		int limit = 1000;
 		do {
-			idList = subscribeFeign.select4PreTimeSend(limit).dataOrThrow();
+			idList = subscribeFeign.select4PreTimeSend(limit);
 
 			XxlJobHelper.log("size:{}", idList.size());
 			for (Integer id : idList) {

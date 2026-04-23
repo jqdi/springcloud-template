@@ -138,8 +138,8 @@ public class SqlInjectFilter implements GlobalFilter, Ordered {
 
 	private Mono<Void> writeError(ServerHttpResponse response, String message) {
 		Map<String, Object> errorMap = Maps.newHashMap();
-		errorMap.put("code", 1);
-		errorMap.put("message", message);
+		errorMap.put("code", "1");
+		errorMap.put("msg", message);
 		String failJson = JsonUtil.toJsonString(errorMap);
 		byte[] failJsonBytes = failJson.getBytes(StandardCharsets.UTF_8);
 

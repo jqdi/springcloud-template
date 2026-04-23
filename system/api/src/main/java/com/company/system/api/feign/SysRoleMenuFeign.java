@@ -1,6 +1,6 @@
 package com.company.system.api.feign;
 
-import com.company.common.api.Result;
+
 import com.company.system.api.constant.Constants;
 import com.company.system.api.feign.fallback.ThrowExceptionFallback;
 import com.company.system.api.request.RemoveReq;
@@ -19,21 +19,21 @@ import java.util.List;
 public interface SysRoleMenuFeign {
 
 	@GetMapping("/page")
-	Result<PageResp<SysRoleMenuResp>> page(@RequestParam(value = "current") Long current, @RequestParam(value = "size") Long size, @RequestParam(value = "roleId", required = false) Integer roleId, @RequestParam(value = "menuId", required = false) Integer menuId, @RequestParam(value = "createTimeStart", required = false) String createTimeStart, @RequestParam(value = "createTimeEnd", required = false) String createTimeEnd, @RequestParam(value = "updateTimeStart", required = false) String updateTimeStart, @RequestParam(value = "updateTimeEnd", required = false) String updateTimeEnd);
+	PageResp<SysRoleMenuResp> page(@RequestParam(value = "current") Long current, @RequestParam(value = "size") Long size, @RequestParam(value = "roleId", required = false) Integer roleId, @RequestParam(value = "menuId", required = false) Integer menuId, @RequestParam(value = "createTimeStart", required = false) String createTimeStart, @RequestParam(value = "createTimeEnd", required = false) String createTimeEnd, @RequestParam(value = "updateTimeStart", required = false) String updateTimeStart, @RequestParam(value = "updateTimeEnd", required = false) String updateTimeEnd);
 
 	@GetMapping("/list")
-	Result<List<SysRoleMenuResp>> list(@RequestParam(value = "roleId", required = false) Integer roleId, @RequestParam(value = "menuId", required = false) Integer menuId, @RequestParam(value = "createTimeStart", required = false) String createTimeStart, @RequestParam(value = "createTimeEnd", required = false) String createTimeEnd, @RequestParam(value = "updateTimeStart", required = false) String updateTimeStart, @RequestParam(value = "updateTimeEnd", required = false) String updateTimeEnd);
+	List<SysRoleMenuResp> list(@RequestParam(value = "roleId", required = false) Integer roleId, @RequestParam(value = "menuId", required = false) Integer menuId, @RequestParam(value = "createTimeStart", required = false) String createTimeStart, @RequestParam(value = "createTimeEnd", required = false) String createTimeEnd, @RequestParam(value = "updateTimeStart", required = false) String updateTimeStart, @RequestParam(value = "updateTimeEnd", required = false) String updateTimeEnd);
 
 	@GetMapping("/query")
-	Result<SysRoleMenuResp> query(@RequestParam("id") Integer id);
+	SysRoleMenuResp query(@RequestParam("id") Integer id);
 
 	@PostMapping("/save")
-	Result<Boolean> save(@RequestBody SysRoleMenuReq sysRoleMenuReq);
+	Boolean save(@RequestBody SysRoleMenuReq sysRoleMenuReq);
 
 	@PostMapping("/update")
-	Result<Boolean> update(@RequestBody SysRoleMenuReq sysRoleMenuReq);
+	Boolean update(@RequestBody SysRoleMenuReq sysRoleMenuReq);
 
 	@PostMapping("/remove")
-	Result<Boolean> remove(@RequestBody RemoveReq<Integer> req);
+	Boolean remove(@RequestBody RemoveReq<Integer> req);
 
 }

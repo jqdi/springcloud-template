@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.PageDTO;
-import com.company.common.api.Result;
+
 import com.company.system.api.response.PageResp;
 import com.company.framework.util.PropertyUtils;
 import com.company.system.api.feign.SysOperLogFeign;
@@ -90,7 +90,7 @@ public class SysOperLogController implements SysOperLogFeign {
 	}
 
 	@Override
-	public Result<PageResp<SysOperLogResp>> page(Long current, Long size, Integer sysUserId, String title, Integer businessType, String method, String requestMethod, String operUrl, String operIp, String operLocation, String operParam, String jsonResult, Integer status, String errorMsg, Integer costTime, String operTimeStart, String operTimeEnd, String createTimeStart, String createTimeEnd, String updateTimeStart, String updateTimeEnd) {
+	public PageResp<SysOperLogResp> page(Long current, Long size, Integer sysUserId, String title, Integer businessType, String method, String requestMethod, String operUrl, String operIp, String operLocation, String operParam, String jsonResult, Integer status, String errorMsg, Integer costTime, String operTimeStart, String operTimeEnd, String createTimeStart, String createTimeEnd, String updateTimeStart, String updateTimeEnd) {
 		QueryWrapper<SysOperLog> queryWrapper = toQueryWrapper(sysUserId, title, businessType, method, requestMethod, operUrl, operIp, operLocation, operParam, jsonResult, status, errorMsg, costTime, operTimeStart, operTimeEnd, createTimeStart, createTimeEnd, updateTimeStart, updateTimeEnd);
 
 		long count = sysOperLogService.count(queryWrapper);
@@ -99,50 +99,50 @@ public class SysOperLogController implements SysOperLogFeign {
 		List<SysOperLog> list = sysOperLogService.list(PageDTO.of(current, size), queryWrapper);
 
 		List<SysOperLogResp> respList = PropertyUtils.copyArrayProperties(list, SysOperLogResp.class);
-		return Result.success(PageResp.of(count, respList));
+		return PageResp.of(count, respList);
 	}
 
 	@Override
-	public Result<List<SysOperLogResp>> list(Integer sysUserId, String title, Integer businessType, String method, String requestMethod, String operUrl, String operIp, String operLocation, String operParam, String jsonResult, Integer status, String errorMsg, Integer costTime, String operTimeStart, String operTimeEnd, String createTimeStart, String createTimeEnd, String updateTimeStart, String updateTimeEnd) {
+	public List<SysOperLogResp> list(Integer sysUserId, String title, Integer businessType, String method, String requestMethod, String operUrl, String operIp, String operLocation, String operParam, String jsonResult, Integer status, String errorMsg, Integer costTime, String operTimeStart, String operTimeEnd, String createTimeStart, String createTimeEnd, String updateTimeStart, String updateTimeEnd) {
 		QueryWrapper<SysOperLog> queryWrapper = toQueryWrapper(sysUserId, title, businessType, method, requestMethod, operUrl, operIp, operLocation, operParam, jsonResult, status, errorMsg, costTime, operTimeStart, operTimeEnd, createTimeStart, createTimeEnd, updateTimeStart, updateTimeEnd);
 
 		queryWrapper.orderByDesc("id");
 		List<SysOperLog> list = sysOperLogService.list(queryWrapper);
 
 		List<SysOperLogResp> respList = PropertyUtils.copyArrayProperties(list, SysOperLogResp.class);
-		return Result.success(respList);
+		return respList;
 	}
 
 	@Override
-	public Result<SysOperLogResp> query(Integer id) {
+	public SysOperLogResp query(Integer id) {
 		SysOperLog sysOperLog = sysOperLogService.getById(id);
 		SysOperLogResp sysOperLogResp = PropertyUtils.copyProperties(sysOperLog, SysOperLogResp.class);
-		return Result.success(sysOperLogResp);
+		return sysOperLogResp;
 	}
 
 	@Override
-	public Result<Boolean> save(SysOperLogReq sysOperLogReq) {
+	public Boolean save(SysOperLogReq sysOperLogReq) {
 		SysOperLog sysOperLog = PropertyUtils.copyProperties(sysOperLogReq, SysOperLog.class);
 		Integer sysUserId = sysOperLogReq.getSysUserId();
 		sysOperLog.setCreateBy(sysUserId);
 		sysOperLog.setUpdateBy(sysUserId);
 		boolean success = sysOperLogService.save(sysOperLog);
-		return Result.success(success);
+		return success;
 	}
 
 	@Override
-	public Result<Boolean> update(SysOperLogReq sysOperLogReq) {
+	public Boolean update(SysOperLogReq sysOperLogReq) {
 		SysOperLog sysOperLog = PropertyUtils.copyProperties(sysOperLogReq, SysOperLog.class);
 		boolean success = sysOperLogService.updateById(sysOperLog);
-		return Result.success(success);
+		return success;
 	}
 
 	@Override
-	public Result<Boolean> remove(@RequestBody RemoveReq<Integer> req) {
+	public Boolean remove(@RequestBody RemoveReq<Integer> req) {
 		if (req.getIdList() == null || req.getIdList().isEmpty()) {
-			return Result.success(true);
+			return true;
 		}
 		boolean success = sysOperLogService.removeBatchByIds(req.getIdList());
-		return Result.success(success);
+		return success;
 	}
 }

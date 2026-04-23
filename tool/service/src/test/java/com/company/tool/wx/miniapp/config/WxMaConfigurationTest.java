@@ -2,7 +2,6 @@ package com.company.tool.wx.miniapp.config;
 
 import org.junit.jupiter.api.Test;
 
-import com.company.framework.util.JsonUtil;
 
 import cn.binarywang.wx.miniapp.api.WxMaService;
 import cn.hutool.core.lang.Dict;
@@ -14,7 +13,7 @@ public class WxMaConfigurationTest {
 	public void wxMaConfigurationInit() {
 		Dict dict = YamlUtil.loadByPath("classpath:application-dev.yml");
 		WxMaProperties properties = dict.getByPath("wx.miniapp", WxMaProperties.class);
-		System.out.println("properties:" + JsonUtil.toJsonString(properties));
+		System.out.println("properties:" + properties);
 		new WxMaConfiguration(properties).init();
 		System.out.println("init success");
 	}

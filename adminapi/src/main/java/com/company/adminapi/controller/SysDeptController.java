@@ -5,7 +5,7 @@ import com.company.adminapi.annotation.RequirePermissions;
 import com.company.adminapi.easyexcel.ExcelUtil;
 import com.company.adminapi.enums.OperationLogEnum.BusinessType;
 import com.company.adminapi.excel.SysDeptExcel;
-import com.company.common.api.Result;
+
 import com.company.system.api.request.RemoveReq;
 import com.company.system.api.response.PageResp;
 import com.company.framework.util.PropertyUtils;
@@ -31,34 +31,34 @@ public class SysDeptController {
 
 	@RequirePermissions("system:sysDept:query")
 	@GetMapping("/page")
-	public Result<PageResp<SysDeptResp>> page(@NotNull @Min(value = 1) Long current, @NotNull Long size, Integer parentId, String parentIds, String name, Integer orderNum, String status) {
+	public PageResp<SysDeptResp> page(@NotNull @Min(value = 1) Long current, @NotNull Long size, Integer parentId, String parentIds, String name, Integer orderNum, String status) {
 		return sysDeptFeign.page(current, size, parentId, parentIds, name, orderNum, status);
 	}
 
 	@RequirePermissions("system:sysDept:query")
 	@GetMapping("/query")
-	public Result<SysDeptResp> query(@NotNull Integer id) {
+	public SysDeptResp query(@NotNull Integer id) {
 		return sysDeptFeign.query(id);
 	}
 
     @OperationLog(title = "部门保存", businessType = BusinessType.INSERT)
 	@RequirePermissions("system:sysDept:save")
 	@PostMapping("/save")
-	public Result<Boolean> save(@RequestBody SysDeptReq sysDeptReq) {
+	public Boolean save(@RequestBody SysDeptReq sysDeptReq) {
 		return sysDeptFeign.save(sysDeptReq);
 	}
 
     @OperationLog(title = "部门更新", businessType = BusinessType.UPDATE)
 	@RequirePermissions("system:sysDept:update")
 	@PostMapping("/update")
-	public Result<Boolean> update(@RequestBody SysDeptReq sysDeptReq) {
+	public Boolean update(@RequestBody SysDeptReq sysDeptReq) {
 		return sysDeptFeign.update(sysDeptReq);
 	}
 
     @OperationLog(title = "部门删除", businessType = BusinessType.DELETE)
 	@RequirePermissions("system:sysDept:remove")
 	@PostMapping("/remove")
-	public Result<Boolean> remove(@RequestBody RemoveReq<Integer> req) {
+	public Boolean remove(@RequestBody RemoveReq<Integer> req) {
 		return sysDeptFeign.remove(req);
 	}
 
@@ -66,7 +66,7 @@ public class SysDeptController {
 	@RequirePermissions("system:sysDept:export")
 	@GetMapping("/export")
 	public void export(HttpServletResponse response, Integer parentId, String parentIds, String name, Integer orderNum, String status) {
-		List<SysDeptResp> listResp = sysDeptFeign.list(parentId, parentIds, name, orderNum, status).dataOrThrow();
+		List<SysDeptResp> listResp = sysDeptFeign.list(parentId, parentIds, name, orderNum, status);
 		List<SysDeptExcel> excelList = PropertyUtils.copyArrayProperties(listResp, SysDeptExcel.class);
 		ExcelUtil.write2httpResponse(response, "部门", SysDeptExcel.class, excelList);
 	}

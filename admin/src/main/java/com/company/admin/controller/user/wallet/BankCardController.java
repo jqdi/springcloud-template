@@ -2,7 +2,7 @@ package com.company.admin.controller.user.wallet;
 
 
 
-import com.company.common.api.Result;
+
 import com.company.admin.entity.user.wallet.BankCard;
 import com.company.admin.service.user.wallet.BankCardService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,28 +24,28 @@ public class BankCardController {
 
 	@RequestMapping(value = "/admin/user/bankCard/get", method = RequestMethod.POST)
 	@ResponseBody
-	public Result<?> get(BankCard bankCard) {
-		return Result.success(bankCardService.get(bankCard));
+	public BankCard get(BankCard bankCard) {
+		return bankCardService.get(bankCard);
 	}
 
 	@RequestMapping(value = "/admin/user/bankCard/save", method = RequestMethod.POST)
 	@ResponseBody
-	public Result<?> save(@Validated(BankCard.Save.class) BankCard bankCard) {
+	public Void save(@Validated(BankCard.Save.class) BankCard bankCard) {
 		bankCardService.save(bankCard);
-		return Result.success();
+		return null;
 	}
 
 	@RequestMapping(value = "/admin/user/bankCard/remove", method = RequestMethod.POST)
 	@ResponseBody
-	public Result<?> remove(BankCard bankCard) {
+	public Void remove(BankCard bankCard) {
 		bankCardService.remove(bankCard);
-		return Result.success();
+		return null;
 	}
 
 	@RequestMapping(value = "/admin/user/bankCard/update", method = RequestMethod.POST)
 	@ResponseBody
-	public Result<?> update(@Validated(BankCard.Update.class) BankCard bankCard) {
+	public Void update(@Validated(BankCard.Update.class) BankCard bankCard) {
 		bankCardService.update(bankCard);
-		return Result.success();
+		return null;
 	}
 }

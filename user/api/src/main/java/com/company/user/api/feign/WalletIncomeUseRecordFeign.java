@@ -1,6 +1,6 @@
 package com.company.user.api.feign;
 
-import com.company.common.api.Result;
+
 import com.company.user.api.constant.Constants;
 import com.company.user.api.feign.fallback.ThrowExceptionFallback;
 import com.company.user.api.feign.fallback.WalletIncomeUseRecordFeignFactory;
@@ -15,8 +15,8 @@ import java.util.List;
 public interface WalletIncomeUseRecordFeign {
 
 	@GetMapping("/selectId4Expire")
-	Result<List<Integer>> selectId4Expire(@RequestParam("limit") Integer limit);
+	List<Integer> selectId4Expire(@RequestParam("limit") Integer limit);
 
 	@PostMapping("/update4Expire")
-	Result<Boolean> update4Expire(@RequestParam("id") Integer id);
+	Boolean update4Expire(@RequestParam("id") Integer id);
 }

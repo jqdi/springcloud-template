@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-import com.company.framework.util.JsonUtil;
 import com.company.tool.subscribe.dto.SubscribeTemplateInfo;
 import com.company.tool.subscribe.tool.dto.MaSubscribe;
 import com.company.tool.subscribe.tool.dto.SubscribeMsgData;
@@ -21,7 +20,7 @@ public class MaToolTest {
 	public void wxMaConfigurationInit() {
 		Dict dict = YamlUtil.loadByPath("classpath:application-dev.yml");
 		WxMaProperties properties = dict.getByPath("wx.miniapp", WxMaProperties.class);
-		System.out.println("properties:" + JsonUtil.toJsonString(properties));
+		System.out.println("properties:" + properties);
 		new WxMaConfiguration(properties).init();
 		System.out.println("init success");
 	}
@@ -31,7 +30,7 @@ public class MaToolTest {
 		MaTool maTool = new MaTool();
 		String appid = "111";
 		List<SubscribeTemplateInfo> templateList = maTool.getTemplateList(appid);
-		System.out.println(JsonUtil.toJsonString(templateList));
+		System.out.println(templateList);
 	}
 
 //	@Test
@@ -43,6 +42,6 @@ public class MaToolTest {
 		String page = "111";
 		List<SubscribeMsgData> dataList = Lists.newArrayList();
 		MaSubscribe maSubscribe = maTool.sendSubscribeMsg(appid, openid, templateId, page, dataList);
-		System.out.println(JsonUtil.toJsonString(maSubscribe));
+		System.out.println(maSubscribe);
 	}
 }

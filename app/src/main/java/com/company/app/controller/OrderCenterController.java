@@ -7,6 +7,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
+import com.company.framework.globalresponse.ExceptionUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,8 +17,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.company.app.req.RefundApplyReq;
 import com.company.app.req.ToPayReq;
-import com.company.common.api.Result;
-import com.company.framework.annotation.RequireLogin;
+
+import com.company.token.accesscontrol.annotation.RequireLogin;
 import com.company.framework.context.HeaderContextUtil;
 import com.company.framework.sequence.SequenceGenerator;
 import com.company.framework.util.PropertyUtils;
@@ -61,12 +62,12 @@ public class OrderCenterController {
 	 * @return
 	 */
 	@GetMapping("/page")
-	public Result<List<com.company.app.resp.OrderResp>> page(
+	public List<com.company.app.resp.OrderResp> page(
 			@Valid @NotNull(message = "缺少参数当前页") @Min(value = 1, message = "当前页不能小于1") Integer current,
 			@Valid @NotNull(message = "缺少参数每页数量") Integer size, OrderEnum.StatusEnum status) {
-		List<OrderResp> orderRespList = orderFeign.page(current, size, status).dataOrThrow();
+		List<OrderResp> orderRespList = orderFeign.page(current, size, status);
 		List<com.company.app.resp.OrderResp> respList = PropertyUtils.copyArrayProperties(orderRespList, com.company.app.resp.OrderResp.class);
-		return Result.success(respList);
+		return respList;
 	}
 
 	/**
@@ -76,10 +77,10 @@ public class OrderCenterController {
 	 * @return
 	 */
 	@GetMapping("/detail")
-	public Result<com.company.app.resp.OrderDetailResp> detail(@Valid @NotNull(message = "订单号不能为空") String orderCode) {
-		OrderDetailResp orderDetailResp = orderFeign.detail(orderCode).dataOrThrow();
+	public com.company.app.resp.OrderDetailResp detail(@Valid @NotNull(message = "订单号不能为空") String orderCode) {
+		OrderDetailResp orderDetailResp = orderFeign.detail(orderCode);
 		com.company.app.resp.OrderDetailResp resp = PropertyUtils.copyProperties(orderDetailResp, com.company.app.resp.OrderDetailResp.class);
-		return Result.success(resp);
+		return resp;
 	}
 
 	/**
@@ -89,13 +90,13 @@ public class OrderCenterController {
 	 * @return
 	 */
 	@GetMapping("/cancel")
-	public Result<com.company.app.resp.OrderDetailResp> cancel(@Valid @NotNull(message = "订单号不能为空") String orderCode) {
+	public com.company.app.resp.OrderDetailResp cancel(@Valid @NotNull(message = "订单号不能为空") String orderCode) {
 		OrderCancelReq orderCancelReq = new OrderCancelReq();
 		orderCancelReq.setOrderCode(orderCode);
 		orderCancelReq.setCancelTime(LocalDateTime.now());
-		OrderDetailResp orderDetailResp = orderFeign.cancelByUser(orderCancelReq).dataOrThrow();
+		OrderDetailResp orderDetailResp = orderFeign.cancelByUser(orderCancelReq);
 		com.company.app.resp.OrderDetailResp resp = PropertyUtils.copyProperties(orderDetailResp, com.company.app.resp.OrderDetailResp.class);
-		return Result.success(resp);
+		return resp;
 	}
 
 	/**
@@ -105,7 +106,7 @@ public class OrderCenterController {
 	 * @return
 	 */
 	@PostMapping("/toPay")
-	public Result<Object> toPay(@Valid @RequestBody ToPayReq toPayReq) {
+	public Object toPay(@Valid @RequestBody ToPayReq toPayReq) {
 		com.company.order.api.request.ToPayReq toPayReqApi = new com.company.order.api.request.ToPayReq();
 		toPayReqApi.setOrderCode(toPayReq.getOrderCode());
 		toPayReqApi.setMethod(toPayReq.getMethod());
@@ -113,28 +114,28 @@ public class OrderCenterController {
 		toPayReqApi.setSpbillCreateIp(HeaderContextUtil.requestip());
 		toPayReqApi.setOpenid(HeaderContextUtil.deviceid());
 
-		PayResp payResp = payFeign.toPay(toPayReqApi).dataOrThrow();
+		PayResp payResp = payFeign.toPay(toPayReqApi);
 		if (!payResp.getSuccess()) {
-			return Result.fail("支付失败，请稍后重试");
+			ExceptionUtil.throwException("支付失败，请稍后重试");
 		}
-		return Result.success(payResp.getPayInfo());
+		return payResp.getPayInfo();
 	}
 
 	/**
 	 * 退款申请
 	 *
-	 * @param orderCode
+	 * @param refundApplyReq
 	 * @return
 	 */
 	@PostMapping("/refundApply")
-	public Result<Void> refundApply(@Valid @RequestBody RefundApplyReq refundApplyReq) {
+	public Void refundApply(@Valid @RequestBody RefundApplyReq refundApplyReq) {
 		String orderCode = refundApplyReq.getOrderCode();
 		String refundReason = refundApplyReq.getRefundReason();
 
 		OrderRefundApplyReq orderRefundApplyReq = new OrderRefundApplyReq();
 		orderRefundApplyReq.setOrderCode(orderCode);
 		orderRefundApplyReq.setRefundApplyTime(LocalDateTime.now());
-		OrderRefundApplyResp orderRefundApplyResp = orderFeign.refundApply(orderRefundApplyReq).dataOrThrow();
+		OrderRefundApplyResp orderRefundApplyResp = orderFeign.refundApply(orderRefundApplyReq);
 
 		String refundOrderCode = String.valueOf(sequenceGenerator.nextId());
 		PayRefundApplyReq payRefundApplyReq = new PayRefundApplyReq();
@@ -152,7 +153,7 @@ public class OrderCenterController {
 
 		refundApplyFeign.refundApply(payRefundApplyReq);
 
-		return Result.success();
+		return null;
 	}
 
 	/**
@@ -162,7 +163,7 @@ public class OrderCenterController {
 	 * @return
 	 */
 	@GetMapping("/deleteOrder")
-	public Result<Void> deleteOrder(@Valid @NotNull(message = "订单号不能为空") String orderCode) {
+	public Void deleteOrder(@Valid @NotNull(message = "订单号不能为空") String orderCode) {
 		return orderFeign.deleteOrder(orderCode);
 	}
 }

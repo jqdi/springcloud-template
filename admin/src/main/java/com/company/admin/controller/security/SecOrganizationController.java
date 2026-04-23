@@ -5,7 +5,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 
 import com.company.framework.util.JsonUtil;
 import com.company.admin.service.security.SecOrganizationService;
-import com.company.common.api.Result;
+
 import com.company.admin.entity.security.SecOrganization;
 import com.company.admin.entity.security.SecRole;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,47 +41,47 @@ public class SecOrganizationController {
 
     @RequestMapping(value = "/admin/security/secOrganization/get", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> adminGet(SecOrganization secOrganization) {
-        return Result.success(secOrganizationService.get(secOrganization));
+    public SecOrganization adminGet(SecOrganization secOrganization) {
+        return secOrganizationService.get(secOrganization);
     }
 
     @RequestMapping(value = "/admin/security/secOrganization/save", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> adminSave(@Validated(SecOrganization.Save.class) SecOrganization secOrganization) {
+    public Void adminSave(@Validated(SecOrganization.Save.class) SecOrganization secOrganization) {
         secOrganizationService.save(secOrganization);
-        return Result.success();
+        return null;
     }
 
     @RequestMapping(value = "/admin/security/secOrganization/remove", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> adminRemove(SecOrganization secOrganization) {
+    public Void adminRemove(SecOrganization secOrganization) {
         secOrganizationService.remove(secOrganization);
-        return Result.success();
+        return null;
     }
 
     @RequestMapping(value = "/admin/security/secOrganization/update", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> adminUpdate(@Validated(SecOrganization.Update.class) SecOrganization secOrganization) {
+    public Void adminUpdate(@Validated(SecOrganization.Update.class) SecOrganization secOrganization) {
         secOrganizationService.update(secOrganization);
-        return Result.success();
+        return null;
     }
 
     @RequestMapping(value = "/admin/security/secOrganization/secRole/list", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> adminListRole(SecOrganization secOrganization) {
-        return Result.success(secOrganizationService.listRole(secOrganization));
+    public List<SecRole> adminListRole(SecOrganization secOrganization) {
+        return secOrganizationService.listRole(secOrganization);
     }
 
     @RequestMapping(value = "/admin/security/secOrganization/authorize", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> adminAuthorize(SecOrganization secOrganization, Long[] roleIds) {
+    public Void adminAuthorize(SecOrganization secOrganization, Long[] roleIds) {
         List<SecRole> roleList = new ArrayList<>();
         for (Long item : roleIds) {
             roleList.add(new SecRole(item));
         }
         secOrganization.setRoleList(roleList);
         secOrganizationService.authorizeRole(secOrganization);
-        return Result.success();
+        return null;
     }
     //endregion
 }

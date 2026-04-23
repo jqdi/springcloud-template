@@ -3,7 +3,7 @@ package com.company.admin.controller.system;
 
 
 import com.company.admin.service.system.DictionaryService;
-import com.company.common.api.Result;
+
 import com.company.admin.entity.system.Dictionary;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -28,38 +28,38 @@ public class DictionaryController {
     private DictionaryService dictionaryService;
 
     @PostMapping("/save")
-    public Result<?> save(@Validated(Dictionary.Save.class) Dictionary dictionary) {
+    public Void save(@Validated(Dictionary.Save.class) Dictionary dictionary) {
         dictionaryService.save(dictionary);
-        return Result.success();
+        return null;
     }
 
     @RequestMapping("/remove")
-    public Result<?> delete(@NotNull Long id) {
+    public Void delete(@NotNull Long id) {
         dictionaryService.deleteById(id);
-        return Result.success();
+        return null;
     }
 
     @RequestMapping("/get")
-    public Result<?> find(@NotNull Long id) {
-        return Result.success(dictionaryService.findById(id));
+    public Dictionary find(@NotNull Long id) {
+        return dictionaryService.findById(id);
     }
 
     @PostMapping("/update")
-    public Result<?> update(@Validated(Dictionary.Update.class) Dictionary dictionary) {
+    public Void update(@Validated(Dictionary.Update.class) Dictionary dictionary) {
         dictionaryService.update(dictionary);
-        return Result.success();
+        return null;
     }
 
     @RequestMapping("/lock/update")
-    public Result<?> updateLock(@NotNull Long id) {
+    public Void updateLock(@NotNull Long id) {
         dictionaryService.updateLock(id);
-        return Result.success();
+        return null;
     }
 
     @RequestMapping(value = "/reload")
     @ResponseBody
-    public Result<?> reload() {
+    public Void reload() {
         dictionaryService.invalidateCache();
-        return Result.success();
+        return null;
     }
 }

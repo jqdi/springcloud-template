@@ -16,7 +16,7 @@ class SysMenuControllerTest {
 
     @Test
     void getRouters() {
-        List<RouterResp> respList = sysMenuController.getRouters(1).dataOrThrow();
+        List<RouterResp> respList = sysMenuController.getRouters(1);
         System.out.println(JSONUtil.toJsonPrettyStr(respList));
     }
 }

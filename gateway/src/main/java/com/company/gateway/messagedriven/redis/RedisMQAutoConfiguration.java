@@ -10,7 +10,7 @@ import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 
 @Slf4j
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @Conditional(RedisMQAutoConfiguration.RedisMQCondition.class)
 public class RedisMQAutoConfiguration {
 

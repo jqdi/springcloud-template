@@ -59,7 +59,7 @@ public class AlipayMarketingActivityAppendedMessage implements FromMessage {
 		 * </pre>
 		 */
 		ActivityAppendedBizContent bizContentObj = JsonUtil.toEntity(bizContent, ActivityAppendedBizContent.class);
-		log.info("bizContentObj:{}", JsonUtil.toJsonString(bizContentObj));
+		log.info("bizContentObj:{}", bizContentObj);
 
 		// TODO
 

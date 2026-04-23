@@ -1,6 +1,6 @@
 package com.company.order.api.feign;
 
-import com.company.common.api.Result;
+
 import com.company.order.api.constant.Constants;
 import com.company.order.api.feign.fallback.ThrowExceptionFallback;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -16,5 +16,5 @@ public interface IosNotifyFeign {
 	 * 支付回调
 	 */
 	@PostMapping("/iosPayNotify")
-	Result<String> iosPayNotify(@RequestBody Map<String, String> params);
+    Map<String, String> iosPayNotify(@RequestBody Map<String, String> params);
 }

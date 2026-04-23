@@ -5,7 +5,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 
 import com.company.framework.util.JsonUtil;
 import com.company.admin.service.security.SecResourceService;
-import com.company.common.api.Result;
+
 import com.company.admin.entity.security.SecResource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -37,37 +37,37 @@ public class SecResourceController {
 
     @RequestMapping(value = "/admin/security/secResource/get", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> adminGet(SecResource secResource) {
-        return Result.success(secResourceService.get(secResource));
+    public SecResource adminGet(SecResource secResource) {
+        return secResourceService.get(secResource);
     }
 
     @RequestMapping(value = "/admin/security/secResource/save", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> adminSave(@Validated(SecResource.Save.class) SecResource secResource) {
+    public Void adminSave(@Validated(SecResource.Save.class) SecResource secResource) {
         secResourceService.save(secResource);
-        return Result.success();
+        return null;
     }
 
     @RequestMapping(value = "/admin/security/secResource/remove", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> adminRemove(SecResource secResource) {
+    public Void adminRemove(SecResource secResource) {
         secResourceService.remove(secResource);
-        return Result.success();
+        return null;
     }
 
     @RequestMapping(value = "/admin/security/secResource/update", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> adminUpdate(@Validated(SecResource.Update.class) SecResource secResource) {
+    public Void adminUpdate(@Validated(SecResource.Update.class) SecResource secResource) {
         secResourceService.update(secResource);
-        return Result.success();
+        return null;
     }
 
     @RequestMapping(value = "/admin/security/secResource/reload", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> reload() throws Exception {
+    public Void reload() throws Exception {
         secResourceService.reload();
         secResourceService.invalidateCache();
-        return Result.success();
+        return null;
     }
     //endregion
 }

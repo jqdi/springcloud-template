@@ -1,3 +1,8 @@
+logging:
+  file:
+    #日志文件目录。./表示相对于项目根目录，即项目根目录下的logs目录。也可配置绝对路径，如：/home/webapp/logs
+    path: ./logs
+
 template:
   domain: http://domain.com
   enable:
@@ -6,9 +11,3 @@ template:
     message-driven: rocketmq # springevent:spring事件,rabbitmq:RabbitMQ消息队列,rocketmq:RocketMQ消息队列,redis:redis消息队列
   sqllimit:
     max: 9999
-
-# 数据库表字段加密
-encrypt:
-  enable: true
-  key: zraxi5gpkwebsknm
-  type: default

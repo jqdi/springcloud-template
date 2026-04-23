@@ -246,6 +246,6 @@ public class NavShowService {
 		navItemListCanShow.add(new NavItem().setId(8).setPosition(POSITION_COVER).setPriority(5));
 
 		List<NavItem> finalShowList = finalShow(maxSize, navItemListCanShow);
-		System.out.println("finalShowList:" + JsonUtil.toJsonString(finalShowList));
+		System.out.println("finalShowList:" + finalShowList);
 	}
 }

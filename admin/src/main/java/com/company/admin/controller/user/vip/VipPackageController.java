@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import com.company.admin.annotation.Pagination;
-import com.company.common.api.Result;
+
 
 /**
  * 会员套餐Controller
@@ -34,28 +34,28 @@ public class VipPackageController {
 
 	@RequestMapping(value = "/admin/user/vipPackage/get", method = RequestMethod.POST)
 	@ResponseBody
-	public Result<?> get(VipPackage vipPackage) {
-		return Result.success(vipPackageService.get(vipPackage));
+	public VipPackage get(VipPackage vipPackage) {
+		return vipPackageService.get(vipPackage);
 	}
 
 	@RequestMapping(value = "/admin/user/vipPackage/save", method = RequestMethod.POST)
 	@ResponseBody
-	public Result<?> save(@Validated(VipPackage.Save.class) VipPackage vipPackage) {
+	public Void save(@Validated(VipPackage.Save.class) VipPackage vipPackage) {
 		vipPackageService.save(vipPackage);
-		return Result.success();
+		return null;
 	}
 
 	@RequestMapping(value = "/admin/user/vipPackage/remove", method = RequestMethod.POST)
 	@ResponseBody
-	public Result<?> remove(VipPackage vipPackage) {
+	public Void remove(VipPackage vipPackage) {
 		vipPackageService.remove(vipPackage);
-		return Result.success();
+		return null;
 	}
 
 	@RequestMapping(value = "/admin/user/vipPackage/update", method = RequestMethod.POST)
 	@ResponseBody
-	public Result<?> update(@Validated(VipPackage.Update.class) VipPackage vipPackage) {
+	public Void update(@Validated(VipPackage.Update.class) VipPackage vipPackage) {
 		vipPackageService.update(vipPackage);
-		return Result.success();
+		return null;
 	}
 }

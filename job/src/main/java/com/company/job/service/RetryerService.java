@@ -31,7 +31,7 @@ public class RetryerService {
 			idList = Arrays.asList(param.split(",")).stream().map(String::valueOf).map(Integer::valueOf)
 					.collect(Collectors.toList());
 		} else {
-			idList = retryerFeign.selectId4Call().dataOrThrow();
+			idList = retryerFeign.selectId4Call();
 		}
 
 		XxlJobHelper.log("size:{}", idList.size());

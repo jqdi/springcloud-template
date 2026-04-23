@@ -7,7 +7,6 @@ import java.io.OutputStream;
 
 import org.springframework.stereotype.Component;
 
-import com.company.framework.util.JsonUtil;
 import com.company.framework.util.Utils;
 import com.company.framework.context.SpringContextUtil;
 import com.company.tool.qrcode.dto.LineColorParam;
@@ -77,7 +76,7 @@ public class MaTool {
 		log.info(
 				"cost:{}ms,scene:{},page:{},checkPath:{},envVersion:{},width:{},autoColor:{},lineColor:{},isHyaline:{}",
 				System.currentTimeMillis() - start, scene, page, checkPath, envVersion, width, autoColor,
-				JsonUtil.toJsonString(lineColor), isHyaline);
+				lineColor, isHyaline);
 		return maWxaCode;
 	}
 

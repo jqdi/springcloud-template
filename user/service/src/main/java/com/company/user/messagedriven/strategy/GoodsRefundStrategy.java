@@ -16,7 +16,7 @@ public class GoodsRefundStrategy implements BaseStrategy<Map<String, Object>> {
 
 	@Override
 	public void doStrategy(Map<String, Object> params) {
-		log.info("goodsRefund params:{}", JsonUtil.toJsonString(params));
+		log.info("goodsRefund params:{}", params);
 
 		String orderCode = MapUtils.getString(params, "orderCode");
 		// 根据orderCode查询商品订单，查不到的情况下直接退出

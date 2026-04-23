@@ -26,6 +26,22 @@ spring:
           username: ${custom.username}
           password: ${custom.password}
 
+mybatis-plus:
+  # 配置mapper的扫描，找到所有的mapper.xml映射文件
+  mapper-locations: classpath*:mapper/**/*Mapper.xml
+  # 搜索指定包别名
+  type-aliases-package: com.company.*.entity
+  configuration:
+    cacheEnabled: false # 使全局的映射器启用或禁用缓存
+    lazyLoadingEnabled: true # 全局启用或禁用延迟加载。当禁用时，所有关联对象都会即时加载
+    mapUnderscoreToCamelCase: true # 使用驼峰命名法转换字段
+    jdbcTypeForNull: NULL # 设置但JDBC类型为空时,某些驱动程序要指定值,default:OTHER，插入空值时不需要指定类型
+    logImpl: org.apache.ibatis.logging.log4j2.Log4j2Impl # 打印SQL语句
+  global-config:
+    db-config:
+      #主键类型 0(AUTO):"数据库ID自增", 1(INPUT):"用户输入ID",2(ID_WORKER):"全局唯一ID (数字类型唯一ID)", 3(UUID):"全局唯一ID UUID";
+      id-type: 0
+
 # 下面是环境区分，多个配置以 ‘---’ 分开
 ---
 # dev环境配置
@@ -38,6 +54,11 @@ custom:
   username: root
   password: 12345678
   lazy: true # 是否懒加载数据源
+# 数据库表字段加密
+encrypt:
+  enable: false
+  key: ublp45r318fr4xr7
+  type: default
 
 ---
 # test环境配置
@@ -50,6 +71,11 @@ custom:
   username: root
   password: 12345678
   lazy: false # 是否懒加载数据源
+# 数据库表字段加密
+encrypt:
+  enable: true
+  key: ublp45r318fr4xr7
+  type: default
 
 ---
 # pre环境配置
@@ -62,15 +88,25 @@ custom:
   username: root
   password: 12345678
   lazy: false # 是否懒加载数据源
+# 数据库表字段加密
+encrypt:
+  enable: true
+  key: 1vuttpsedhpo0hli
+  type: default
 
 ---
 # prod环境配置
 spring:
   config:
     activate:
-      on-profile: prod
+      on-profile: prod,prod-zone1,prod-zone2
 custom:
   ip_port: 127.0.0.1:3306
   username: root
   password: 12345678
   lazy: false # 是否懒加载数据源
+# 数据库表字段加密
+encrypt:
+  enable: true
+  key: zraxi5gpkwebsknm
+  type: default

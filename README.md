@@ -61,12 +61,19 @@ springcloud-template 是一个企业级的Spring Cloud微服务架构模板，�
 | Redis                | 跟随Spring Boot |
 | Redisson             | 3.12.0  |
 | Hutool               | 5.8.5  |
+| Graceful Response    | 5.0.3-boot2  |
 
 ### 模块说明
 
 ```lua
 springcloud-template
 ├── template-common -- 公共代码(所有模块都依赖它)
+└── boot-starter -- starter框架代码
+     └── datasource -- 数据源
+     └── encryptbody -- 请求/响应加解密
+     └── token -- token的使用
+          └── JWT
+          └── sa-token的应用
 └── template-framework -- 框架代码(内部微服务)
      └── autoconfigure -- 自动配置
      └── cache -- 缓存
@@ -75,7 +82,7 @@ springcloud-template
      └── deploy -- 优雅发版(可做到用户无感发版，完全不报错，分享：https://www.toutiao.com/article/7136601651804127751)
      └── developer -- 环境流量路由到本机，调试神器（分享：https://www.toutiao.com/article/7514716979333268008）
      └── feign -- Feign请求头数据在微服务间传递（分享：https://www.toutiao.com/article/7126056949267268108）
-     └── globalresponse -- 统一异常处理、响应日志统一打印
+     └── globalresponse -- 统一异常处理、响应结构（分享：https://www.toutiao.com/article/7588770501573591587）
      └── lock -- 锁设计
      └── message -- 文案国际化
      └── messagedriven -- 消息驱动，实现异步处理生产者
@@ -83,9 +90,8 @@ springcloud-template
      └── threadpool -- 自定义线程池（JDK和Tomcat）
      └── trace -- 日志追踪（分享：https://www.toutiao.com/article/7126056949267268108）
 └── template-framework-edge -- 框架代码(边缘微服务)
-     └── encryptbody -- 请求/响应加解密
      └── filter -- http公共请求参数设置到请求头在微服务内传递
-     └── globalresponse -- 统一异常处理、响应日志统一打印
+     └── globalresponse -- 统一异常处理、响应日志统一打印（分享：https://www.toutiao.com/article/7588770501573591587）
      └── interceptor -- 访问控制(结合@RequireLogin使用)
 	 └── jackson -- json响应值自定义序列化
 ├── template-eureka -- 注册中心
@@ -137,9 +143,6 @@ springcloud-template
           └── 微信小程序登录(旧版)
           └── 微信公众号登录
           └── 支付宝小程序登录
-     └── token -- token的使用
-          └── JWT
-          └── sa-token的应用
 ├── template-admin -- 管理后台端(前后端一体)
 ├── template-adminapi -- 管理后台端(前后端分离)
 ├── template-openapi -- 开放平台接入层(边缘微服务)
@@ -252,11 +255,12 @@ springcloud-template 开源软件遵循 [Apache 2.0 协议](https://www.apache.o
 
 ### 感谢
  - nacos: https://nacos.io/
- - 登录认证：https://gitee.com/jq_di/easy-login
+ - 登录认证：https://github.com/jqdi/easy-login
  - Sa-Token：https://sa-token.cc
- - 文件存储：https://gitee.com/jq_di/file-storage
- - 短信发送：https://gitee.com/jq_di/sms-sender
+ - 文件存储：https://github.com/jqdi/file-storage
+ - 短信发送：https://github.com/jqdi/sms-sender
  - Knife4j API文档：https://doc.xiaominfo.com
  - 动态数据源：https://gitee.com/baomidou/dynamic-datasource-spring-boot-starter
  - XXL-JOB：https://gitee.com/xuxueli0323/xxl-job
-
+ - Graceful Response：https://doc.feiniaojin.com/graceful-response/home.html
+ - MyBatis 国际化：https://github.com/jqdi/mybatis-i18n

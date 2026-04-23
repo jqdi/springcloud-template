@@ -1,29 +1,28 @@
 package com.company.web.controller;
 
+import java.util.Collections;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 
-import com.company.framework.context.HeaderContextUtil;
-import com.company.token.util.TokenValueUtil;
+import com.company.framework.context.SpringContextUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import com.company.common.api.Result;
-import com.company.framework.util.RegexUtil;
+import com.company.framework.context.HeaderContextUtil;
+import com.company.framework.globalresponse.ExceptionUtil;
 import com.company.framework.messagedriven.MessageSender;
 import com.company.framework.messagedriven.constants.BroadcastConstants;
-import com.company.framework.annotation.RequireLogin;
+import com.company.framework.util.RegexUtil;
+import com.company.token.TokenParams;
+import com.company.token.TokenService;
+import com.company.token.accesscontrol.annotation.RequireLogin;
 import com.company.tool.api.feign.VerifyCodeFeign;
 import com.company.user.api.enums.UserOauthEnum;
 import com.company.user.api.feign.UserInfoFeign;
@@ -37,12 +36,13 @@ import com.company.web.req.LoginByMobileReq;
 import com.company.web.req.RegByEmailReq;
 import com.company.web.req.RegByMobileReq;
 import com.company.web.resp.LoginResp;
-import com.company.token.TokenService;
 import com.company.web.util.PassWordUtil;
 import com.google.common.collect.Maps;
-import com.jqdi.easylogin.core.LoginClient;
-import com.jqdi.easylogin.core.exception.LoginException;
 
+import io.github.jqdi.easylogin.core.LoginClient;
+import io.github.jqdi.easylogin.core.LoginParams;
+import io.github.jqdi.easylogin.core.exception.LoginException;
+import io.github.jqdi.easylogin.spring.boot.starter.LoginType;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -64,10 +64,10 @@ public class AccountController {
 	private VerifyCodeFeign verifyCodeFeign;
 
 	@Autowired
-	@Qualifier("emailPasswordCode")
+	@Qualifier(LoginType.EMAIL_PASSWORD_CODE)
 	private LoginClient emailPasswordCodeLoginClient;
 	@Autowired
-	@Qualifier("mobilePasswordCode")
+	@Qualifier(LoginType.MOBILE_PASSWORD_CODE)
 	private LoginClient mobilePasswordCodeLoginClient;
 
 	@Value("${token.name}")
@@ -77,36 +77,36 @@ public class AccountController {
 	private String tokenPrefix;
 
 	@GetMapping(value = "/reg/verify/email")
-	public Result<String> regVerifyByEmail(@NotBlank(message = "邮箱不能为空") String email) {
+	public Map<String, String> regVerifyByEmail(@NotBlank(message = "邮箱不能为空") String email) {
 		if (!RegexUtil.checkEmail(email)) {
-			return Result.fail("邮箱格式错误");
+            ExceptionUtil.throwException("邮箱格式错误");
 		}
 
 		String identifier = email;
-		UserOauthResp userOauthResp = userOauthFeign.selectOauth(UserOauthEnum.IdentityType.EMAIL, identifier).dataOrThrow();
-		if (userOauthResp != null) {
-			return Result.fail("邮箱已注册，可以直接登录！");
+		UserOauthResp userOauthResp = userOauthFeign.selectOauth(UserOauthEnum.IdentityType.EMAIL, identifier);
+		if (userOauthResp != null && userOauthResp.getUserId() != null) {
+			ExceptionUtil.throwException("邮箱已注册，可以直接登录！");
 		}
 
 		return verifyCodeFeign.email(email, Constants.VerifyCodeType.REGISTER);
 	}
 
 	@PostMapping(value = "/reg/email")
-	public Result<String> regByEmail(@Valid @RequestBody RegByEmailReq regByEmailReq) {
+	public Map<String, String> regByEmail(@Valid @RequestBody RegByEmailReq regByEmailReq) {
 		String email = regByEmailReq.getEmail();
 		if (!RegexUtil.checkEmail(email)) {
-			return Result.fail("邮箱格式错误");
+			ExceptionUtil.throwException("邮箱格式错误");
 		}
 
 		String identifier = email;
-		UserOauthResp userOauthResp = userOauthFeign.selectOauth(UserOauthEnum.IdentityType.EMAIL, identifier).dataOrThrow();
-		if (userOauthResp != null) {
-			return Result.fail("邮箱已注册，可以直接登录！");
+		UserOauthResp userOauthResp = userOauthFeign.selectOauth(UserOauthEnum.IdentityType.EMAIL, identifier);
+		if (userOauthResp != null && userOauthResp.getUserId() != null) {
+			ExceptionUtil.throwException("邮箱已注册，可以直接登录！");
 		}
 
-		Boolean verifyPass = verifyCodeFeign.verify(Constants.VerifyCodeType.REGISTER, email, regByEmailReq.getCode()).dataOrThrow();
+		Boolean verifyPass = verifyCodeFeign.verify(Constants.VerifyCodeType.REGISTER, email, regByEmailReq.getCode());
 		if (!verifyPass) {
-			return Result.fail("验证码错误");
+			ExceptionUtil.throwException("验证码错误");
 		}
 
 		// TODO 密码复杂度校验
@@ -114,48 +114,48 @@ public class AccountController {
 		UserInfoReq userInfoReq = new UserInfoReq();
 		userInfoReq.setIdentityType(UserOauthEnum.IdentityType.EMAIL);
 		userInfoReq.setIdentifier(email);
-		userInfoReq.setCertificate(PassWordUtil.md5(regByEmailReq.getPassword()));
+		userInfoReq.setCertificate(regByEmailReq.getCode());
+		userInfoReq.setPassword(PassWordUtil.md5(regByEmailReq.getPassword()));
 //		userInfoReq.setAvatar(null);
 //		userInfoReq.setNickname(null);
-		UserInfoResp userInfoResp = userInfoFeign.findOrCreateUser(userInfoReq).dataOrThrow();
+		UserInfoResp userInfoResp = userInfoFeign.findOrCreateUser(userInfoReq);
 		log.info("userId:{}", userInfoResp.getId());
 
-		return Result.success("注册成功");
+		return Collections.singletonMap("value", "注册成功");
 	}
 
 	@GetMapping(value = "/reg/verify/mobile")
-	public Result<String> regVerifyByMobile(@NotBlank(message = "手机号不能为空") String mobile) {
+	public Map<String, String> regVerifyByMobile(@NotBlank(message = "手机号不能为空") String mobile) {
 		if (!RegexUtil.checkMobile(mobile)) {
-			return Result.fail("手机号格式错误");
+			ExceptionUtil.throwException("手机号格式错误");
 		}
 
 		String identifier = mobile;
-		UserOauthResp userOauthResp = userOauthFeign.selectOauth(UserOauthEnum.IdentityType.MOBILE, identifier)
-				.dataOrThrow();
-		if (userOauthResp != null) {
-			return Result.fail("手机号已注册，可以直接登录！");
+        UserOauthResp userOauthResp = userOauthFeign.selectOauth(UserOauthEnum.IdentityType.MOBILE, identifier);
+		if (userOauthResp != null && userOauthResp.getUserId() != null) {
+			ExceptionUtil.throwException("手机号已注册，可以直接登录！");
 		}
 
 		return verifyCodeFeign.sms(mobile, Constants.VerifyCodeType.REGISTER);
 	}
 
 	@PostMapping(value = "/reg/mobile")
-	public Result<String> regByMobile(@Valid @RequestBody RegByMobileReq regByMobileReq) {
+	public Map<String, String> regByMobile(@Valid @RequestBody RegByMobileReq regByMobileReq) {
 		String mobile = regByMobileReq.getMobile();
 		if (!RegexUtil.checkMobile(mobile)) {
-			return Result.fail("手机号格式错误");
+			ExceptionUtil.throwException("手机号格式错误");
 		}
 
 		String identifier = mobile;
 		UserOauthResp userOauthResp = userOauthFeign.selectOauth(UserOauthEnum.IdentityType.MOBILE, identifier)
-				.dataOrThrow();
-		if (userOauthResp != null) {
-			return Result.fail("手机号已注册，可以直接登录！");
+				;
+		if (userOauthResp != null && userOauthResp.getUserId() != null) {
+			ExceptionUtil.throwException("手机号已注册，可以直接登录！");
 		}
 
-		Boolean verifyPass = verifyCodeFeign.verify(Constants.VerifyCodeType.REGISTER, mobile, regByMobileReq.getCode()).dataOrThrow();
+		Boolean verifyPass = verifyCodeFeign.verify(Constants.VerifyCodeType.REGISTER, mobile, regByMobileReq.getCode());
 		if (!verifyPass) {
-			return Result.fail("验证码错误");
+			ExceptionUtil.throwException("验证码错误");
 		}
 
 		// TODO 密码复杂度校验
@@ -163,32 +163,33 @@ public class AccountController {
 		UserInfoReq userInfoReq = new UserInfoReq();
 		userInfoReq.setIdentityType(UserOauthEnum.IdentityType.MOBILE);
 		userInfoReq.setIdentifier(identifier);
-		userInfoReq.setCertificate(PassWordUtil.md5(regByMobileReq.getPassword()));
+		userInfoReq.setCertificate(regByMobileReq.getCode());
+		userInfoReq.setPassword(PassWordUtil.md5(regByMobileReq.getPassword()));
 //		userInfoReq.setAvatar(null);
 //		userInfoReq.setNickname(null);
-		UserInfoResp userInfoResp = userInfoFeign.findOrCreateUser(userInfoReq).dataOrThrow();
+		UserInfoResp userInfoResp = userInfoFeign.findOrCreateUser(userInfoReq);
 		log.info("userId:{}", userInfoResp.getId());
 
-		return Result.success("注册成功");
+		return Collections.singletonMap("value", "注册成功");
 	}
 
 	@GetMapping(value = "/login/verify/email")
-	public Result<String> loginVerifyByEmail(@NotBlank(message = "邮箱不能为空") String email) {
+	public Map<String, String> loginVerifyByEmail(@NotBlank(message = "邮箱不能为空") String email) {
 		if (!RegexUtil.checkEmail(email)) {
-			return Result.fail("邮箱格式错误");
+			ExceptionUtil.throwException("邮箱格式错误");
 		}
 
 		String identifier = email;
-		UserOauthResp userOauthResp = userOauthFeign.selectOauth(UserOauthEnum.IdentityType.EMAIL, identifier).dataOrThrow();
+		UserOauthResp userOauthResp = userOauthFeign.selectOauth(UserOauthEnum.IdentityType.EMAIL, identifier);
 		if (userOauthResp == null) {
-			return Result.fail("邮箱未注册，请前往注册！");
+			ExceptionUtil.throwException("邮箱未注册，请前往注册！");
 		}
 
 		return verifyCodeFeign.email(email, Constants.VerifyCodeType.LOGIN);
 	}
 
 	@PostMapping(value = "/login/email")
-	public Result<LoginResp> loginByEmail(@Valid @RequestBody LoginByEmailReq loginByEmailReq) {
+	public LoginResp loginByEmail(@Valid @RequestBody LoginByEmailReq loginByEmailReq) {
 		String email = loginByEmailReq.getEmail();
 		String password = loginByEmailReq.getPassword();
 		String code = loginByEmailReq.getCode();
@@ -196,36 +197,36 @@ public class AccountController {
 		String identifier = email;
 		String userId = null;
 		try {
-			userId = emailPasswordCodeLoginClient.login(identifier, password, code);
+			userId = emailPasswordCodeLoginClient.login(LoginParams.builder().emailPasswordCode(identifier, password, code).build());
 		} catch (LoginException e) {
-			return Result.fail(e.getMessage());
+			ExceptionUtil.throwException(e.getMessage());
 		}
 
 		LoginResp loginResp = new LoginResp();
 		loginResp.setNeedBind(false);
 		loginResp.setToken(token(userId));
 
-		return Result.success(loginResp);
+		return loginResp;
 	}
 
 	@GetMapping(value = "/login/verify/mobile")
-	public Result<String> loginVerifyByMobile(@NotBlank(message = "手机号不能为空") String mobile) {
+	public Map<String, String> loginVerifyByMobile(@NotBlank(message = "手机号不能为空") String mobile) {
 		if (!RegexUtil.checkMobile(mobile)) {
-			return Result.fail("手机号格式错误");
+			ExceptionUtil.throwException("手机号格式错误");
 		}
 
 		String identifier = mobile;
 		UserOauthResp userOauthResp = userOauthFeign.selectOauth(UserOauthEnum.IdentityType.MOBILE, identifier)
-				.dataOrThrow();
+				;
 		if (userOauthResp == null) {
-			return Result.fail("手机号未注册，请前往注册！");
+			ExceptionUtil.throwException("手机号未注册，请前往注册！");
 		}
 
 		return verifyCodeFeign.sms(mobile, Constants.VerifyCodeType.LOGIN);
 	}
 
 	@PostMapping(value = "/login/mobile")
-	public Result<LoginResp> loginByMobile(@Valid @RequestBody LoginByMobileReq loginByMobileReq) {
+	public LoginResp loginByMobile(@Valid @RequestBody LoginByMobileReq loginByMobileReq) {
 		String mobile = loginByMobileReq.getMobile();
 		String password = loginByMobileReq.getPassword();
 		String code = loginByMobileReq.getCode();
@@ -233,22 +234,22 @@ public class AccountController {
 		String identifier = mobile;
 		String userId = null;
 		try {
-			userId = mobilePasswordCodeLoginClient.login(identifier, password, code);
+			userId = mobilePasswordCodeLoginClient.login(LoginParams.builder().mobilePasswordCode(identifier, password, code).build());
 		} catch (LoginException e) {
-			return Result.fail(e.getMessage());
+			ExceptionUtil.throwException(e.getMessage());
 		}
 
 		LoginResp loginResp = new LoginResp();
 		loginResp.setNeedBind(false);
 		loginResp.setToken(token(userId));
 
-		return Result.success(loginResp);
+		return loginResp;
 	}
 
 	private String token(String userId) {
-		String device = "WEB"; // 此次登录的客户端设备类型, 用于[同端互斥登录]时指定此次登录的设备类型
-
-		String tokenValue = tokenService.generate(userId, device);
+		String device = SpringContextUtil.getProperty("spring.application.name"); // 此次登录的客户端设备类型, 用于[同端互斥登录]时指定此次登录的设备类型
+		TokenParams tokenParams = new TokenParams(userId, device);
+		String tokenValue = tokenService.generate(tokenParams);
 		if (StringUtils.isNoneBlank(tokenPrefix)) {
 			tokenValue = tokenPrefix + " " + tokenValue;
 		}
@@ -265,22 +266,26 @@ public class AccountController {
 
 	@RequireLogin
 	@PostMapping(value = "/logout")
-	public Result<String> logout(HttpServletRequest request) {
+	public Map<String, String> logout(HttpServletRequest request) {
 		String token = request.getHeader(headerToken);
-		token = TokenValueUtil.fixToken(tokenPrefix, token);
 		if (StringUtils.isBlank(token)) {
-			return Result.success("登出成功");
+			return Collections.singletonMap("value", "登出成功");
 		}
 
-		String device = tokenService.invalid(token);
+		TokenParams tokenParams = tokenService.invalid(token);
+		if (tokenParams == null) {
+			return Collections.singletonMap("value", "登出成功");
+		}
+		String userId = tokenParams.getUserId();
+		String device = tokenParams.getDevice();
 
 		// 发布登出事件
 		Map<String, Object> params = Maps.newHashMap();
 		params.put("device", device);
-		params.put("userId", HeaderContextUtil.currentUserId());
+		params.put("userId", userId);
 		params.put("httpContextHeader", HeaderContextUtil.httpContextHeader());
 		messageSender.sendBroadcastMessage(params, BroadcastConstants.USER_LOGOUT.EXCHANGE);
 
-		return Result.success("登出成功");
+		return Collections.singletonMap("value", "登出成功");
 	}
 }

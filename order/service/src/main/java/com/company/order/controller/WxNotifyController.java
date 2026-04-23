@@ -1,7 +1,7 @@
 package com.company.order.controller;
 
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
-import com.company.common.api.Result;
+
 import com.company.framework.messagedriven.MessageSender;
 import com.company.framework.messagedriven.properties.MessagedrivenProperties;
 import com.company.order.api.enums.OrderPayEnum;
@@ -35,6 +35,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Collections;
 import java.util.Map;
 import java.util.Objects;
 
@@ -64,7 +65,7 @@ public class WxNotifyController implements WxNotifyFeign {
 	 * 微信只有支付成功才会回调
 	 */
 	@Override
-	public Result<String> wxPayNotify(@RequestBody String xmlString) {
+	public Map<String, String> wxPayNotify(@RequestBody String xmlString) {
 		/**
 		 * <pre>
 		 * 官方文档：https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=9_7&index=8
@@ -100,7 +101,7 @@ public class WxNotifyController implements WxNotifyFeign {
 		String outTradeNo = orderNotifyResult.getOutTradeNo();
 		if (StringUtils.isBlank(outTradeNo)) {
 			payNotifyMapper.updateRemarkById("缺少out_trade_no", payNotify.getId());
-			return Result.success(WxPayNotifyResponse.fail("缺少out_trade_no"));
+            return Collections.singletonMap("value", WxPayNotifyResponse.fail("缺少out_trade_no"));
 		}
 
 		WxPay wxPay = wxPayMapper.selectByOutTradeNo(outTradeNo);
@@ -112,13 +113,13 @@ public class WxNotifyController implements WxNotifyFeign {
 		Map<String, String> map = orderNotifyResult.toMap();
 		if (!SignUtils.checkSign(map, null, mchKey)) {
 			payNotifyMapper.updateRemarkById("参数格式校验错误！", payNotify.getId());
-			return Result.success(WxPayNotifyResponse.fail("参数格式校验错误！"));
-		}
+            return Collections.singletonMap("value", WxPayNotifyResponse.fail("参数格式校验错误！"));
+        }
 
 		// 校验返回的订单金额是否与商户侧的订单金额一致
 		if (!Objects.equals(wxPay.getTotalFee(), orderNotifyResult.getTotalFee())) {
 			payNotifyMapper.updateRemarkById("订单金额不一致", payNotify.getId());
-			return Result.success(WxPayNotifyResponse.fail("订单金额不一致"));
+            return Collections.singletonMap("value", WxPayNotifyResponse.fail("订单金额不一致"));
 		}
 
 		String returnCode = orderNotifyResult.getReturnCode();
@@ -126,7 +127,7 @@ public class WxNotifyController implements WxNotifyFeign {
 			String message = orderNotifyResult.getReturnMsg();
 			log.warn("returnCode不是SUCCESS:{},{}", returnCode, message);
 			payNotifyMapper.updateRemarkById(message, payNotify.getId());
-			return Result.success(WxPayNotifyResponse.fail("returnCode不是SUCCESS"));
+            return Collections.singletonMap("value", WxPayNotifyResponse.fail("returnCode不是SUCCESS"));
 		}
 		
 		String resultCode = orderNotifyResult.getResultCode();
@@ -134,7 +135,7 @@ public class WxNotifyController implements WxNotifyFeign {
 			String message = orderNotifyResult.getErrCodeDes();
 			log.warn("resultCode不是SUCCESS:{},{}", resultCode, message);
 			payNotifyMapper.updateRemarkById(message, payNotify.getId());
-			return Result.success(WxPayNotifyResponse.fail("resultCode不是SUCCESS"));
+            return Collections.singletonMap("value", WxPayNotifyResponse.fail("resultCode不是SUCCESS"));
 		}
 		
 		// 回调数据落库
@@ -149,7 +150,7 @@ public class WxNotifyController implements WxNotifyFeign {
 		if (affect == 0) {
 			// 订单回调已处理完成，无需重复处理
 			payNotifyMapper.updateRemarkById("订单回调已处理完成，无需重复处理", payNotify.getId());
-			return Result.success(WxPayNotifyResponse.success("OK"));
+            return Collections.singletonMap("value", WxPayNotifyResponse.success("OK"));
 		}
 
 		// MQ异步处理
@@ -171,11 +172,11 @@ public class WxNotifyController implements WxNotifyFeign {
 
 		messageSender.sendNormalMessage(StrategyConstants.PAY_NOTIFY_STRATEGY, params, messagedrivenProperties.getExchange().getDirect(),
 				Constants.QUEUE.PAY_NOTIFY.KEY);
-		return Result.success(WxPayNotifyResponse.success("OK"));
+        return Collections.singletonMap("value", WxPayNotifyResponse.success("OK"));
 	}
 	
 	@Override
-	public Result<String> wxPayRefundNotify(@RequestBody String xmlString) {
+	public Map<String, String> wxPayRefundNotify(@RequestBody String xmlString) {
 		/**
 		 * <pre>
 		 * 官方文档：https://pay.weixin.qq.com/wiki/doc/api/H5.php?chapter=9_16&index=10
@@ -220,13 +221,13 @@ public class WxNotifyController implements WxNotifyFeign {
 			String message = refundNotifyResult.getReturnMsg();
 			log.warn("returnCode不是SUCCESS:{},{}", returnCode, message);
 			payNotifyMapper.updateRemarkById(message, payNotify.getId());
-			return Result.success(WxPayNotifyResponse.fail("returnCode不是SUCCESS"));
+            return Collections.singletonMap("value", WxPayNotifyResponse.fail("returnCode不是SUCCESS"));
 		}
 		
 		String mchId = refundNotifyResult.getMchId();
 		if (StringUtils.isBlank(mchId)) {
 			payNotifyMapper.updateRemarkById("缺少mch_id", payNotify.getId());
-			return Result.success(WxPayNotifyResponse.fail("缺少mch_id"));
+            return Collections.singletonMap("value", WxPayNotifyResponse.fail("缺少mch_id"));
 		}
 		
 		WxPayProperties.MchConfig mchConfig = wxPayConfiguration.getMchConfig(mchId);
@@ -238,7 +239,7 @@ public class WxNotifyController implements WxNotifyFeign {
 		} catch (WxPayException e) {
 			log.error("校验返回结果签名异常", e);
 			payNotifyMapper.updateRemarkById(e.getMessage(), payNotify.getId());
-			return Result.success(WxPayNotifyResponse.fail(e.getMessage()));
+            return Collections.singletonMap("value", WxPayNotifyResponse.fail(e.getMessage()));
 		}
 
 		ReqInfo reqInfo = refundNotifyResult.getReqInfo();
@@ -255,7 +256,7 @@ public class WxNotifyController implements WxNotifyFeign {
 		if (affect == 0) {
 			// 订单回调已处理完成，无需重复处理
 			payNotifyMapper.updateRemarkById("订单回调已处理完成，无需重复处理", payNotify.getId());
-			return Result.success(WxPayNotifyResponse.success("OK"));
+            return Collections.singletonMap("value", WxPayNotifyResponse.success("OK"));
 		}
 
 		String refundStatus = reqInfo.getRefundStatus();
@@ -280,6 +281,6 @@ public class WxNotifyController implements WxNotifyFeign {
 
 		messageSender.sendNormalMessage(StrategyConstants.REFUND_NOTIFY_STRATEGY, params, messagedrivenProperties.getExchange().getDirect(),
 				messagedrivenProperties.getQueue().getCommon().getKey());
-		return Result.success(WxPayNotifyResponse.success("OK"));
+        return Collections.singletonMap("value", WxPayNotifyResponse.success("OK"));
 	}
 }

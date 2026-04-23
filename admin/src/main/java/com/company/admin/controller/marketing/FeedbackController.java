@@ -4,7 +4,7 @@ package com.company.admin.controller.marketing;
 
 import com.company.admin.service.marketing.FeedbackService;
 import com.company.admin.annotation.Pagination;
-import com.company.common.api.Result;
+
 import com.company.admin.entity.marketing.Feedback;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -32,16 +32,16 @@ public class FeedbackController {
 
     @RequestMapping(value = "/admin/marketing/feedback/remove", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> adminRemove(Feedback feedback) {
+    public Void adminRemove(Feedback feedback) {
         feedbackService.remove(feedback);
-        return Result.success();
+        return null;
     }
 
     @RequestMapping(value = "/admin/marketing/feedback/solve", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> adminSolve(Feedback feedback){
+    public Void adminSolve(Feedback feedback){
         feedbackService.solve(feedback);
-        return Result.success();
+        return null;
     }
 
 }

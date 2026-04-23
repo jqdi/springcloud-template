@@ -20,8 +20,8 @@ import com.company.adminapi.converter.annotation.RespConverter;
 import com.company.adminapi.easyexcel.ExcelUtil;
 import com.company.adminapi.enums.OperationLogEnum.BusinessType;
 import com.company.adminapi.excel.SysUserExcel;
-import com.company.common.api.Result;
-import com.company.framework.annotation.RequireLogin;
+
+import com.company.token.accesscontrol.annotation.RequireLogin;
 import com.company.framework.context.HeaderContextUtil;
 import com.company.framework.util.PropertyUtils;
 import com.company.system.api.feign.SysUserFeign;
@@ -47,40 +47,40 @@ public class SysUserController {
 	@RespConverter(field = "updateBy", newField = "updateByNickname", dataSource = SysUserIdNicknameConverter.class)
 	@RequirePermissions("system:sysUser:query")
 	@GetMapping("/page")
-	public Result<PageResp<com.company.adminapi.resp.SysUserResp>> page(@NotNull @Min(value = 1) Long current, @NotNull Long size, String account, String nickname, String email, String phonenumber, String sex, String avatar, String status, Integer deptId, String userRemark, String createTimeStart, String createTimeEnd, String updateTimeStart, String updateTimeEnd) {
-		PageResp<SysUserResp> pageResp = sysUserFeign.page(current, size, account, nickname, email, phonenumber, sex, avatar, status, deptId, userRemark, createTimeStart, createTimeEnd, updateTimeStart, updateTimeEnd).dataOrThrow();
+	public PageResp<com.company.adminapi.resp.SysUserResp> page(@NotNull @Min(value = 1) Long current, @NotNull Long size, String account, String nickname, String email, String phonenumber, String sex, String avatar, String status, Integer deptId, String userRemark, String createTimeStart, String createTimeEnd, String updateTimeStart, String updateTimeEnd) {
+		PageResp<SysUserResp> pageResp = sysUserFeign.page(current, size, account, nickname, email, phonenumber, sex, avatar, status, deptId, userRemark, createTimeStart, createTimeEnd, updateTimeStart, updateTimeEnd);
 		List<com.company.adminapi.resp.SysUserResp> respList = PropertyUtils.copyArrayProperties(pageResp.getList(), com.company.adminapi.resp.SysUserResp.class);
-		return Result.success(PageResp.of(pageResp.getTotal(), respList));
+        return PageResp.of(pageResp.getTotal(), respList);
 	}
 
 	@RespConverter(field = "createBy", newField = "createByNickname", dataSource = SysUserIdNicknameConverter.class)
 	@RespConverter(field = "updateBy", newField = "updateByNickname", dataSource = SysUserIdNicknameConverter.class)
 	@RequirePermissions("system:sysUser:query")
 	@GetMapping("/query")
-	public Result<com.company.adminapi.resp.SysUserResp> query(@NotNull Integer id) {
-		SysUserResp sysUserResp = sysUserFeign.query(id).dataOrThrow();
+	public com.company.adminapi.resp.SysUserResp query(@NotNull Integer id) {
+		SysUserResp sysUserResp = sysUserFeign.query(id);
 		com.company.adminapi.resp.SysUserResp resp = PropertyUtils.copyProperties(sysUserResp, com.company.adminapi.resp.SysUserResp.class);
-		return Result.success(resp);
+		return resp;
 	}
 
 	@OperationLog(title = "用户信息保存", businessType = BusinessType.INSERT)
 	@RequirePermissions("system:sysUser:save")
 	@PostMapping("/save")
-	public Result<Boolean> save(@RequestBody SysUserReq sysUserReq) {
-		sysUserFeign.save(sysUserReq).dataOrThrow();
-		SysUserResp sysUserResp = sysUserFeign.getByAccount(sysUserReq.getAccount()).dataOrThrow();
+	public Boolean save(@RequestBody SysUserReq sysUserReq) {
+		sysUserFeign.save(sysUserReq);
+		SysUserResp sysUserResp = sysUserFeign.getByAccount(sysUserReq.getAccount());
 		SaveNewPasswordReq req = new SaveNewPasswordReq();
 		req.setSysUserId(sysUserResp.getId());
 		// todo: 设置高复杂度密码，并邮件发送
 		req.setPassword("12345678");
-		sysUserPasswordFeign.saveNewPassword(req).dataOrThrow();
-		return Result.success(true);
+		sysUserPasswordFeign.saveNewPassword(req);
+		return true;
 	}
 
 	@OperationLog(title = "用户信息更新", businessType = BusinessType.UPDATE)
 	@RequirePermissions("system:sysUser:update")
 	@PostMapping("/update")
-	public Result<Boolean> update(@RequestBody SysUserReq sysUserReq) {
+	public Boolean update(@RequestBody SysUserReq sysUserReq) {
 		// 账号不可修改
 		sysUserReq.setAccount(null);
 		return sysUserFeign.update(sysUserReq);
@@ -89,7 +89,7 @@ public class SysUserController {
 	@OperationLog(title = "用户信息删除", businessType = BusinessType.DELETE)
 	@RequirePermissions("system:sysUser:remove")
 	@PostMapping("/remove")
-	public Result<Boolean> remove(@RequestBody RemoveReq<Integer> req) {
+	public Boolean remove(@RequestBody RemoveReq<Integer> req) {
 		return sysUserFeign.remove(req);
 	}
 
@@ -97,7 +97,7 @@ public class SysUserController {
 	@RequirePermissions("system:sysUser:export")
 	@GetMapping("/export")
 	public void export(HttpServletResponse response, String account, String nickname, String email, String phonenumber, String sex, String avatar, String status, Integer deptId, String userRemark, String createTimeStart, String createTimeEnd, String updateTimeStart, String updateTimeEnd) {
-		List<SysUserResp> listResp = sysUserFeign.list(account, nickname, email, phonenumber, sex, avatar, status, deptId, userRemark, createTimeStart, createTimeEnd, updateTimeStart, updateTimeEnd).dataOrThrow();
+		List<SysUserResp> listResp = sysUserFeign.list(account, nickname, email, phonenumber, sex, avatar, status, deptId, userRemark, createTimeStart, createTimeEnd, updateTimeStart, updateTimeEnd);
 		List<SysUserExcel> excelList = PropertyUtils.copyArrayProperties(listResp, SysUserExcel.class);
 		ExcelUtil.write2httpResponse(response, "用户信息", SysUserExcel.class, excelList);
 	}
@@ -108,7 +108,7 @@ public class SysUserController {
      * @return 用户信息
      */
 	@GetMapping(value = "/getInfo")
-	public Result<SysUserInfoResp> getInfo() {
+	public SysUserInfoResp getInfo() {
 		Integer userId = HeaderContextUtil.currentUserIdInt();
 		return sysUserFeign.getInfo(userId);
 	}
@@ -119,10 +119,10 @@ public class SysUserController {
 	 * @return 用户信息
 	 */
 	@GetMapping(value = "/profile")
-	public Result<SysUserInfoResp> profile() {
+	public SysUserInfoResp profile() {
 //		Integer userId = HeaderContextUtil.currentUserIdInt();
 //		return sysUserFeign.getInfo(userId);
-		return Result.success();
+		return null;
 	}
 
 	/**
@@ -131,10 +131,10 @@ public class SysUserController {
 	 * @return 用户信息
 	 */
 	@PostMapping(value = "/updateProfile")
-	public Result<SysUserInfoResp> updateProfile() {
+	public SysUserInfoResp updateProfile() {
 //		Integer userId = HeaderContextUtil.currentUserIdInt();
 //		return sysUserFeign.getInfo(userId);
-		return Result.success();
+		return null;
 	}
 
 	/**
@@ -143,9 +143,9 @@ public class SysUserController {
 	 * @return 用户信息
 	 */
 	@PostMapping(value = "/updatePassword")
-	public Result<SysUserInfoResp> updatePassword() {
+	public SysUserInfoResp updatePassword() {
 //		Integer userId = HeaderContextUtil.currentUserIdInt();
 //		return sysUserFeign.getInfo(userId);
-		return Result.success();
+		return null;
 	}
 }

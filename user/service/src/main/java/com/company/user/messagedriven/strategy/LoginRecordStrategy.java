@@ -18,6 +18,6 @@ public class LoginRecordStrategy implements BaseStrategy<Map<String, Object>> {
 
 	@Override
 	public void doStrategy(Map<String, Object> params) {
-		log.info("loginRecord params:{}", JsonUtil.toJsonString(params));
+		log.info("loginRecord params:{}", params);
 	}
 }

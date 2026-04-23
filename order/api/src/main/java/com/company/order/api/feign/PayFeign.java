@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-import com.company.common.api.Result;
+
 import com.company.order.api.constant.Constants;
 import com.company.order.api.request.PayCloseReq;
 import com.company.order.api.request.PayRefundReq;
@@ -26,7 +26,7 @@ public interface PayFeign {
 	 * @return 支付结果
 	 */
 	@PostMapping("/unifiedorder")
-	Result<PayResp> unifiedorder(@RequestBody PayReq payReq);
+	PayResp unifiedorder(@RequestBody PayReq payReq);
 
 	/**
 	 * 关闭订单
@@ -35,7 +35,7 @@ public interface PayFeign {
 	 * @return
 	 */
 	@PostMapping("/payClose")
-	Result<Void> payClose(@RequestBody PayCloseReq payCloseReq);
+	Void payClose(@RequestBody PayCloseReq payCloseReq);
 	
 	/**
 	 * 去支付（可切换支付方式）
@@ -44,7 +44,7 @@ public interface PayFeign {
 	 * @return 支付结果
 	 */
 	@PostMapping("/toPay")
-	Result<PayResp> toPay(@RequestBody ToPayReq toPayReq);
+	PayResp toPay(@RequestBody ToPayReq toPayReq);
 
 	/**
 	 * 退款
@@ -53,5 +53,5 @@ public interface PayFeign {
 	 * @return
 	 */
 	@PostMapping("/refund")
-	Result<Void> refund(@RequestBody PayRefundReq payRefundReq);
+	Void refund(@RequestBody PayRefundReq payRefundReq);
 }

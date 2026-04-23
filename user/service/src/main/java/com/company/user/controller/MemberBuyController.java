@@ -1,7 +1,8 @@
 package com.company.user.controller;
 
-import com.company.common.api.Result;
+
 import com.company.framework.context.HeaderContextUtil;
+import com.company.framework.globalresponse.ExceptionUtil;
 import com.company.framework.messagedriven.MessageSender;
 import com.company.framework.messagedriven.constants.BroadcastConstants;
 import com.company.framework.sequence.SequenceGenerator;
@@ -13,6 +14,7 @@ import com.company.order.api.feign.OrderFeign;
 import com.company.order.api.feign.PayFeign;
 import com.company.order.api.request.*;
 import com.company.order.api.response.PayResp;
+import com.company.tool.api.response.RetryerResp;
 import com.company.user.api.constant.Constants;
 import com.company.user.api.enums.WalletEnum;
 import com.company.user.api.enums.WalletEnum.Type;
@@ -101,7 +103,7 @@ public class MemberBuyController implements MemberBuyFeign {
 	 * @return
 	 */
 	@Override
-	public Result<MemberBuyOrderResp> buy(@RequestBody MemberBuyOrderReq memberBuyOrderReq) {
+	public MemberBuyOrderResp buy(@RequestBody MemberBuyOrderReq memberBuyOrderReq) {
 		Integer userId = HeaderContextUtil.currentUserIdInt();
 		// 参数校验
 		Integer number = memberBuyOrderReq.getNumber();
@@ -109,7 +111,7 @@ public class MemberBuyController implements MemberBuyFeign {
 		String productCode = memberBuyOrderReq.getProductCode();
 		MemberData memberData = memberService.selectByProductCode(productCode);
 		if (memberData == null) {
-			return Result.fail("商品不存在");
+			ExceptionUtil.throwException("商品不存在");
 		}
 		// TODO 通过productCode得到
 		BigDecimal productAmount = memberData.getProductAmount();
@@ -126,7 +128,7 @@ public class MemberBuyController implements MemberBuyFeign {
 			UserCouponCanUse userCouponCanUse = useCouponService.canUse(userCouponId, userId, orderAmount,
 					runtimeAttach);
 			if (!userCouponCanUse.getCanUse()) {
-				return Result.fail("优惠券不可用");
+				ExceptionUtil.throwException("优惠券不可用");
 			}
 			reduceAmount = userCouponCanUse.getReduceAmount();
 		}
@@ -145,7 +147,7 @@ public class MemberBuyController implements MemberBuyFeign {
 			BigDecimal rechargeAmountDB = chargeGiftData.getChargeAmount();
 			BigDecimal rechargeAmount = memberBuyOrderReq.getRechargeAmount();
 			if (rechargeAmountDB.compareTo(rechargeAmount) != 0) {
-				return Result.fail("充值金额不匹配");
+				ExceptionUtil.throwException("充值金额不匹配");
 			}
 			payAttach = Utils.append2Json(payAttach, "rechargeAmount", rechargeAmount.toPlainString());
 			sumChargeGiftAmount = rechargeAmount.add(chargeGiftData.getGiftAmount());
@@ -156,7 +158,7 @@ public class MemberBuyController implements MemberBuyFeign {
 
 		BigDecimal payAmount = memberBuyOrderReq.getPayAmount();
 		if (payAmount.compareTo(needPayAmount) != 0) {
-			return Result.fail("支付金额不匹配");
+			ExceptionUtil.throwException("支付金额不匹配");
 		}
 
 		BigDecimal needUseChargeAmount = BigDecimal.ZERO;
@@ -170,7 +172,7 @@ public class MemberBuyController implements MemberBuyFeign {
 			FreezeBalance mainBalance = freezeMainChargeGiftBalance.getMainBalance();
 			BigDecimal balance = mainBalance.getBalance().add(sumChargeGiftAmount);
 			if (balance.compareTo(walletPayAmount) < 0) {
-				return Result.fail("钱包余额不足");
+				ExceptionUtil.throwException("钱包余额不足");
 			}
 			payAttach = Utils.append2Json(payAttach, "walletPayAmount", walletPayAmount.toPlainString());
 
@@ -205,14 +207,14 @@ public class MemberBuyController implements MemberBuyFeign {
 				walletUseSeqService.calcAndReturn(userId,
 						Lists.newArrayList(WalletEnum.Type.TO_CHARGE, WalletEnum.Type.TO_GIFT),
 						typeAmountMap.get(WalletEnum.Type.TO_CHARGE).add(typeAmountMap.get(WalletEnum.Type.TO_GIFT)));
-				return Result.fail("钱包余额不足");
+				ExceptionUtil.throwException("钱包余额不足");
 			}
 		}
 
 		if (userCouponId != null && userCouponId > 0) {// 有选用优惠券，锁定优惠券
 			Integer affect = userCouponService.updateStatus(userCouponId, "nouse", "used");
 			if (affect == 0) {
-				return Result.fail("优惠券不可用");
+				ExceptionUtil.throwException("优惠券不可用");
 			}
 		}
 
@@ -309,7 +311,7 @@ public class MemberBuyController implements MemberBuyFeign {
 
 		registerOrderReq.setProductList(orderProductReqList);
 
-		orderFeign.registerOrder(registerOrderReq).dataOrThrow();
+		orderFeign.registerOrder(registerOrderReq);
 
 		if (needPayAmount.compareTo(BigDecimal.ZERO) == 0) {
 			BigDecimal finalNeedPayAmount = needPayAmount;
@@ -321,10 +323,10 @@ public class MemberBuyController implements MemberBuyFeign {
 				payNotifyReq.setPayAmount(finalNeedPayAmount);
 				payNotifyReq.setTime(LocalDateTime.now());
 				payNotifyReq.setAttach(finalPayAttach);
-				Result<Void> buyNotifyResult = buyNotify(payNotifyReq);
-				log.info("buyNotify:{}", JsonUtil.toJsonString(buyNotifyResult));
+                RetryerResp buyNotifyResult = buyNotify(payNotifyReq);
+				log.info("buyNotify:{}", buyNotifyResult);
 			});
-			return Result.success(new MemberBuyOrderResp().setNeedPay(false));
+			return new MemberBuyOrderResp().setNeedPay(false);
 		}
 
 		// 获取支付参数
@@ -343,11 +345,11 @@ public class MemberBuyController implements MemberBuyFeign {
 		payReq.setAttach(payAttach);
 //		payReq.setTimeoutSeconds(timeoutSeconds);
 //		payReq.setRemark(remark);
-		PayResp payResp = payFeign.unifiedorder(payReq).dataOrThrow();
+		PayResp payResp = payFeign.unifiedorder(payReq);
 		if (!payResp.getSuccess()) {
-			return Result.fail("支付失败，请稍后重试");
+			ExceptionUtil.throwException("支付失败，请稍后重试");
 		}
-		return Result.success(new MemberBuyOrderResp().setNeedPay(true).setPayInfo(payResp.getPayInfo()));
+		return new MemberBuyOrderResp().setNeedPay(true).setPayInfo(payResp.getPayInfo());
 	}
 
 	/**
@@ -357,7 +359,7 @@ public class MemberBuyController implements MemberBuyFeign {
 	 * @return
 	 */
 	@PostMapping("/buyNotify")
-	public Result<Void> buyNotify(@RequestBody PayNotifyReq payNotifyReq) {
+	public RetryerResp buyNotify(@RequestBody PayNotifyReq payNotifyReq) {
 		String orderCode = payNotifyReq.getOrderCode();
 		LocalDateTime time = payNotifyReq.getTime();
 
@@ -365,10 +367,10 @@ public class MemberBuyController implements MemberBuyFeign {
 			log.info("超时未支付关闭订单回调");
 			// 修改‘订单中心’数据
 			OrderCancelReq orderCancelReq = new OrderCancelReq().setOrderCode(orderCode).setCancelTime(time);
-			Boolean cancelByTimeout = orderFeign.cancelByTimeout(orderCancelReq).dataOrThrow();
+			Boolean cancelByTimeout = orderFeign.cancelByTimeout(orderCancelReq);
 			if (!cancelByTimeout) {
-				log.warn("cancelByTimeout,修改‘订单中心’数据失败:{}", JsonUtil.toJsonString(orderCancelReq));
-				return Result.success();
+				log.warn("cancelByTimeout,修改‘订单中心’数据失败:{}", orderCancelReq);
+				return RetryerResp.end();
 			}
 
 			MemberBuyOrder memberBuyOrder = memberBuyOrderService.selectByOrderCode(orderCode);
@@ -391,7 +393,7 @@ public class MemberBuyController implements MemberBuyFeign {
 				userCouponService.updateStatus(userCouponId, "used", "nouse");
 			}
 
-			return Result.success();
+			return RetryerResp.end();
 		}
 
 		MemberBuyOrder memberBuyOrder = memberBuyOrderService.selectByOrderCode(orderCode);
@@ -401,10 +403,10 @@ public class MemberBuyController implements MemberBuyFeign {
 		BigDecimal payAmount = payNotifyReq.getPayAmount();
 		OrderPaySuccessReq orderPaySuccessReq = new OrderPaySuccessReq().setOrderCode(orderCode).setPayAmount(payAmount)
 				.setPayTime(time);
-		Boolean updateSuccess = orderFeign.paySuccess(orderPaySuccessReq).dataOrThrow();
+		Boolean updateSuccess = orderFeign.paySuccess(orderPaySuccessReq);
 		if (!updateSuccess) {
-			log.warn("paySuccess,修改‘订单中心’数据失败:{}", JsonUtil.toJsonString(orderPaySuccessReq));
-			return Result.success();
+			log.warn("paySuccess,修改‘订单中心’数据失败:{}", orderPaySuccessReq);
+			return RetryerResp.end();
 		}
 
 		// 可能存在订单已经因超时取消了，但用户又支付了的场景，所以订单可以由‘已关闭’变为‘已支付’，所以关闭订单的逻辑需要反着处理一次
@@ -482,7 +484,7 @@ public class MemberBuyController implements MemberBuyFeign {
 				// 余额不足扣减,得卡主订单,同时告警
 				log.warn("余额不足扣减,leftMainAmount:{},sumNeedUseChargeGiftAmount:{}", leftMainAmount,
 						sumNeedUseChargeGiftAmount);
-				return Result.success();
+				return RetryerResp.end();
 			}
 
 			String uniqueCode = orderCode;
@@ -497,7 +499,7 @@ public class MemberBuyController implements MemberBuyFeign {
 			Integer affect = freezeMainChargeGiftWallet.outcome(uniqueCode, walletId, amount, attachMap);
 			if (affect == 0) {// 如果钱包出账失败,得卡主订单,同时告警
 				log.warn("支付回调后钱包余额扣减失败，存在资损风险,orderCode:{}", orderCode);
-				return Result.success();
+				return RetryerResp.end();
 			}
 		}
 
@@ -512,7 +514,7 @@ public class MemberBuyController implements MemberBuyFeign {
 		// 修改‘订单中心’数据
 		orderFeign.finish(new OrderFinishReq().setOrderCode(orderCode).setFinishTime(time));
 
-		return Result.success();
+		return RetryerResp.end();
 	}
 
 	/**
@@ -522,19 +524,19 @@ public class MemberBuyController implements MemberBuyFeign {
 	 * @return
 	 */
 	@PostMapping("/subOrder")
-	public Result<Object> subOrder(@RequestBody OrderReq orderReq) {
+	public Object subOrder(@RequestBody OrderReq orderReq) {
 		OrderEnum.SubOrderEventEnum subOrderEvent = orderReq.getSubOrderEvent();
 		if (subOrderEvent == OrderEnum.SubOrderEventEnum.USER_CANCEL) {
 			userCancel(orderReq);
-			return Result.success(detail(orderReq));
+			return detail(orderReq);
 		} else if (subOrderEvent == OrderEnum.SubOrderEventEnum.QUERY_ITEM) {
-			return Result.success(item(orderReq));
+			return item(orderReq);
 		} else if (subOrderEvent == OrderEnum.SubOrderEventEnum.QUERY_DETAIL) {
-			return Result.success(detail(orderReq));
+			return detail(orderReq);
 		} else if (subOrderEvent == OrderEnum.SubOrderEventEnum.CALC_CANREFUNDAMOUNT) { // 可不处理
-			return Result.success(calcCanRefundAmount(orderReq));
+			return calcCanRefundAmount(orderReq);
 		}
-		return Result.success();
+		return null;
 	}
 
 	private void userCancel(OrderReq orderReq) {
@@ -563,8 +565,8 @@ public class MemberBuyController implements MemberBuyFeign {
 			// 关闭支付订单，不关心结果
 			PayCloseReq payCloseReq = new PayCloseReq();
 			payCloseReq.setOrderCode(orderCode);
-			Result<Void> payCloseResp = payFeign.payClose(payCloseReq);
-			log.info("关闭订单结果:{}", JsonUtil.toJsonString(payCloseResp));
+			Void payCloseResp = payFeign.payClose(payCloseReq);
+			log.info("关闭订单结果:{}", payCloseResp);
 		}
 	}
 

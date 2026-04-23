@@ -15,6 +15,6 @@ public class CountmoneyStrategy implements BaseStrategy<Map<String, Object>> {
 
 	@Override
 	public void doStrategy(Map<String, Object> params) {
-		log.info("countmoney params:{}", JsonUtil.toJsonString(params));
+		log.info("countmoney params:{}", params);
 	}
 }

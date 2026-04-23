@@ -178,7 +178,7 @@ public class SecStaffService {
         }
     }
 
-    public List<?> treeOrganization(SecStaff secStaff) {
+    public List<SecOrganization> treeOrganization(SecStaff secStaff) {
         SecStaff existent = get(secStaff);
         List<SecOrganization> orgList = secStaffDao.listOrganizationCombo(new SecOrganization());
         List<SecOrganization> ownedOrgList = secStaffDao.listOrganization(existent);

@@ -59,7 +59,7 @@ public class AlipayMarketingActivityModifiedMessage implements FromMessage {
 		 * </pre>
 		 */
 		ActivityModifiedBizContent bizContentObj = JsonUtil.toEntity(bizContent, ActivityModifiedBizContent.class);
-		log.info("bizContentObj:{}", JsonUtil.toJsonString(bizContentObj));
+		log.info("bizContentObj:{}", bizContentObj);
 
 		// TODO
 

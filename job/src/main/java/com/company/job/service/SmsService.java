@@ -37,7 +37,7 @@ public class SmsService {
 
 		int limit = 1000;
 		do {
-			idList = smsFeign.select4PreTimeSend(limit).dataOrThrow();
+			idList = smsFeign.select4PreTimeSend(limit);
 
 			XxlJobHelper.log("size:{}", idList.size());
 			for (Integer id : idList) {

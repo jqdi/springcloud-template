@@ -48,7 +48,7 @@ public class OrderService {
 		
 		int limit = 1000;
 		do {
-			orderCodeList = orderFeign.select4OverSendSuccess(limit).dataOrThrow();
+			orderCodeList = orderFeign.select4OverSendSuccess(limit);
 			
 			XxlJobHelper.log("size:{}", orderCodeList.size());
 			for (String orderCode : orderCodeList) {
@@ -88,7 +88,7 @@ public class OrderService {
 
 		int limit = 1000;
 		do {
-			orderCodeList = orderFeign.select4OverWaitReview(limit).dataOrThrow();
+			orderCodeList = orderFeign.select4OverWaitReview(limit);
 
 			XxlJobHelper.log("size:{}", orderCodeList.size());
 			for (String orderCode : orderCodeList) {

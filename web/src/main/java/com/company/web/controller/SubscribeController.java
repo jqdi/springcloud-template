@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.company.common.api.Result;
+
 import com.company.framework.context.HeaderContextUtil;
 import com.company.framework.util.WebUtil;
 import com.company.tool.api.feign.SubscribeFeign;
@@ -32,7 +32,7 @@ public class SubscribeController {
 	 * @return
 	 */
 	@GetMapping(value = "/group")
-	public Result<List<String>> group(String group) {
+	public List<String> group(String group) {
 		return subscribeFeign.selectTemplateCodeByGroup(group);
 	}
 
@@ -44,7 +44,7 @@ public class SubscribeController {
 	 * @return
 	 */
 	@PostMapping(value = "/grant")
-	public Result<Void> grant(HttpServletRequest request, GrantReq grantReq) {
+	public Void grant(HttpServletRequest request, GrantReq grantReq) {
 		SubscribeGrantReq subscribeGrantReq = new SubscribeGrantReq();
 		subscribeGrantReq.setGroup(grantReq.getGroup());
 

@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import com.company.admin.annotation.Pagination;
-import com.company.common.api.Result;
+
 
 /**
  * 钱包套餐Controller
@@ -34,28 +34,28 @@ public class WalletPackageController {
 
 	@RequestMapping(value = "/admin/user/walletPackage/get", method = RequestMethod.POST)
 	@ResponseBody
-	public Result<?> get(WalletPackage walletPackage) {
-		return Result.success(walletPackageService.get(walletPackage));
+	public WalletPackage get(WalletPackage walletPackage) {
+		return walletPackageService.get(walletPackage);
 	}
 
 	@RequestMapping(value = "/admin/user/walletPackage/save", method = RequestMethod.POST)
 	@ResponseBody
-	public Result<?> save(@Validated(WalletPackage.Save.class) WalletPackage walletPackage) {
+	public Void save(@Validated(WalletPackage.Save.class) WalletPackage walletPackage) {
 		walletPackageService.save(walletPackage);
-		return Result.success();
+		return null;
 	}
 
 	@RequestMapping(value = "/admin/user/walletPackage/remove", method = RequestMethod.POST)
 	@ResponseBody
-	public Result<?> remove(WalletPackage walletPackage) {
+	public Void remove(WalletPackage walletPackage) {
 		walletPackageService.remove(walletPackage);
-		return Result.success();
+		return null;
 	}
 
 	@RequestMapping(value = "/admin/user/walletPackage/update", method = RequestMethod.POST)
 	@ResponseBody
-	public Result<?> update(@Validated(WalletPackage.Update.class) WalletPackage walletPackage) {
+	public Void update(@Validated(WalletPackage.Update.class) WalletPackage walletPackage) {
 		walletPackageService.update(walletPackage);
-		return Result.success();
+		return null;
 	}
 }

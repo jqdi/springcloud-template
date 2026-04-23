@@ -20,7 +20,7 @@ import java.util.List;
 /**
  * 解决knife4j与actuator代码兼容性问题导致NPE
  */
-@Configuration
+@Configuration(proxyBeanMethods = false)
 public class Knife4jActuatorCompatibilityConfig {
 	/**
 	 * 解决springboot升到2.6.x之后，knife4j报错

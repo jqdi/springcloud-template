@@ -2,9 +2,10 @@ package com.company.admin.controller.interact;
 
 
 
+import com.company.admin.entity.base.XSPageModel;
 import com.company.admin.service.interact.CommentService;
 import com.company.admin.annotation.Pagination;
-import com.company.common.api.Result;
+
 import com.company.admin.entity.interact.Comment;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -27,8 +28,8 @@ public class CommentController {
 	@RequestMapping(value = "/admin/interact/comment/list", method = RequestMethod.GET)
 	@Pagination
 	@ResponseBody
-	public Result<?> list(Comment comment) {
-		return Result.success(commentService.listAndCount(comment));
+	public XSPageModel<Comment> list(Comment comment) {
+		return commentService.listAndCount(comment);
 	}
 	
 	/**
@@ -38,9 +39,9 @@ public class CommentController {
 	 */
 	@RequestMapping(value = "/admin/interact/comment/hided", method = RequestMethod.POST)
 	@ResponseBody
-	public Result<?> hided(@Validated(Comment.Hided.class) Comment comment) {
+	public Void hided(@Validated(Comment.Hided.class) Comment comment) {
 		commentService.hided(comment);
-		return Result.success();
+		return null;
 	}
 	
 	/**

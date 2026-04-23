@@ -6,7 +6,7 @@ import com.company.framework.util.JsonUtil;
 import com.company.admin.service.article.ArticleCategoryService;
 import com.company.admin.service.article.ArticleService;
 import com.company.admin.annotation.Pagination;
-import com.company.common.api.Result;
+
 import com.company.admin.entity.article.Article;
 import com.company.admin.entity.article.ArticleCategory;
 
@@ -55,23 +55,23 @@ public class ArticleController {
 
     @RequestMapping(value = "/save", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> adminSave(@Validated(Article.Save.class) Article article) {
+    public Void adminSave(@Validated(Article.Save.class) Article article) {
         articleService.save(article);
-        return Result.success();
+        return null;
     }
 
     @RequestMapping(value = "/remove", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> adminRemove(Article article) {
+    public Void adminRemove(Article article) {
         articleService.remove(article);
-        return Result.success();
+        return null;
     }
 
     @RequestMapping(value = "/update", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> adminUpdate(@Validated(Article.Update.class) Article article) {
+    public Void adminUpdate(@Validated(Article.Update.class) Article article) {
         articleService.update(article);
-        return Result.success();
+        return null;
     }
 
     @RequestMapping(value = "/preview", method = RequestMethod.GET)

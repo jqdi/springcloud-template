@@ -7,7 +7,9 @@ CREATE TABLE `subscribe_template` (
   `type` int(11) NOT NULL DEFAULT '0' COMMENT '模版类型，2 为一次性订阅，3 为长期订阅',
   `remark` varchar(255) DEFAULT NULL COMMENT '备注',
   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `create_by` varchar(32) NOT NULL DEFAULT '' COMMENT '创建人',
   `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `update_by` varchar(32) NOT NULL DEFAULT '' COMMENT '更新人',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE KEY `uniq_pritmplid` (`pri_tmpl_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4  COMMENT='订阅消息模板';
@@ -26,7 +28,9 @@ CREATE TABLE `subscribe_type_template_config` (
   `template_code` varchar(64) NOT NULL DEFAULT '' COMMENT '模板编码(subscribe_template.pri_tmpl_id)',
   `remark` varchar(255) DEFAULT NULL COMMENT '备注',
   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `create_by` varchar(32) NOT NULL DEFAULT '' COMMENT '创建人',
   `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `update_by` varchar(32) NOT NULL DEFAULT '' COMMENT '更新人',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE KEY `uniq_type` (`type`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4  COMMENT='订阅消息业务-模板配置';
@@ -44,7 +48,9 @@ CREATE TABLE `subscribe_task` (
   `over_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '超时取消发送时间',
   `remark` varchar(255) DEFAULT NULL COMMENT '备注',
   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `create_by` varchar(32) NOT NULL DEFAULT '' COMMENT '创建人',
   `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `update_by` varchar(32) NOT NULL DEFAULT '' COMMENT '更新人',
   PRIMARY KEY (`id`) USING BTREE,
   KEY `idx_type` (`type`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4  COMMENT='订阅消息发送任务';
@@ -62,7 +68,9 @@ CREATE TABLE `subscribe_task_detail` (
   `content` varchar(255) DEFAULT NULL COMMENT '订阅消息内容',
   `remark` varchar(255) DEFAULT NULL COMMENT '备注',
   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `create_by` varchar(32) NOT NULL DEFAULT '' COMMENT '创建人',
   `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `update_by` varchar(32) NOT NULL DEFAULT '' COMMENT '更新人',
   PRIMARY KEY (`id`) USING BTREE,
   KEY `idx_taskid` (`task_id`),
   KEY `idx_openid` (`openid`),
@@ -77,7 +85,9 @@ CREATE TABLE `subscribe_template_grant` (
   `use_num` int(11) NOT NULL DEFAULT '0' COMMENT '已使用次数',
   `remark` varchar(255) DEFAULT NULL COMMENT '备注',
   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `create_by` varchar(32) NOT NULL DEFAULT '' COMMENT '创建人',
   `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `update_by` varchar(32) NOT NULL DEFAULT '' COMMENT '更新人',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE KEY `uniq_openid_templatecode` (`openid`,`template_code`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4  COMMENT='订阅消息-授权记录';
@@ -88,7 +98,9 @@ CREATE TABLE `subscribe_group_type` (
   `types` varchar(128) NOT NULL COMMENT '业务类型(多个英文逗号分隔,最多3个)',
   `remark` varchar(255) DEFAULT NULL COMMENT '备注',
   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `create_by` varchar(32) NOT NULL DEFAULT '' COMMENT '创建人',
   `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `update_by` varchar(32) NOT NULL DEFAULT '' COMMENT '更新人',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE KEY `uniq_group` (`group`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4  COMMENT='订阅消息-订阅组';

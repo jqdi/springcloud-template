@@ -114,7 +114,7 @@ public class AliActivityPayClient extends BasePayClient {
 	                AliActivityConstants.SIGNTYPE);
 
 			AlipayMarketingActivityOrderCreateResponse response = alipayClient.execute(request);
-			log.info("AlipayMarketingActivityOrderCreateResponse:{}", JsonUtil.toJsonString(response));
+			log.info("AlipayMarketingActivityOrderCreateResponse:{}", response);
 			/**
 			 * <pre>
 			 * 正常结果：
@@ -319,7 +319,7 @@ public class AliActivityPayClient extends BasePayClient {
 
         	refundResult2AliActivityPayRefund(aliActivityPayRefundId, aliActivityPay, outRefundNo, refundActivityInfoListStr, null);
         	AlipayMarketingActivityOrderRefundResponse response = alipayClient.execute(request);
-			log.info("refund response:{}", JsonUtil.toJsonString(response));
+			log.info("refund response:{}", response);
 			updateRefundResult(outRefundNo, response);
 
 			if (!response.isSuccess()) {

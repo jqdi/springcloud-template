@@ -9,12 +9,14 @@ CREATE TABLE `retry_task` (
   `next_dispose_time` datetime NOT NULL COMMENT '下次处理时间',
   `max_failure` int(11) NOT NULL COMMENT '最大允许失败次数',
   `failure` int(11) NOT NULL DEFAULT '0' COMMENT '当前失败次数',
-  
+
   `trace_id` varchar(32) DEFAULT NULL COMMENT '追踪ID',
-  
+
   `remark` varchar(255) DEFAULT NULL COMMENT '备注',
   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `create_by` varchar(32) NOT NULL DEFAULT '' COMMENT '创建人',
   `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `update_by` varchar(32) NOT NULL DEFAULT '' COMMENT '更新人',
   PRIMARY KEY (`id`),
   KEY `idx_status_ndt` (`status`,`next_dispose_time`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='重试任务';

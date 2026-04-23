@@ -41,7 +41,7 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
         	Map<String, Object> errorMap = Maps.newHashMap();
             errorMap.put("status", false);
             errorMap.put("code", ResultCode.FAIL.getCode());
-            errorMap.put("message", "您的访问被拒绝");
+            errorMap.put("msg", "您的访问被拒绝");
             String errorMsg = JsonUtil.toJsonString(errorMap);
 
             response.setCharacterEncoding("UTF-8");

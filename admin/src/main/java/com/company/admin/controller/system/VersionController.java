@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.company.common.api.Result;
+
 import com.company.admin.entity.system.Version;
 import com.company.admin.service.system.VersionService;
 
@@ -31,28 +31,28 @@ public class VersionController {
 
     @RequestMapping(value = "/admin/system/version/get", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> adminGet(Version version) {
-        return Result.success(versionService.get(version));
+    public Version adminGet(Version version) {
+        return versionService.get(version);
     }
 
     @RequestMapping(value = "/admin/system/version/save", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> adminSave(@Validated(Version.Save.class) Version version) {
+    public Void adminSave(@Validated(Version.Save.class) Version version) {
         versionService.save(version);
-        return Result.success();
+        return null;
     }
 
     @RequestMapping(value = "/admin/system/version/remove", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> adminRemove(Version version) {
+    public Void adminRemove(Version version) {
         versionService.remove(version);
-        return Result.success();
+        return null;
     }
 
     @RequestMapping(value = "/admin/system/version/update", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> adminUpdate(@Validated(Version.Update.class) Version version) {
+    public Void adminUpdate(@Validated(Version.Update.class) Version version) {
         versionService.update(version);
-        return Result.success();
+        return null;
     }
 }

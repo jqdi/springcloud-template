@@ -5,7 +5,7 @@ import com.company.adminapi.annotation.RequirePermissions;
 import com.company.adminapi.easyexcel.ExcelUtil;
 import com.company.adminapi.enums.OperationLogEnum.BusinessType;
 import com.company.adminapi.excel.SysRoleDeptExcel;
-import com.company.common.api.Result;
+
 import com.company.system.api.request.RemoveReq;
 import com.company.system.api.response.PageResp;
 import com.company.framework.util.PropertyUtils;
@@ -31,34 +31,34 @@ public class SysRoleDeptController {
 
 	@RequirePermissions("system:sysRoleDept:query")
 	@GetMapping("/page")
-	public Result<PageResp<SysRoleDeptResp>> page(@NotNull @Min(value = 1) Long current, @NotNull Long size, Integer roleId, Integer deptId) {
+	public PageResp<SysRoleDeptResp> page(@NotNull @Min(value = 1) Long current, @NotNull Long size, Integer roleId, Integer deptId) {
 		return sysRoleDeptFeign.page(current, size, roleId, deptId);
 	}
 
 	@RequirePermissions("system:sysRoleDept:query")
 	@GetMapping("/query")
-	public Result<SysRoleDeptResp> query(@NotNull Integer id) {
+	public SysRoleDeptResp query(@NotNull Integer id) {
 		return sysRoleDeptFeign.query(id);
 	}
 
     @OperationLog(title = "角色和菜单关联保存", businessType = BusinessType.INSERT)
 	@RequirePermissions("system:sysRoleDept:save")
 	@PostMapping("/save")
-	public Result<Boolean> save(@RequestBody SysRoleDeptReq sysRoleDeptReq) {
+	public Boolean save(@RequestBody SysRoleDeptReq sysRoleDeptReq) {
 		return sysRoleDeptFeign.save(sysRoleDeptReq);
 	}
 
     @OperationLog(title = "角色和菜单关联更新", businessType = BusinessType.UPDATE)
 	@RequirePermissions("system:sysRoleDept:update")
 	@PostMapping("/update")
-	public Result<Boolean> update(@RequestBody SysRoleDeptReq sysRoleDeptReq) {
+	public Boolean update(@RequestBody SysRoleDeptReq sysRoleDeptReq) {
 		return sysRoleDeptFeign.update(sysRoleDeptReq);
 	}
 
     @OperationLog(title = "角色和菜单关联删除", businessType = BusinessType.DELETE)
 	@RequirePermissions("system:sysRoleDept:remove")
 	@PostMapping("/remove")
-	public Result<Boolean> remove(@RequestBody RemoveReq<Integer> req) {
+	public Boolean remove(@RequestBody RemoveReq<Integer> req) {
 		return sysRoleDeptFeign.remove(req);
 	}
 
@@ -66,7 +66,7 @@ public class SysRoleDeptController {
 	@RequirePermissions("system:sysRoleDept:export")
 	@GetMapping("/export")
 	public void export(HttpServletResponse response, Integer roleId, Integer deptId) {
-		List<SysRoleDeptResp> listResp = sysRoleDeptFeign.list(roleId, deptId).dataOrThrow();
+		List<SysRoleDeptResp> listResp = sysRoleDeptFeign.list(roleId, deptId);
 		List<SysRoleDeptExcel> excelList = PropertyUtils.copyArrayProperties(listResp, SysRoleDeptExcel.class);
 		ExcelUtil.write2httpResponse(response, "角色和菜单关联", SysRoleDeptExcel.class, excelList);
 	}

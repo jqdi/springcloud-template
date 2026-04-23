@@ -1,6 +1,6 @@
 package com.company.tool.api.feign;
 
-import com.company.common.api.Result;
+
 import com.company.tool.api.constant.Constants;
 import com.company.tool.api.feign.fallback.ThrowExceptionFallback;
 import com.company.tool.api.request.SendSmsReq;
@@ -16,11 +16,11 @@ import java.util.List;
 public interface SmsFeign {
 
 	@GetMapping("/select4PreTimeSend")
-	Result<List<Integer>> select4PreTimeSend(@RequestParam("limit") Integer limit);
+	List<Integer> select4PreTimeSend(@RequestParam("limit") Integer limit);
 
 	@GetMapping("/exePreTimeSend")
-	Result<Void> exePreTimeSend(@RequestParam("id") Integer id);
+	Void exePreTimeSend(@RequestParam("id") Integer id);
 
 	@PostMapping("/send")
-	Result<Void> send(@RequestBody SendSmsReq sendSmsReq);
+	Void send(@RequestBody SendSmsReq sendSmsReq);
 }

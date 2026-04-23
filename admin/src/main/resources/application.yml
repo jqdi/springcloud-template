@@ -2,7 +2,7 @@ spring:
   config:
     import: classpath:bootstrap.yml # 在Spring Boot 2.7.x版本中，默认情况下，bootstrap.yml件不再被自动加载
   profiles:
-    include: redis,rabbitmq,rocketmq,messagedriven,cachemanager,datasource # 项目中增加配置application-*.yml可覆盖boot-starter-*,framework的默认配置application-*.yml
+    include: gracefulresponse,developer,threadpool,redis,rabbitmq,rocketmq,messagedriven,cachemanager,datasource # 项目中增加配置application-*.yml可覆盖boot-starter-*,framework的默认配置application-*.yml
   main:
     allow-bean-definition-overriding: true
   resources:
@@ -15,13 +15,6 @@ spring:
     view:
       prefix: /views/
       suffix: .jsp
-
-logging:
-  #为了避免日志目录生成{APP_NAME}_IS_UNDEFINED目录，不能使用默认配置logback.xml或logback-spring.xml命名，详细参考：http://www.itersblog.com/archives/5.html
-  config: classpath:logback-conf.xml
-  file:
-    #日志文件目录。./表示相对于项目根目录，即项目根目录下的logs目录。也可配置绝对路径，如：/home/webapp/logs
-    path: ./logs/${spring.application.name}
 
 mybatis-plus:
   # 配置mapper的扫描，找到所有的mapper.xml映射文件
@@ -40,14 +33,6 @@ mybatis-plus:
       id-type: 0
 
 template:
-  threadpool:
-    corePoolSize: 10
-    maxPoolSize: 20
-    queueCapacity: 200
-    keepAliveSeconds: 60
-    threadNamePrefix: t-subTask-
-    waitForTasksToCompleteOnShutdown: true
-    awaitTerminationSeconds: 60
   requestFilter:
     # 忽略日志打印匹配表达式，支持?匹配单个字符，*匹配多个字符
     ignoreLogPatterns: /assets/*,/favicon.ico

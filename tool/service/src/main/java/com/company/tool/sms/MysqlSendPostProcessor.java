@@ -8,8 +8,8 @@ import org.springframework.stereotype.Component;
 import com.company.framework.util.JsonUtil;
 import com.company.tool.entity.SmsRecord;
 import com.company.tool.service.SmsRecordService;
-import com.jqdi.smssender.core.SendPostProcessor;
-import com.jqdi.smssender.core.SendResponse;
+import io.github.jqdi.smssender.core.SendPostProcessor;
+import io.github.jqdi.smssender.core.SendResponse;
 
 @Component
 public class MysqlSendPostProcessor implements SendPostProcessor {

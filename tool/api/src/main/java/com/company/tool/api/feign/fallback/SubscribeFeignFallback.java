@@ -1,16 +1,15 @@
 package com.company.tool.api.feign.fallback;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
+import org.springframework.cloud.openfeign.FallbackFactory;
 import org.springframework.stereotype.Component;
 
-import com.company.common.api.Result;
+import com.company.common.fallback.FallbackUtil;
 import com.company.tool.api.feign.SubscribeFeign;
 import com.company.tool.api.request.SubscribeGrantReq;
 import com.company.tool.api.request.SubscribeSendReq;
-
-import org.springframework.cloud.openfeign.FallbackFactory;
 
 @Component
 public class SubscribeFeignFallback implements FallbackFactory<SubscribeFeign> {
@@ -20,33 +19,33 @@ public class SubscribeFeignFallback implements FallbackFactory<SubscribeFeign> {
 		return new SubscribeFeign() {
 
 			@Override
-			public Result<List<String>> selectTemplateCodeByGroup(String group) {
-				return Result.onFallbackError();
+			public List<String> selectTemplateCodeByGroup(String group) {
+				return FallbackUtil.create();
 			}
 
 			@Override
-			public Result<Void> grant(SubscribeGrantReq subscribeGrantReq) {
-				return Result.onFallbackError();
+			public Void grant(SubscribeGrantReq subscribeGrantReq) {
+				return FallbackUtil.create();
 			}
 
 			@Override
-			public Result<Void> send(SubscribeSendReq subscribeSendReq) {
-				return Result.onFallbackError();
+			public Void send(SubscribeSendReq subscribeSendReq) {
+				return FallbackUtil.create();
 			}
 
 			@Override
-			public Result<List<Integer>> select4PreTimeSend(Integer limit) {
-				return Result.success(new ArrayList<>());// 降级返回空列表
+			public List<Integer> select4PreTimeSend(Integer limit) {
+				return Collections.emptyList();// 降级返回空列表
 			}
 
 			@Override
-			public Result<Void> exePreTimeSend(Integer id) {
-				return Result.onFallbackError();
+			public Void exePreTimeSend(Integer id) {
+				return FallbackUtil.create();
 			}
 
 			@Override
-			public Result<Void> syncTemplate() {
-				return Result.onFallbackError();
+			public Void syncTemplate() {
+				return FallbackUtil.create();
 			}
 
 		};

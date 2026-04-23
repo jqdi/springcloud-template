@@ -3,7 +3,7 @@ package com.company.order.controller;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.crypto.SecureUtil;
 import cn.hutool.http.HttpUtil;
-import com.company.common.api.Result;
+
 import com.company.framework.messagedriven.MessageSender;
 import com.company.framework.messagedriven.properties.MessagedrivenProperties;
 import com.company.framework.util.JsonUtil;
@@ -27,10 +27,7 @@ import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import java.math.BigDecimal;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
+import java.util.*;
 
 // 待完善
 @Slf4j
@@ -62,7 +59,7 @@ public class IosNotifyController implements IosNotifyFeign {
     private String bundleId;
 
 	@Override
-	public Result<String> iosPayNotify(@RequestBody Map<String, String> iosParams) {
+	public Map<String, String> iosPayNotify(@RequestBody Map<String, String> iosParams) {
 		/**
 		 * <pre>
 		{
@@ -88,12 +85,12 @@ public class IosNotifyController implements IosNotifyFeign {
 			boolean correctSignature = checkSignature(sortMap);
             if (!correctSignature) {
             	payNotifyMapper.updateRemarkById("验签失败", payNotify.getId());
-				return Result.success("fail");
+                return Collections.singletonMap("value", "fail");
             }
 		} catch (Exception e) {
 			log.error(">>>解析回调参数异常，直接返回", e);
 			payNotifyMapper.updateRemarkById(e.getMessage(), payNotify.getId());
-			return Result.success("fail");
+            return Collections.singletonMap("value", "fail");
 		}
 
         String tradeId = iosParams.get("tradeId");
@@ -127,11 +124,11 @@ public class IosNotifyController implements IosNotifyFeign {
             if (iOSServerError) {
 //                xsTradeDao.saveIOSFailureReason(xsTradeId, passbackParams, failureReason, receipt, outId,
 //                        xsTradeFromDB.getReal(), currentTime);
-//                return Result.success();
+//                return null;
             }
             else {
 //                xsTradeDao.saveFailureReason(xsTradeId, failureReason, currentTime);
-//                return Result.success(String.valueOf(status));
+//                return String.valueOf(status);
             }
         }
 
@@ -148,7 +145,7 @@ public class IosNotifyController implements IosNotifyFeign {
 //		if (affect == 0) {
 //			// 订单回调已处理完成，无需重复处理
 //			payNotifyMapper.updateRemarkById("订单回调已处理完成，无需重复处理", payNotify.getId());
-//			return Result.success("success");
+//			return "success";
 //		}
 
 		// MQ异步处理
@@ -165,7 +162,7 @@ public class IosNotifyController implements IosNotifyFeign {
 
 		messageSender.sendNormalMessage(StrategyConstants.PAY_NOTIFY_STRATEGY, params, messagedrivenProperties.getExchange().getDirect(),
 				Constants.QUEUE.PAY_NOTIFY.KEY);
-		return Result.success("success");
+        return Collections.singletonMap("value", "success");
 	}
 
 

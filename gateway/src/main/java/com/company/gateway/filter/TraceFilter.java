@@ -20,10 +20,6 @@ import reactor.core.publisher.Mono;
 @Component
 public class TraceFilter implements GlobalFilter, Ordered {
 
-	static {
-		System.setProperty("log4j2.isThreadContextMapInheritable", "true");
-	}
-
 	@Autowired
 	private TraceManager traceManager;
 

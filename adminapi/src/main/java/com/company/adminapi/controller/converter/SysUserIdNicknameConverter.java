@@ -16,7 +16,7 @@ public class SysUserIdNicknameConverter implements ConverterDataSource {
 		SysUserFeign sysUserFeign = SpringContextUtil.getBean(SysUserFeign.class);
 
 		Set<Integer> sysUserIdSet = fieldValueSet.stream().map(v -> (Integer) v).collect(Collectors.toSet());
-		Map<Integer, String> idNicknameMap = sysUserFeign.mapNicknameById(sysUserIdSet).dataOrThrow();
+		Map<Integer, String> idNicknameMap = sysUserFeign.mapNicknameById(sysUserIdSet);
 
 		return idNicknameMap.entrySet().stream().collect(Collectors.toMap(k -> k.getKey(), Map.Entry::getValue));
 	}

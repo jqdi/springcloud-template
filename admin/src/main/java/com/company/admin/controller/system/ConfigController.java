@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.company.admin.entity.system.Config;
 import com.company.admin.entity.system.ConfigCategory;
 import com.company.admin.service.system.ConfigService;
-import com.company.common.api.Result;
+
 
 /**
  * @author JQ棣
@@ -49,41 +49,41 @@ public class ConfigController {
 
 //    @PostMapping("/list")
 //    @ResponseBody
-//    public Result<?> list(@RequestBody(required = false) Config config) {
-//        return Result.success(configService.list(config));
+//    public Void list(@RequestBody(required = false) Config config) {
+//        return configService.list(config);
 //    }
 //
     @PostMapping("/save")
     @ResponseBody
-    public Result<?> save(@Validated(Config.Save.class) Config config) {
+    public Void save(@Validated(Config.Save.class) Config config) {
         configService.save(config);
-        return Result.success();
+        return null;
     }
 
     @RequestMapping("/remove")
     @ResponseBody
-    public Result<?> delete(@NotNull Long id) {
+    public Void delete(@NotNull Long id) {
         configService.deleteById(id);
-        return Result.success();
+        return null;
     }
 //
 //    @RequestMapping(value = "/find")
 //    @ResponseBody
-//    public Result<?> find(@NotNull Long id) {
-//        return Result.success(configService.findById(id));
+//    public Void find(@NotNull Long id) {
+//        return configService.findById(id);
 //    }
 //
 //    @PostMapping("/update")
 //    @ResponseBody
-//    public Result<?> update(@Validated(Config.Update.class) @RequestBody Config config) {
+//    public Void update(@Validated(Config.Update.class) @RequestBody Config config) {
 //        configService.update(config);
-//        return Result.success();
+//        return null;
 //    }
 
     @PostMapping("/batchUpdate")
     @ResponseBody
-    public Result<?> batchUpdate(@RequestBody List<Config> configs) {
+    public Void batchUpdate(@RequestBody List<Config> configs) {
         configService.batchUpdate(configs);
-        return Result.success();
+        return null;
     }
 }

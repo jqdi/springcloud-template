@@ -13,10 +13,11 @@ import cn.licoy.encryptbody.exception.EncryptBodyFailException;
 import cn.licoy.encryptbody.exception.EncryptMethodNotFoundException;
 import cn.licoy.encryptbody.util.CommonUtils;
 import cn.licoy.encryptbody.util.ShaEncryptUtil;
-import com.company.common.api.Result;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.core.MethodParameter;
 import org.springframework.core.ResolvableType;
@@ -54,7 +55,7 @@ public class EncryptResponseBodyAdvice implements ResponseBodyAdvice<Object> {
 
 	private final EncryptBodyConfig config;
 
-//	@Autowired
+	@Autowired
 	public EncryptResponseBodyAdvice(ObjectMapper objectMapper, EncryptBodyConfig config) {
 		this.objectMapper = objectMapper;
 		this.config = config;
@@ -105,39 +106,6 @@ public class EncryptResponseBodyAdvice implements ResponseBodyAdvice<Object> {
 		if (body == null) {
 			return null;
 		}
-
-		// 尝试处理Result封装类型
-		if (body instanceof Result) {
-			Result<?> result = (Result<?>) body;
-			Object data = result.getData();
-			if (data == null) {
-				return result;
-			}
-			// 获取泛型类型
-			ResolvableType resolvableType = ResolvableType.forMethodParameter(returnType);
-			Class<?> genericType = resolvableType.getGeneric(0).resolve();
-			if (genericType == null) {
-				return result;
-			}
-			//  从泛型对象方法上
-			if (genericType.isAnnotationPresent(FieldBody.class)) {
-				// 紧加密字段
-				this.eachClassField(data, genericType);
-				return result;
-			} else {
-				// 加密整个实体
-				EncryptAnnotationInfoBean genericAnnotation = this.getEncryptAnnotation(genericType);
-				if (genericAnnotation == null) {
-					return result;
-				}
-
-				// 加密数据并设置回Result
-				String str = CommonUtils.convertToStringOrJson(data, objectMapper);
-				String encryptedStr =  switchEncrypt(str, genericAnnotation);
-				return Result.success(encryptedStr).setCode(result.getCode()).setMessage(result.getMessage());
-			}
-		}
-
 		String str = CommonUtils.convertToStringOrJson(body, objectMapper);
 		response.getHeaders().setContentType(MediaType.TEXT_PLAIN);
 		Method method = returnType.getMethod();
@@ -151,11 +119,12 @@ public class EncryptResponseBodyAdvice implements ResponseBodyAdvice<Object> {
 			Class<?> methodReturnType = method.getReturnType();
 			if (methodReturnType.isAnnotationPresent(FieldBody.class)) {
 				Object encryptResult = this.eachClassField(body, method.getReturnType());
-				try {
-					return objectMapper.writeValueAsString(encryptResult);
-				} catch (JsonProcessingException e) {
-					throw new EncryptBodyFailException(e.getMessage());
-				}
+//				try {
+//					return objectMapper.writeValueAsString(encryptResult);
+//				} catch (JsonProcessingException e) {
+//					throw new EncryptBodyFailException(e.getMessage());
+//				}
+				return encryptResult;
 			} else {
 				EncryptAnnotationInfoBean returnTypeClassAnnotation = this.getEncryptAnnotation(methodReturnType);
 				if (returnTypeClassAnnotation != null) {

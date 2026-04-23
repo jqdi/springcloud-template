@@ -80,6 +80,12 @@
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-openfeign</artifactId>
         </dependency>
+        <!-- 响应数据封装、异常处理：https://doc.feiniaojin.com/graceful-response/home.html -->
+        <dependency>
+            <groupId>com.feiniaojin</groupId>
+            <artifactId>graceful-response</artifactId>
+            <version>5.0.3-boot2</version>
+        </dependency>
 
 		<!-- 熔断器，Resilience4J、Sentinel选其中一个就行 -->
 		<!-- Resilience4J -->
@@ -119,12 +125,13 @@
 		<dependency>
 			<groupId>org.apache.skywalking</groupId>
 			<artifactId>apm-toolkit-logback-1.x</artifactId>
-			<version>9.3.0</version>
+            <version>8.16.0</version>
 		</dependency>
-		<dependency>
+        <!-- skywalking api:需硬编码时用到 -->
+        <dependency>
 			<groupId>org.apache.skywalking</groupId>
 			<artifactId>apm-toolkit-trace</artifactId>
-			<version>9.3.0</version>
+			<version>8.16.0</version>
 		</dependency>
 		<!-- skywalking日志追踪 -->
 
@@ -227,7 +234,7 @@
         <dependency>
 			<groupId>cn.hutool</groupId>
 			<artifactId>hutool-all</artifactId>
-			<version>5.8.5</version>
+			<version>5.8.43</version>
 		</dependency>
 
 		<!-- 对象属性差异比较工具 -->

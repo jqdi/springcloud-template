@@ -1,6 +1,6 @@
 package com.company.user.api.feign;
 
-import com.company.common.api.Result;
+
 import com.company.user.api.constant.Constants;
 import com.company.user.api.feign.fallback.ThrowExceptionFallback;
 import com.company.user.api.request.DistributeBuyOrderReq;
@@ -19,6 +19,6 @@ public interface DistributeOrderFeign {
 	 * @return
 	 */
 	@PostMapping("/buy")
-	Result<DistributeBuyOrderResp> buy(@RequestBody DistributeBuyOrderReq distributeBuyOrderReq);
+	DistributeBuyOrderResp buy(@RequestBody DistributeBuyOrderReq distributeBuyOrderReq);
 
 }

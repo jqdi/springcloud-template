@@ -13,14 +13,11 @@ import org.aspectj.lang.annotation.Aspect;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.company.admin.entity.base.XSGenericModel;
-import com.company.common.api.Result;
 import com.company.framework.context.HttpContextUtil;
-import com.company.framework.globalresponse.BusinessException;
 import com.company.framework.util.IpUtil;
 import com.company.framework.util.JsonUtil;
 
@@ -62,16 +59,6 @@ public class XSLogAspect {
             result = ((ProceedingJoinPoint) joinPoint).proceed();
         } catch (Throwable t) {
             xsLogger.setStatus(false);
-            if (t instanceof BusinessException) {
-            	BusinessException e = (BusinessException) t;
-				result = Result.fail(e.getCode(), e.getMessage());
-            }
-            else if (t instanceof DuplicateKeyException) {
-                result = Result.fail("数据已存在");
-            }
-            else {
-                result = Result.fail("系统错误");
-            }
             throw t;
         } finally {
             String resultStr = null;

@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.company.common.api.Result;
+
 import com.company.admin.entity.image.Image;
 import com.company.admin.entity.image.ImageCategory;
 import com.company.admin.service.image.ImageCategoryService;
@@ -41,28 +41,28 @@ public class ImageController {
 
     @RequestMapping(value = "/admin/content/image/get", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> adminGet(Image image) {
-        return Result.success(imageService.get(image));
+    public Image adminGet(Image image) {
+        return imageService.get(image);
     }
 
     @RequestMapping(value = "/admin/content/image/save", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> adminSave(@Validated(Image.Save.class) Image image) {
+    public Void adminSave(@Validated(Image.Save.class) Image image) {
         imageService.save(image);
-        return Result.success();
+        return null;
     }
 
     @RequestMapping(value = "/admin/content/image/remove", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> adminRemove(Image image) {
+    public Void adminRemove(Image image) {
         imageService.remove(image);
-        return Result.success();
+        return null;
     }
 
     @RequestMapping(value = "/admin/content/image/update", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> adminUpdate(@Validated(Image.Update.class) Image image) {
+    public Void adminUpdate(@Validated(Image.Update.class) Image image) {
         imageService.update(image);
-        return Result.success();
+        return null;
     }
 }

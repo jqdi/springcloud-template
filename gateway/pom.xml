@@ -101,15 +101,21 @@
 		<!-- 熔断器，Resilience4J、Sentinel选其中一个就行 -->
 
 		<!-- skywalking日志追踪 -->
+        <dependency>
+            <groupId>org.apache.skywalking</groupId>
+            <artifactId>apm-toolkit-webflux</artifactId>
+            <version>8.16.0</version>
+        </dependency>
 		<dependency>
 			<groupId>org.apache.skywalking</groupId>
 			<artifactId>apm-toolkit-logback-1.x</artifactId>
-			<version>9.3.0</version>
+			<version>8.16.0</version>
 		</dependency>
-		<dependency>
+        <!-- skywalking api:需硬编码时用到 -->
+        <dependency>
 			<groupId>org.apache.skywalking</groupId>
 			<artifactId>apm-toolkit-trace</artifactId>
-			<version>9.3.0</version>
+			<version>8.16.0</version>
 		</dependency>
 		<!-- skywalking日志追踪 -->
 

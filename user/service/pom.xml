@@ -20,7 +20,7 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-		
+
         <dependency>
 		    <groupId>com.company</groupId>
 		    <artifactId>template-framework</artifactId>
@@ -35,6 +35,11 @@
 		    <groupId>com.company</groupId>
 		    <artifactId>template-user-api</artifactId>
 		    <version>${user-api.version}</version>
+		</dependency>
+        <dependency>
+		    <groupId>com.company</groupId>
+		    <artifactId>template-tool-api</artifactId>
+		    <version>${tool-api.version}</version>
 		</dependency>
 
         <!-- 数据源 -->

@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.PageDTO;
-import com.company.common.api.Result;
+
 import com.company.system.api.response.PageResp;
 import com.company.framework.util.PropertyUtils;
 import com.company.system.api.feign.SysLogininfoFeign;
@@ -87,7 +87,7 @@ public class SysLogininfoController implements SysLogininfoFeign {
 	}
 
 	@Override
-	public Result<PageResp<SysLogininfoResp>> page(Long current, Long size, Integer sysUserId, String loginTimeStart, String loginTimeEnd, String account, String device, String platform, String operator, String version, String deviceid, String channel, String ip, String address, String source, String lang, String createTimeStart, String createTimeEnd, String updateTimeStart, String updateTimeEnd) {
+	public PageResp<SysLogininfoResp> page(Long current, Long size, Integer sysUserId, String loginTimeStart, String loginTimeEnd, String account, String device, String platform, String operator, String version, String deviceid, String channel, String ip, String address, String source, String lang, String createTimeStart, String createTimeEnd, String updateTimeStart, String updateTimeEnd) {
 		QueryWrapper<SysLogininfo> queryWrapper = toQueryWrapper(sysUserId, loginTimeStart, loginTimeEnd, account, device, platform, operator, version, deviceid, channel, ip, address, source, lang, createTimeStart, createTimeEnd, updateTimeStart, updateTimeEnd);
 
 		long count = sysLogininfoService.count(queryWrapper);
@@ -96,47 +96,47 @@ public class SysLogininfoController implements SysLogininfoFeign {
 		List<SysLogininfo> list = sysLogininfoService.list(PageDTO.of(current, size), queryWrapper);
 
 		List<SysLogininfoResp> respList = PropertyUtils.copyArrayProperties(list, SysLogininfoResp.class);
-		return Result.success(PageResp.of(count, respList));
+		return PageResp.of(count, respList);
 	}
 
 	@Override
-	public Result<List<SysLogininfoResp>> list(Integer sysUserId, String loginTimeStart, String loginTimeEnd, String account, String device, String platform, String operator, String version, String deviceid, String channel, String ip, String address, String source, String lang, String createTimeStart, String createTimeEnd, String updateTimeStart, String updateTimeEnd) {
+	public List<SysLogininfoResp> list(Integer sysUserId, String loginTimeStart, String loginTimeEnd, String account, String device, String platform, String operator, String version, String deviceid, String channel, String ip, String address, String source, String lang, String createTimeStart, String createTimeEnd, String updateTimeStart, String updateTimeEnd) {
 		QueryWrapper<SysLogininfo> queryWrapper = toQueryWrapper(sysUserId, loginTimeStart, loginTimeEnd, account, device, platform, operator, version, deviceid, channel, ip, address, source, lang, createTimeStart, createTimeEnd, updateTimeStart, updateTimeEnd);
 
 		queryWrapper.orderByDesc("id");
 		List<SysLogininfo> list = sysLogininfoService.list(queryWrapper);
 
 		List<SysLogininfoResp> respList = PropertyUtils.copyArrayProperties(list, SysLogininfoResp.class);
-		return Result.success(respList);
+		return respList;
 	}
 
 	@Override
-	public Result<SysLogininfoResp> query(Integer id) {
+	public SysLogininfoResp query(Integer id) {
 		SysLogininfo sysLogininfo = sysLogininfoService.getById(id);
 		SysLogininfoResp sysLogininfoResp = PropertyUtils.copyProperties(sysLogininfo, SysLogininfoResp.class);
-		return Result.success(sysLogininfoResp);
+		return sysLogininfoResp;
 	}
 
 	@Override
-	public Result<Boolean> save(SysLogininfoReq sysLogininfoReq) {
+	public Boolean save(SysLogininfoReq sysLogininfoReq) {
 		SysLogininfo sysLogininfo = PropertyUtils.copyProperties(sysLogininfoReq, SysLogininfo.class);
 		boolean success = sysLogininfoService.save(sysLogininfo);
-		return Result.success(success);
+		return success;
 	}
 
 	@Override
-	public Result<Boolean> update(SysLogininfoReq sysLogininfoReq) {
+	public Boolean update(SysLogininfoReq sysLogininfoReq) {
 		SysLogininfo sysLogininfo = PropertyUtils.copyProperties(sysLogininfoReq, SysLogininfo.class);
 		boolean success = sysLogininfoService.updateById(sysLogininfo);
-		return Result.success(success);
+		return success;
 	}
 
 	@Override
-	public Result<Boolean> remove(@RequestBody RemoveReq<Integer> req) {
+	public Boolean remove(@RequestBody RemoveReq<Integer> req) {
 		if (req.getIdList() == null || req.getIdList().isEmpty()) {
-			return Result.success(true);
+			return true;
 		}
 		boolean success = sysLogininfoService.removeBatchByIds(req.getIdList());
-		return Result.success(success);
+		return success;
 	}
 }

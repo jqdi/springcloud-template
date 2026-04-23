@@ -52,7 +52,7 @@ public class UseCouponService {
 	 */
 	public List<UserCouponMe> listCouponByAppUserId(Integer userId, String status,
 			Map<String, String> seeRuntimeAttach) {
-		log.info("userId:{},status:{},seeRuntimeAttach:{}", userId, status, JsonUtil.toJsonString(seeRuntimeAttach));
+		log.info("userId:{},status:{},seeRuntimeAttach:{}", userId, status, seeRuntimeAttach);
 		List<UserCoupon> userCouponList = userCouponService.selectByUserIdStatus(userId, status);
 
 		Set<Integer> couponTemplateIdSet = userCouponList.stream().map(UserCoupon::getCouponTemplateId)
@@ -94,7 +94,7 @@ public class UseCouponService {
 	 */
 	public List<UserCouponCanUsePay> listCouponCanUseByAppUserId(Integer userId, BigDecimal orderAmount,
 			Map<String, String> runtimeAttach) {
-		log.info("userId:{},runtimeAttach:{}", userId, JsonUtil.toJsonString(runtimeAttach));
+		log.info("userId:{},runtimeAttach:{}", userId, runtimeAttach);
 		String status = "nouse";
 		List<UserCoupon> userCouponList = userCouponService.selectByUserIdStatus(userId, status);
 
@@ -152,7 +152,7 @@ public class UseCouponService {
 	 */
 	public UserCouponCanUse bestCouponCanUse(Integer userId, BigDecimal orderAmount,
 			Map<String, String> runtimeAttach) {
-		log.info("userId:{},runtimeAttach:{}", userId, JsonUtil.toJsonString(runtimeAttach));
+		log.info("userId:{},runtimeAttach:{}", userId, runtimeAttach);
 		String status = "nouse";
 		List<UserCoupon> userCouponList = userCouponService.selectByUserIdStatus(userId, status);
 
@@ -220,7 +220,7 @@ public class UseCouponService {
 	public List<UserCouponCanUseBatch> bestCouponCanUseBatch(Integer userId, Map<String, String> seeRuntimeAttach,
 			List<UserCouponCanUseParam> userCouponCanUseParamList) {
 		log.info("userId:{},seeRuntimeAttach:{},userCouponCanUseParamList:{}", userId,
-				JsonUtil.toJsonString(seeRuntimeAttach), JsonUtil.toJsonString(userCouponCanUseParamList));
+				seeRuntimeAttach, userCouponCanUseParamList);
 		String status = "nouse";
 		List<UserCoupon> userCouponList = userCouponService.selectByUserIdStatus(userId, status);
 

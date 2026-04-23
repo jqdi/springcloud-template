@@ -116,7 +116,7 @@ public class WebhookSenderConsumer {
 		try {
 			WebhookBody body = WebhookTextBody.from(content, mentionedList, mentionedMobileList);
 			WeComResponse response = WorkWeChatApi.webhookApi().send(key, body);
-			log.info("response:{}", JsonUtil.toJsonString(response));
+			log.info("response:{}", response);
 			if (response.isError()) {
 				remark = Utils.rightRemark(remark, response.getErrmsg());
 				webhookTaskService.updateStatusRemark(WebhookTaskEnum.Status.REQ_FAIL, remark, webhookTaskId);

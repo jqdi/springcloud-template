@@ -4,7 +4,7 @@ package com.company.admin.controller.user;
 
 import com.company.admin.service.user.UserContactBookService;
 import com.company.admin.annotation.Pagination;
-import com.company.common.api.Result;
+
 import com.company.admin.entity.user.User;
 import com.company.admin.entity.user.UserContactBook;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,28 +36,28 @@ public class UserContactBookController {
 
     @RequestMapping(value = "/admin/user/userContactBook/get", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> get(UserContactBook userContactBook) {
-        return Result.success(userContactBookService.get(userContactBook));
+    public UserContactBook get(UserContactBook userContactBook) {
+        return userContactBookService.get(userContactBook);
     }
 
     @RequestMapping(value = "/admin/user/userContactBook/save", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> save(@Validated(UserContactBook.Save.class) UserContactBook userContactBook) {
+    public Void save(@Validated(UserContactBook.Save.class) UserContactBook userContactBook) {
         userContactBookService.save(userContactBook);
-        return Result.success();
+        return null;
     }
 
     @RequestMapping(value = "/admin/user/userContactBook/remove", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> remove(UserContactBook userContactBook) {
+    public Void remove(UserContactBook userContactBook) {
         userContactBookService.remove(userContactBook);
-        return Result.success();
+        return null;
     }
 
     @RequestMapping(value = "/admin/user/userContactBook/update", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> update(@Validated(UserContactBook.Update.class) UserContactBook userContactBook) {
+    public Void update(@Validated(UserContactBook.Update.class) UserContactBook userContactBook) {
         userContactBookService.update(userContactBook);
-        return Result.success();
+        return null;
     }
 }

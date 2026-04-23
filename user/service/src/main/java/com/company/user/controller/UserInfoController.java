@@ -8,13 +8,14 @@ import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.company.common.api.Result;
+
 import com.company.framework.context.HeaderContextUtil;
 import com.company.framework.lock.LockClient;
 import com.company.framework.messagedriven.MessageSender;
@@ -55,14 +56,14 @@ public class UserInfoController implements UserInfoFeign {
      * </pre>
      */
     @Override
-    public Result<UserInfoResp> findOrCreateUser(@RequestBody @Valid UserInfoReq userInfoReq) {
+    public UserInfoResp findOrCreateUser(@RequestBody @Valid UserInfoReq userInfoReq) {
         UserOauthEnum.IdentityType identityType = userInfoReq.getIdentityType();
         String identifier = userInfoReq.getIdentifier();
 
         UserOauth userOauthDB = userOauthMapper.selectByIdentityTypeIdentifier(identityType, identifier);
         if (userOauthDB != null) {
             UserInfoResp userInfoResp = new UserInfoResp().setId(userOauthDB.getUserId());
-            return Result.success(userInfoResp);
+            return userInfoResp;
         }
 
         String key = String.format("lock:register:%s", identifier);
@@ -78,7 +79,16 @@ public class UserInfoController implements UserInfoFeign {
             UserInfo userInfo = new UserInfo().setNickname(nickname).setAvatar(avatar);
             userInfoMapper.insert(userInfo);
 
-            userOauthMapper.bindOauth(userInfo.getId(), identityType, identifier, userInfoReq.getCertificate());
+            // userOauthMapper.bindOauth(userInfo.getId(), identityType, identifier, userInfoReq.getCertificate());
+            userOauth = new UserOauth().setUserId(userInfo.getId()).setIdentityType(identityType.getCode())
+                .setIdentifier(identifier).setCertificate(userInfoReq.getCertificate());
+            userOauthMapper.insert(userOauth);
+            if (StringUtils.isNotBlank(userInfoReq.getPassword())) {
+                UserOauth userOauthPassword =
+                    new UserOauth().setUserId(userInfo.getId()).setIdentityType(UserOauthEnum.IdentityType.PASSWORD.getCode())
+                        .setIdentifier(userInfo.getId().toString()).setCertificate(userInfoReq.getPassword());
+                userOauthMapper.insert(userOauthPassword);
+            }
 
             // 发布注册事件
             Map<String, Object> params = Maps.newHashMap();
@@ -95,19 +105,19 @@ public class UserInfoController implements UserInfoFeign {
 
         UserInfoResp userInfoResp = new UserInfoResp().setId(userId0);
 
-        return Result.success(userInfoResp);
+        return userInfoResp;
     }
 
     @Override
-    public Result<UserInfoResp> getById(Integer id) {
+    public UserInfoResp getById(Integer id) {
         UserInfo userInfo = userInfoMapper.getById(id);
-        return Result.success(PropertyUtils.copyProperties(userInfo, UserInfoResp.class));
+        return PropertyUtils.copyProperties(userInfo, UserInfoResp.class);
     }
 
     @Override
-    public Result<Map<Integer, String>> mapUidById(@RequestBody Collection<Integer> idList) {
+    public Map<Integer, String> mapNicknameById(@RequestBody Collection<Integer> idList) {
         List<UserInfo> userInfoList = userInfoMapper.selectBatchIds(idList);
-        Map<Integer, String> idUidMap = userInfoList.stream().collect(Collectors.toMap(UserInfo::getId, UserInfo::getUid));
-        return Result.success(idUidMap);
+        Map<Integer, String> idNicknameMap = userInfoList.stream().collect(Collectors.toMap(UserInfo::getId, UserInfo::getNickname));
+        return idNicknameMap;
     }
 }

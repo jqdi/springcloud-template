@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.company.admin.annotation.Pagination;
 import com.company.admin.entity.{module}.{ModelName};
 import com.company.admin.service.{module}.{ModelName}Service;
-import com.company.common.api.Result;
 
 @Controller
 public class {ModelName}Controller {
@@ -39,9 +38,9 @@ public class {ModelName}Controller {
 
 	@ResponseBody
 	@RequestMapping(value = "/admin/{module}/{modelName}/save", method = RequestMethod.POST)
-	public Result<Void> save(@Validated({ModelName}.Save.class) {ModelName} {modelName}) {
+	public Void save(@Validated({ModelName}.Save.class) {ModelName} {modelName}) {
 		{modelName}Service.insert({modelName});
-		return Result.success();
+		return null;
 	}
 
 	@RequestMapping(value = "/admin/{module}/{modelName}/update", method = RequestMethod.GET)
@@ -53,9 +52,9 @@ public class {ModelName}Controller {
 
 	@ResponseBody
 	@RequestMapping(value = "/admin/{module}/{modelName}/update", method = RequestMethod.POST)
-	public Result<Void> update(@Validated({ModelName}.Update.class) {ModelName} {modelName}) {
+	public Void update(@Validated({ModelName}.Update.class) {ModelName} {modelName}) {
 		{modelName}Service.updateById({modelName});
-		return Result.success();
+		return null;
 	}
 
 	@RequestMapping(value = "/admin/{module}/{modelName}/detail", method = RequestMethod.GET)
@@ -67,14 +66,14 @@ public class {ModelName}Controller {
 
 	@ResponseBody
 	@RequestMapping(value = "/admin/{module}/{modelName}/get", method = RequestMethod.POST)
-	public Result<{ModelName}> get({ModelName} {modelName}) {
-		return Result.success({modelName}Service.selectById({modelName}.getId()));
+	public {ModelName} get({ModelName} {modelName}) {
+		return {modelName}Service.selectById({modelName}.getId());
 	}
 
 	@ResponseBody
 	@RequestMapping(value = "/admin/{module}/{modelName}/remove", method = RequestMethod.POST)
-	public Result<Void> remove({ModelName} {modelName}) {
+	public Void remove({ModelName} {modelName}) {
 		{modelName}Service.deleteById({modelName}.getId());
-		return Result.success();
+		return null;
 	}
 }

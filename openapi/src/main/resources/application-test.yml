@@ -1,3 +1,8 @@
+logging:
+  file:
+    #日志文件目录。./表示相对于项目根目录，即项目根目录下的logs目录。也可配置绝对路径，如：/home/webapp/logs
+    path: ./logs
+
 template:
   domain: http://t-domain.com
   enable:

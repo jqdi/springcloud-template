@@ -189,7 +189,7 @@ public class ImageCategoryService {
         return existent;
     }
 
-    public List<?> tree(ImageCategory imageCategory) {
+    public List<ImageCategory> tree(ImageCategory imageCategory) {
         imageCategory.setDefaultSort("seq", "DESC");
         List<ImageCategory> list = imageCategoryDao.listCombo(imageCategory);
         XSTreeUtil.buildTree(list);

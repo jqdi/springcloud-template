@@ -1,7 +1,6 @@
 package com.company.framework.messagedriven.rabbitmq;
 
 import com.company.framework.util.HostUtil;
-import com.company.framework.util.JsonUtil;
 import com.company.framework.messagedriven.constants.BroadcastConstants;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -24,7 +23,7 @@ import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
 
 @Slf4j
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @Conditional(RabbitMQAutoConfiguration.RabbitMQCondition.class)
 public class RabbitMQAutoConfiguration extends org.springframework.boot.autoconfigure.amqp.RabbitAutoConfiguration {
 
@@ -56,7 +55,7 @@ public class RabbitMQAutoConfiguration extends org.springframework.boot.autoconf
 			@Override
 			public void confirm(CorrelationData correlationData, boolean ack, String cause) {
 				// publiser-confirm模式可以确保生产者到交换器exchange消息有没有发送成功
-				log.info("correlationData:{},ack:{},cause:{}", JsonUtil.toJsonString(correlationData), ack, cause);
+				log.info("correlationData:{},ack:{},cause:{}", correlationData, ack, cause);
 			}
 		});
 		rabbitTemplate.setReturnCallback(new ReturnCallback() {
@@ -69,7 +68,7 @@ public class RabbitMQAutoConfiguration extends org.springframework.boot.autoconf
 					return;
 				}
 				log.info("message:{},replyCode:{},replyText:{},exchange:{},routingKey:{}",
-						JsonUtil.toJsonString(message), replyCode, replyText, exchange, routingKey);
+						message, replyCode, replyText, exchange, routingKey);
 			}
 		});
 		return new Object();

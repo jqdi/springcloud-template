@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.company.admin.annotation.Pagination;
-import com.company.common.api.Result;
+
 import com.company.admin.entity.loan.ProductTips;
 import com.company.admin.service.loan.ProductTipsService;
 
@@ -33,28 +33,28 @@ public class ProductTipsController {
 
     @RequestMapping(value = "/admin/loan/productTips/get", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> get(ProductTips productTips) {
-        return Result.success(productTipsService.get(productTips));
+    public ProductTips get(ProductTips productTips) {
+        return productTipsService.get(productTips);
     }
 
     @RequestMapping(value = "/admin/loan/productTips/save", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> save(@Validated(ProductTips.Save.class) ProductTips productTips) {
+    public Void save(@Validated(ProductTips.Save.class) ProductTips productTips) {
         productTipsService.save(productTips);
-        return Result.success();
+        return null;
     }
 
     @RequestMapping(value = "/admin/loan/productTips/remove", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> remove(ProductTips productTips) {
+    public Void remove(ProductTips productTips) {
         productTipsService.remove(productTips);
-        return Result.success();
+        return null;
     }
 
     @RequestMapping(value = "/admin/loan/productTips/update", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> update(@Validated(ProductTips.Update.class) ProductTips productTips) {
+    public Void update(@Validated(ProductTips.Update.class) ProductTips productTips) {
         productTipsService.update(productTips);
-        return Result.success();
+        return null;
     }
 }

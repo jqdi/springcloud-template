@@ -225,7 +225,7 @@ import java.lang.annotation.*;
 @Inherited
 @Import({EncryptBodyConfig.class,
 //		HttpConverterConfig.class, // 忽略，因为HttpMessageConverterAutoConfiguration已配置
-		EncryptResponseBodyAdvice.class, // 增加了Result<T>泛型处理
+		EncryptResponseBodyAdvice.class, // 增加了<T>泛型处理
 		DecryptRequestBodyAdvice.class
 })
 public @interface EnableEncryptBody {

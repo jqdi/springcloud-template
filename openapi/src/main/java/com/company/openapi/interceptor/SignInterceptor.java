@@ -1,31 +1,33 @@
 package com.company.openapi.interceptor;
 
-import com.company.framework.globalresponse.ExceptionUtil;
-import com.company.framework.util.JsonUtil;
-import com.company.framework.cache.ICache;
-import com.company.framework.filter.request.BodyReaderHttpServletRequestWrapper;
-import com.company.framework.util.WebUtil;
-import com.company.openapi.annotation.NoSign;
-import com.company.openapi.config.SignConfiguration;
-import com.company.openapi.util.SignUtil;
+import java.lang.reflect.Method;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
-import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
+import org.springframework.web.servlet.AsyncHandlerInterceptor;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.lang.reflect.Method;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
+import com.company.framework.cache.ICache;
+import com.company.framework.filter.request.BodyReaderHttpServletRequestWrapper;
+import com.company.framework.globalresponse.ExceptionUtil;
+import com.company.framework.util.JsonUtil;
+import com.company.framework.util.WebUtil;
+import com.company.openapi.annotation.NoSign;
+import com.company.openapi.config.SignConfiguration;
+import com.company.openapi.util.SignUtil;
 
 @Component
 @ConditionalOnProperty(prefix = "sign", name = "check", havingValue = "true", matchIfMissing = true)
-public class SignInterceptor extends HandlerInterceptorAdapter {
+public class SignInterceptor implements AsyncHandlerInterceptor {
 
 	@Autowired
 	private SignConfiguration signConfiguration;
@@ -52,15 +54,15 @@ public class SignInterceptor extends HandlerInterceptorAdapter {
 		}
 
 		// 检查时效性
-		String timestamp = request.getHeader("timestamp");// 加入timestamp（时间戳），10分钟内数据有效
+		String timestamp = request.getHeader("timestamp");// 加入timestamp（时间戳），正负10分钟内数据有效
 		if (StringUtils.isBlank(timestamp)) {
 			ExceptionUtil.throwException("请求已过期");
 		}
 		long timestampLong = Long.parseLong(timestamp);
 		long now = System.currentTimeMillis();
-		if (now - timestampLong > signConfiguration.getReqValidSeconds() * 1000) {
-			ExceptionUtil.throwException("请求已过期");
-		}
+        if (Math.abs(now - timestampLong) > signConfiguration.getReqValidSeconds() * 1000) {
+            ExceptionUtil.throwException("请求已过期");
+        }
 
 		// 检查appid是否正确
 		String appid = request.getHeader("appid");// 线下分配appid和appsecret，针对不同的调用方分配不同的appid和appsecret
@@ -69,7 +71,7 @@ public class SignInterceptor extends HandlerInterceptorAdapter {
 		}
 
 		String appsecret = signConfiguration.getAppsecret(appid);
-//		String appsecret = openAccessAccountFeign.getAppKeyByAppid(appid).dataOrThrow();// appsecret也可以保存到数据库
+//		String appsecret = openAccessAccountFeign.getAppKeyByAppid(appid);// appsecret也可以保存到数据库
 		if (StringUtils.isBlank(appsecret)) {
 			ExceptionUtil.throwException("appid错误");
 		}
@@ -101,7 +103,7 @@ public class SignInterceptor extends HandlerInterceptorAdapter {
 		}
 
 		if (signConfiguration.nonceValid()) {
-			String key = String.format("nonce:%s", noncestr);
+			String key = String.format("nonce:%s:%s", appid, noncestr);
 			String value = cache.get(key);
 			if (StringUtils.isNotBlank(value)) {
 				ExceptionUtil.throwException("请求重复");

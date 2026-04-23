@@ -3,7 +3,7 @@ package com.company.admin.controller.system;
 
 
 import com.company.admin.service.system.AppInitService;
-import com.company.common.api.Result;
+
 import com.company.admin.entity.system.AppInit;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -33,28 +33,28 @@ public class AppInitController {
 
     @RequestMapping(value = "/admin/system/appInit/get", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> adminGet(AppInit appInit) {
-        return Result.success(appInitService.get(appInit));
+    public AppInit adminGet(AppInit appInit) {
+        return appInitService.get(appInit);
     }
 
     @RequestMapping(value = "/admin/system/appInit/save", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> adminSave(@Validated(AppInit.Save.class) AppInit appInit) {
+    public Void adminSave(@Validated(AppInit.Save.class) AppInit appInit) {
         appInitService.save(appInit);
-        return Result.success();
+        return null;
     }
 
     @RequestMapping(value = "/admin/system/appInit/remove", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> adminRemove(AppInit appInit) {
+    public Void adminRemove(AppInit appInit) {
         appInitService.remove(appInit);
-        return Result.success();
+        return null;
     }
 
     @RequestMapping(value = "/admin/system/appInit/update", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> adminUpdate(@Validated(AppInit.Update.class) AppInit appInit) {
+    public Void adminUpdate(@Validated(AppInit.Update.class) AppInit appInit) {
         appInitService.update(appInit);
-        return Result.success();
+        return null;
     }
 }

@@ -53,18 +53,17 @@ public class CouponTouseStrategy implements BaseStrategy<Map<String, Object>> {
 			}
 		} else {// 使用优惠券模板判断
 			Integer couponTemplateId = MapUtils.getInteger(paramMap, "couponTemplateId");
-			Boolean isMatchTemplate = couponFeign.isMatchTemplate(userCouponId, couponTemplateId).dataOrThrow();
+			Boolean isMatchTemplate = couponFeign.isMatchTemplate(userCouponId, couponTemplateId);
 			if (!isMatchTemplate) {
 				log.info("条件不满足{} {}", userCouponId, couponTemplateId);
 				return;
 			}
 		}
 
-		UserCouponResp userCouponResp = couponFeign.getUserCouponById(userCouponId).dataOrThrow();
+		UserCouponResp userCouponResp = couponFeign.getUserCouponById(userCouponId);
 
 		Integer userId = MapUtils.getInteger(params, "userId");
-		String openid = userOauthFeign.selectIdentifier(userId, UserOauthEnum.IdentityType.WX_OPENID_MINIAPP)
-				.dataOrThrow();
+		String openid = userOauthFeign.selectIdentifier(userId, UserOauthEnum.IdentityType.WX_OPENID_MINIAPP).values().iterator().next();
 
 		// 优惠券过期前3天
 		LocalDateTime planSendTime = userCouponResp.getEndTime().minusDays(3);

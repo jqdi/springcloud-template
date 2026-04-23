@@ -1,6 +1,8 @@
 package com.company.system.controller;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import com.company.system.api.request.RemoveReq;
 import org.apache.commons.lang3.StringUtils;
@@ -12,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.plugins.pagination.PageDTO;
-import com.company.common.api.Result;
+
 import com.company.system.api.response.PageResp;
 import com.company.framework.util.PropertyUtils;
 import com.company.system.api.feign.SysConfigFeign;
@@ -46,7 +48,7 @@ public class SysConfigController implements SysConfigFeign {
 	}
 
 	@Override
-	public Result<PageResp<SysConfigResp>> page(Long current, Long size, String name, String code, String value, String configRemark) {
+	public PageResp<SysConfigResp> page(Long current, Long size, String name, String code, String value, String configRemark) {
 		QueryWrapper<SysConfig> queryWrapper = toQueryWrapper(name, code, value, configRemark);
 
 //		long count = sysConfigService.count(queryWrapper);
@@ -56,59 +58,59 @@ public class SysConfigController implements SysConfigFeign {
 		List<SysConfig> list = sysConfigService.list(page, queryWrapper);
 
 		List<SysConfigResp> respList = PropertyUtils.copyArrayProperties(list, SysConfigResp.class);
-		return Result.success(PageResp.of(page.getTotal(), respList));
+		return PageResp.of(page.getTotal(), respList);
 	}
 
 	@Override
-	public Result<List<SysConfigResp>> list(String name, String code, String value, String configRemark) {
+	public List<SysConfigResp> list(String name, String code, String value, String configRemark) {
 		QueryWrapper<SysConfig> queryWrapper = toQueryWrapper(name, code, value, configRemark);
 
 		queryWrapper.orderByDesc("id");
 		List<SysConfig> list = sysConfigService.list(queryWrapper);
 
 		List<SysConfigResp> respList = PropertyUtils.copyArrayProperties(list, SysConfigResp.class);
-		return Result.success(respList);
+		return respList;
 	}
 
 	@Override
-	public Result<SysConfigResp> query(Integer id) {
+	public SysConfigResp query(Integer id) {
 		SysConfig sysConfig = sysConfigService.getById(id);
 		SysConfigResp sysConfigResp = PropertyUtils.copyProperties(sysConfig, SysConfigResp.class);
-		return Result.success(sysConfigResp);
+		return sysConfigResp;
 	}
 
 	@Override
-	public Result<Boolean> save(SysConfigReq sysConfigReq) {
+	public Boolean save(SysConfigReq sysConfigReq) {
 		SysConfig sysConfig = PropertyUtils.copyProperties(sysConfigReq, SysConfig.class);
 		boolean success = sysConfigService.save(sysConfig);
-		return Result.success(success);
+		return success;
 	}
 
 	@Override
-	public Result<Boolean> update(SysConfigReq sysConfigReq) {
+	public Boolean update(SysConfigReq sysConfigReq) {
 		SysConfig sysConfig = PropertyUtils.copyProperties(sysConfigReq, SysConfig.class);
 		boolean success = sysConfigService.updateById(sysConfig);
-		return Result.success(success);
+		return success;
 	}
 
 	@Override
-	public Result<Boolean> remove(@RequestBody RemoveReq<Integer> req) {
+	public Boolean remove(@RequestBody RemoveReq<Integer> req) {
 		if (req.getIdList() == null || req.getIdList().isEmpty()) {
-			return Result.success(true);
+			return true;
 		}
 		boolean success = sysConfigService.removeBatchByIds(req.getIdList());
-		return Result.success(success);
+		return success;
 	}
 
 	@Override
-	public Result<String> getValueByCode(String code) {
+	public Map<String, String> getValueByCode(String code) {
 		String value = sysConfigService.getValueByCode(code);
-		return Result.success(value);
+        return Collections.singletonMap("value", value);
 	}
 
 	@Override
-	public Result<Boolean> updateValueByCode(String value, String code) {
+	public Boolean updateValueByCode(String value, String code) {
 		boolean success = sysConfigService.updateValueByCode(value, code);
-		return Result.success(success);
+		return success;
 	}
 }

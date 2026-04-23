@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.company.order.mapper.OrderMapper">
 	<select id="pageByUserIdAndStatus" resultType="com.company.order.entity.Order">
-		select * from order
+		select * from `order`
 		<where>
 			user_id = #{userId}
 			<if test="statusEnum != null">

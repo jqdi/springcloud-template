@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.PageDTO;
-import com.company.common.api.Result;
+
 import com.company.system.api.response.PageResp;
 import com.company.framework.util.PropertyUtils;
 import com.company.system.api.feign.SysRoleMenuFeign;
@@ -51,7 +51,7 @@ public class SysRoleMenuController implements SysRoleMenuFeign {
 	}
 
 	@Override
-	public Result<PageResp<SysRoleMenuResp>> page(Long current, Long size, Integer roleId, Integer menuId, String createTimeStart, String createTimeEnd, String updateTimeStart, String updateTimeEnd) {
+	public PageResp<SysRoleMenuResp> page(Long current, Long size, Integer roleId, Integer menuId, String createTimeStart, String createTimeEnd, String updateTimeStart, String updateTimeEnd) {
 		QueryWrapper<SysRoleMenu> queryWrapper = toQueryWrapper(roleId, menuId, createTimeStart, createTimeEnd, updateTimeStart, updateTimeEnd);
 
 		long count = sysRoleMenuService.count(queryWrapper);
@@ -60,47 +60,47 @@ public class SysRoleMenuController implements SysRoleMenuFeign {
 		List<SysRoleMenu> list = sysRoleMenuService.list(PageDTO.of(current, size), queryWrapper);
 
 		List<SysRoleMenuResp> respList = PropertyUtils.copyArrayProperties(list, SysRoleMenuResp.class);
-		return Result.success(PageResp.of(count, respList));
+		return PageResp.of(count, respList);
 	}
 
 	@Override
-	public Result<List<SysRoleMenuResp>> list(Integer roleId, Integer menuId, String createTimeStart, String createTimeEnd, String updateTimeStart, String updateTimeEnd) {
+	public List<SysRoleMenuResp> list(Integer roleId, Integer menuId, String createTimeStart, String createTimeEnd, String updateTimeStart, String updateTimeEnd) {
 		QueryWrapper<SysRoleMenu> queryWrapper = toQueryWrapper(roleId, menuId, createTimeStart, createTimeEnd, updateTimeStart, updateTimeEnd);
 
 		queryWrapper.orderByDesc("id");
 		List<SysRoleMenu> list = sysRoleMenuService.list(queryWrapper);
 
 		List<SysRoleMenuResp> respList = PropertyUtils.copyArrayProperties(list, SysRoleMenuResp.class);
-		return Result.success(respList);
+		return respList;
 	}
 
 	@Override
-	public Result<SysRoleMenuResp> query(Integer id) {
+	public SysRoleMenuResp query(Integer id) {
 		SysRoleMenu sysRoleMenu = sysRoleMenuService.getById(id);
 		SysRoleMenuResp sysRoleMenuResp = PropertyUtils.copyProperties(sysRoleMenu, SysRoleMenuResp.class);
-		return Result.success(sysRoleMenuResp);
+		return sysRoleMenuResp;
 	}
 
 	@Override
-	public Result<Boolean> save(SysRoleMenuReq sysRoleMenuReq) {
+	public Boolean save(SysRoleMenuReq sysRoleMenuReq) {
 		SysRoleMenu sysRoleMenu = PropertyUtils.copyProperties(sysRoleMenuReq, SysRoleMenu.class);
 		boolean success = sysRoleMenuService.save(sysRoleMenu);
-		return Result.success(success);
+		return success;
 	}
 
 	@Override
-	public Result<Boolean> update(SysRoleMenuReq sysRoleMenuReq) {
+	public Boolean update(SysRoleMenuReq sysRoleMenuReq) {
 		SysRoleMenu sysRoleMenu = PropertyUtils.copyProperties(sysRoleMenuReq, SysRoleMenu.class);
 		boolean success = sysRoleMenuService.updateById(sysRoleMenu);
-		return Result.success(success);
+		return success;
 	}
 
 	@Override
-	public Result<Boolean> remove(@RequestBody RemoveReq<Integer> req) {
+	public Boolean remove(@RequestBody RemoveReq<Integer> req) {
 		if (req.getIdList() == null || req.getIdList().isEmpty()) {
-			return Result.success(true);
+			return true;
 		}
 		boolean success = sysRoleMenuService.removeBatchByIds(req.getIdList());
-		return Result.success(success);
+		return success;
 	}
 }

@@ -1,6 +1,5 @@
 package com.company.order.api.feign;
 
-import com.company.common.api.Result;
 import com.company.order.api.constant.Constants;
 import com.company.order.api.feign.fallback.ThrowExceptionFallback;
 import com.company.order.api.request.RegisterOrderReq;
@@ -11,18 +10,23 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.List;
+
 @FeignClient(value = Constants.FEIGNCLIENT_VALUE, path = "/feignTest", fallbackFactory = ThrowExceptionFallback.class)
 public interface FeignTestFeign {
 
     @GetMapping("/getnoparam")
-    Result<OrderDetailResp> getnoparam();
+    OrderDetailResp getnoparam();
+
+    @GetMapping("/getnoparamList")
+    List<OrderDetailResp> getnoparamList();
 
     @GetMapping("/getparam")
-    Result<OrderDetailResp> getparam(@RequestParam("orderCode") String orderCode);
+    OrderDetailResp getparam(@RequestParam("orderCode") String orderCode);
 
     @PostMapping("/postbody")
-    Result<OrderDetailResp> postbody(@RequestBody RegisterOrderReq registerOrderReq);
+    OrderDetailResp postbody(@RequestBody RegisterOrderReq registerOrderReq);
 
     @GetMapping("/context")
-    Result<OrderDetailResp> context();
+    OrderDetailResp context();
 }

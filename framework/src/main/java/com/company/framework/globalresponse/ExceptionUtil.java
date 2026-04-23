@@ -10,17 +10,17 @@ public class ExceptionUtil {
     private ExceptionUtil() {
     }
 
-    public static void throwException(Integer code, String message) {
+    public static void throwException(String code, String message) {
         throw new BusinessException(code, message); // 不带参数的业务异常
-//        throw new ArgsBusinessException(code, message); // 带参数的业务异常
+//        throw new ArgsBusinessException(code, message); // 带参数的业务异常【不建议使用】
     }
 
     public static void throwException(String message) {
         throw new BusinessException(message); // 不带参数的业务异常
-//        throw new ArgsBusinessException(message); // 带参数的业务异常
+//        throw new ArgsBusinessException(message); // 带参数的业务异常【不建议使用】
     }
 
-    public static void throwException(Integer code, String message, Object... args) {
+    public static void throwException(String code, String message, Object... args) {
 //        throw new BusinessException(code, message); // 不带参数的业务异常【不建议使用】
         throw new ArgsBusinessException(code, message, args); // 带参数的业务异常
     }

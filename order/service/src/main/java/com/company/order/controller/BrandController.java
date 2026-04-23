@@ -21,8 +21,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.company.common.api.Result;
-import com.company.framework.util.JsonUtil;
+
 import com.company.framework.util.PropertyUtils;
 import com.company.order.es.dto.Brand;
 import com.company.order.es.dto.Brand.Product;
@@ -54,7 +53,7 @@ public class BrandController {
 		for (int i = 0; i < count; i++) {
 			addDocument2(indexName, (i + 1) + "");
 		}
-		return Result.success();
+		return null;
 	}
 	@GetMapping(value = "/addDocument")
 	public Object addDocument2(String indexName, String id) {
@@ -114,7 +113,7 @@ public class BrandController {
 		// 1.索引不存在会自动创建索引并且会添加文档
 		// 2.文档已存在会更新文档，根据@ESId注解的字段作唯一
 		String addDocument = clientUtil.addDocument(indexName, estestdto);
-		return Result.success(addDocument);
+		return addDocument;
 	}
 
 	@GetMapping(value = "/getDocumentById")
@@ -123,7 +122,7 @@ public class BrandController {
 		long countAll = clientUtil.countAll(indexName);
 		System.out.println("countAll:" + countAll);
 		Brand document = clientUtil.getDocument(indexName, id, Brand.class);
-		System.out.println(JsonUtil.toJsonString(document));
+		System.out.println(document);
 		return document;
 	}
 

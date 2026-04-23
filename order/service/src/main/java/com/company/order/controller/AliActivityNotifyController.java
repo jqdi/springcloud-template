@@ -5,7 +5,7 @@ import cn.hutool.core.util.URLUtil;
 import com.alipay.api.AlipayApiException;
 import com.alipay.api.internal.util.AlipaySignature;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
-import com.company.common.api.Result;
+
 import com.company.framework.messagedriven.MessageSender;
 import com.company.framework.messagedriven.properties.MessagedrivenProperties;
 import com.company.framework.util.JsonUtil;
@@ -42,10 +42,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -79,7 +76,7 @@ public class AliActivityNotifyController implements AliActivityNotifyFeign {
 	 * </pre>
 	 */
 	@Override
-	public Result<SpiOrderSendNotifyResp> spiOrderSendNotify(@RequestBody Map<String, String> aliParams) {
+	public SpiOrderSendNotifyResp spiOrderSendNotify(@RequestBody Map<String, String> aliParams) {
 		/**
 		 * <pre>
 		 *
@@ -125,7 +122,7 @@ public class AliActivityNotifyController implements AliActivityNotifyFeign {
 				resp.setResponse(response);
 				resp.setSign(sign(response, payConfig.getPrivateKey()));
 
-				return Result.success(resp);
+				return resp;
 			}
 		} catch (AlipayApiException e) {
 			log.error(">>>解析支付宝回调参数异常，直接返回", e);
@@ -140,7 +137,7 @@ public class AliActivityNotifyController implements AliActivityNotifyFeign {
 			resp.setResponse(response);
 			resp.setSign(sign(response, payConfig.getPubKey()));
 
-			return Result.success(resp);
+			return resp;
 		}
 
 		// 回调数据落库
@@ -176,7 +173,7 @@ public class AliActivityNotifyController implements AliActivityNotifyFeign {
 			String responseMsg = Optional.ofNullable(response.getSub_msg()).orElse(response.getMsg());
 			aliActivityNotifyMapper.updateRemarkById(responseMsg, payNotifyId);
 
-			return Result.success(resp);
+			return resp;
 		}
 
 		// MQ异步处理
@@ -206,7 +203,7 @@ public class AliActivityNotifyController implements AliActivityNotifyFeign {
 		String responseMsg = Optional.ofNullable(response.getSub_msg()).orElse(response.getMsg());
 		aliActivityNotifyMapper.updateRemarkById(responseMsg, payNotifyId);
 
-		return Result.success(resp);
+		return resp;
 	}
 
 	/**
@@ -330,7 +327,7 @@ public class AliActivityNotifyController implements AliActivityNotifyFeign {
 	 * </pre>
 	 */
 	@Override
-	public Result<String> fromNotify(@RequestBody Map<String, String> aliParams) {
+	public Map<String, String> fromNotify(@RequestBody Map<String, String> aliParams) {
 		/**
 		 * <pre>
 		{
@@ -366,18 +363,18 @@ public class AliActivityNotifyController implements AliActivityNotifyFeign {
 					AliActivityConstants.CHARSET, AliActivityConstants.SIGNTYPE);
 			if (!signVerified) {
 				aliActivityNotifyMapper.updateRemarkById("验签失败", aliActivityNotify.getId());
-				return Result.success("fail");
+				return Collections.singletonMap("value", "fail");
 			}
 		} catch (AlipayApiException e) {
 			log.error(">>>解析支付宝回调参数异常，直接返回", e);
 			aliActivityNotifyMapper.updateRemarkById(e.getMessage(), aliActivityNotify.getId());
-			return Result.success("fail");
+			return Collections.singletonMap("value", "fail");
 		}
 
 		String msgMethod = aliParams.get("msg_method");
 		FromMessage fromMessage = FromMessageBeanFactory.of(msgMethod);
 		fromMessage.handle(aliActivityNotify.getId(), aliParams);
 
-		return Result.success("success");
+        return Collections.singletonMap("value", "success");
 	}
 }

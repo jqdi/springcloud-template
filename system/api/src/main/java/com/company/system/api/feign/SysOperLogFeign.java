@@ -1,6 +1,6 @@
 package com.company.system.api.feign;
 
-import com.company.common.api.Result;
+
 import com.company.system.api.constant.Constants;
 import com.company.system.api.feign.fallback.ThrowExceptionFallback;
 import com.company.system.api.request.RemoveReq;
@@ -19,21 +19,21 @@ import java.util.List;
 public interface SysOperLogFeign {
 
 	@GetMapping("/page")
-	Result<PageResp<SysOperLogResp>> page(@RequestParam(value = "current") Long current, @RequestParam(value = "size") Long size, @RequestParam(value = "sysUserId", required = false) Integer sysUserId, @RequestParam(value = "title", required = false) String title, @RequestParam(value = "businessType", required = false) Integer businessType, @RequestParam(value = "method", required = false) String method, @RequestParam(value = "requestMethod", required = false) String requestMethod, @RequestParam(value = "operUrl", required = false) String operUrl, @RequestParam(value = "operIp", required = false) String operIp, @RequestParam(value = "operLocation", required = false) String operLocation, @RequestParam(value = "operParam", required = false) String operParam, @RequestParam(value = "jsonResult", required = false) String jsonResult, @RequestParam(value = "status", required = false) Integer status, @RequestParam(value = "errorMsg", required = false) String errorMsg, @RequestParam(value = "costTime", required = false) Integer costTime, @RequestParam(value = "operTimeStart", required = false) String operTimeStart, @RequestParam(value = "operTimeEnd", required = false) String operTimeEnd, @RequestParam(value = "createTimeStart", required = false) String createTimeStart, @RequestParam(value = "createTimeEnd", required = false) String createTimeEnd, @RequestParam(value = "updateTimeStart", required = false) String updateTimeStart, @RequestParam(value = "updateTimeEnd", required = false) String updateTimeEnd);
+	PageResp<SysOperLogResp> page(@RequestParam(value = "current") Long current, @RequestParam(value = "size") Long size, @RequestParam(value = "sysUserId", required = false) Integer sysUserId, @RequestParam(value = "title", required = false) String title, @RequestParam(value = "businessType", required = false) Integer businessType, @RequestParam(value = "method", required = false) String method, @RequestParam(value = "requestMethod", required = false) String requestMethod, @RequestParam(value = "operUrl", required = false) String operUrl, @RequestParam(value = "operIp", required = false) String operIp, @RequestParam(value = "operLocation", required = false) String operLocation, @RequestParam(value = "operParam", required = false) String operParam, @RequestParam(value = "jsonResult", required = false) String jsonResult, @RequestParam(value = "status", required = false) Integer status, @RequestParam(value = "errorMsg", required = false) String errorMsg, @RequestParam(value = "costTime", required = false) Integer costTime, @RequestParam(value = "operTimeStart", required = false) String operTimeStart, @RequestParam(value = "operTimeEnd", required = false) String operTimeEnd, @RequestParam(value = "createTimeStart", required = false) String createTimeStart, @RequestParam(value = "createTimeEnd", required = false) String createTimeEnd, @RequestParam(value = "updateTimeStart", required = false) String updateTimeStart, @RequestParam(value = "updateTimeEnd", required = false) String updateTimeEnd);
 
 	@GetMapping("/list")
-	Result<List<SysOperLogResp>> list(@RequestParam(value = "sysUserId", required = false) Integer sysUserId, @RequestParam(value = "title", required = false) String title, @RequestParam(value = "businessType", required = false) Integer businessType, @RequestParam(value = "method", required = false) String method, @RequestParam(value = "requestMethod", required = false) String requestMethod, @RequestParam(value = "operUrl", required = false) String operUrl, @RequestParam(value = "operIp", required = false) String operIp, @RequestParam(value = "operLocation", required = false) String operLocation, @RequestParam(value = "operParam", required = false) String operParam, @RequestParam(value = "jsonResult", required = false) String jsonResult, @RequestParam(value = "status", required = false) Integer status, @RequestParam(value = "errorMsg", required = false) String errorMsg, @RequestParam(value = "costTime", required = false) Integer costTime, @RequestParam(value = "operTimeStart", required = false) String operTimeStart, @RequestParam(value = "operTimeEnd", required = false) String operTimeEnd, @RequestParam(value = "createTimeStart", required = false) String createTimeStart, @RequestParam(value = "createTimeEnd", required = false) String createTimeEnd, @RequestParam(value = "updateTimeStart", required = false) String updateTimeStart, @RequestParam(value = "updateTimeEnd", required = false) String updateTimeEnd);
+	List<SysOperLogResp> list(@RequestParam(value = "sysUserId", required = false) Integer sysUserId, @RequestParam(value = "title", required = false) String title, @RequestParam(value = "businessType", required = false) Integer businessType, @RequestParam(value = "method", required = false) String method, @RequestParam(value = "requestMethod", required = false) String requestMethod, @RequestParam(value = "operUrl", required = false) String operUrl, @RequestParam(value = "operIp", required = false) String operIp, @RequestParam(value = "operLocation", required = false) String operLocation, @RequestParam(value = "operParam", required = false) String operParam, @RequestParam(value = "jsonResult", required = false) String jsonResult, @RequestParam(value = "status", required = false) Integer status, @RequestParam(value = "errorMsg", required = false) String errorMsg, @RequestParam(value = "costTime", required = false) Integer costTime, @RequestParam(value = "operTimeStart", required = false) String operTimeStart, @RequestParam(value = "operTimeEnd", required = false) String operTimeEnd, @RequestParam(value = "createTimeStart", required = false) String createTimeStart, @RequestParam(value = "createTimeEnd", required = false) String createTimeEnd, @RequestParam(value = "updateTimeStart", required = false) String updateTimeStart, @RequestParam(value = "updateTimeEnd", required = false) String updateTimeEnd);
 
 	@GetMapping("/query")
-	Result<SysOperLogResp> query(@RequestParam("id") Integer id);
+	SysOperLogResp query(@RequestParam("id") Integer id);
 
 	@PostMapping("/save")
-	Result<Boolean> save(@RequestBody SysOperLogReq sysOperLogReq);
+	Boolean save(@RequestBody SysOperLogReq sysOperLogReq);
 
 	@PostMapping("/update")
-	Result<Boolean> update(@RequestBody SysOperLogReq sysOperLogReq);
+	Boolean update(@RequestBody SysOperLogReq sysOperLogReq);
 
 	@PostMapping("/remove")
-	Result<Boolean> remove(@RequestBody RemoveReq<Integer> req);
+	Boolean remove(@RequestBody RemoveReq<Integer> req);
 
 }

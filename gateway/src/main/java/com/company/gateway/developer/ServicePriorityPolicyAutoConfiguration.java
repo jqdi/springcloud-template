@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Configuration;
 
 import java.util.List;
 
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @ConditionalOnProperty(name = "developer.enabled", havingValue = "true")
 public class ServicePriorityPolicyAutoConfiguration {
 

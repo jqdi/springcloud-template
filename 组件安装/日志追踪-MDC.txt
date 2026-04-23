@@ -1,2 +1,0 @@
-利用transmittable-thread-local解决ForkJoinPool日志ID传递问题
-启动参数加上：-javaagent:path/to/transmittable-thread-local-2.14.5.jar

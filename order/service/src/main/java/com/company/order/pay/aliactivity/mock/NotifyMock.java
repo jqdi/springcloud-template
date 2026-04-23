@@ -64,7 +64,7 @@ public class NotifyMock {
 
 		@SuppressWarnings("unchecked")
 		Map<String, String> aliParams = JsonUtil.toEntity(jsonString, Map.class);
-		System.out.println("aliParams:" + JsonUtil.toJsonString(aliParams));
+		System.out.println("aliParams:" + aliParams);
 
 		AliActivityPayProperties.PayConfig payConfig = config;
 		try {

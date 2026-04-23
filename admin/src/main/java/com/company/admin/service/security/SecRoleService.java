@@ -90,7 +90,7 @@ public class SecRoleService {
         return XSPageModel.build(secRoleDao.list(secRole), secRoleDao.count(secRole));
     }
 
-    public List<?> treeResource(SecRole secRole, SecStaff secStaff) {
+    public List<SecResource> treeResource(SecRole secRole, SecStaff secStaff) {
         SecRole existent = get(secRole);
         SecResource criteria = new SecResource();
         criteria.setDefaultSort("seq", "DESC");

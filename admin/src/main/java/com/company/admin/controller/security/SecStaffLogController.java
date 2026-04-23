@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.company.common.api.Result;
+
 import com.company.admin.entity.security.SecStaffLog;
 import com.company.admin.service.security.SecStaffLogService;
 
@@ -31,7 +31,7 @@ public class SecStaffLogController {
 
     @RequestMapping(value = "/admin/security/secStaffLog/get", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> adminGet(SecStaffLog secStaffLog) {
-        return Result.success(secStaffLogService.get(secStaffLog));
+    public SecStaffLog adminGet(SecStaffLog secStaffLog) {
+        return secStaffLogService.get(secStaffLog);
     }
 }

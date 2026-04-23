@@ -33,13 +33,13 @@ public class GroupMealRedPacketCondition implements UseCondition {
 
 		boolean canSee = "groupmeal".equals(business);
 		if (!canSee) {
-			log.info("{}条件不满足,当前不是外卖团餐下单:{}", seeParam.getUserCouponId(), JsonUtil.toJsonString(runtimeAttach));
+			log.info("{}条件不满足,当前不是外卖团餐下单:{}", seeParam.getUserCouponId(), runtimeAttach);
 			return false;
 		}
 
 		canSee = "redpacket".equals(couponType);
 		if (!canSee) {
-			log.info("{}条件不满足,当前不是外卖团餐红包:{}", seeParam.getUserCouponId(), JsonUtil.toJsonString(runtimeAttach));
+			log.info("{}条件不满足,当前不是外卖团餐红包:{}", seeParam.getUserCouponId(), runtimeAttach);
 			return false;
 		}
 		return true;
@@ -51,14 +51,14 @@ public class GroupMealRedPacketCondition implements UseCondition {
 		String business = runtimeAttach.get("business");
 		boolean canUse = "groupmeal".equals(business);
 		if (!canUse) {
-			log.info("{}条件不满足,当前不是外卖团餐下单:{}", useParam.getUserCouponId(), JsonUtil.toJsonString(runtimeAttach));
+			log.info("{}条件不满足,当前不是外卖团餐下单:{}", useParam.getUserCouponId(), runtimeAttach);
 			return MatchResult.builder().canUse(false).reason("仅限外卖团餐可用").build();
 		}
 
 		String couponType = runtimeAttach.get("couponType");
 		canUse = "redpacket".equals(couponType);
 		if (!canUse) {
-			log.info("{}条件不满足,当前不是外卖团餐红包:{}", useParam.getUserCouponId(), JsonUtil.toJsonString(runtimeAttach));
+			log.info("{}条件不满足,当前不是外卖团餐红包:{}", useParam.getUserCouponId(), runtimeAttach);
 			return MatchResult.builder().canUse(false).reason("仅限外卖团餐红包可用").build();
 		}
 		return MatchResult.builder().canUse(true).build();

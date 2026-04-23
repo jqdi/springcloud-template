@@ -29,7 +29,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.company.admin.service.user.CreditLogService;
 import com.company.admin.annotation.Pagination;
-import com.company.common.api.Result;
+
 import com.company.admin.entity.user.CreditLog;
 
 /**
@@ -74,9 +74,9 @@ public class UserController {
 
     @RequestMapping(value = "/admin/user/save", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> save(@Validated(User.MobileUser.class) User user) {
+    public Void save(@Validated(User.MobileUser.class) User user) {
         userService.save(user);
-        return Result.success();
+        return null;
     }
 
     @RequestMapping(value = "/admin/user/get", method = RequestMethod.GET)
@@ -112,9 +112,9 @@ public class UserController {
 
     @RequestMapping(value = "/admin/user/remove", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> remove(User user) {
+    public Void remove(User user) {
         userService.remove(user);
-        return Result.success();
+        return null;
     }
 
     @RequestMapping(value = "/admin/user/update/get", method = RequestMethod.GET)
@@ -125,9 +125,9 @@ public class UserController {
 
     @RequestMapping(value = "/admin/user/update", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> update(@Validated(User.MobileUser.class) User user) {
+    public Void update(@Validated(User.MobileUser.class) User user) {
         userService.update(user);
-        return Result.success();
+        return null;
     }
 
     @RequestMapping(value = "/admin/user/wallet", method = RequestMethod.GET)
@@ -140,10 +140,10 @@ public class UserController {
 
     @RequestMapping(value = "/admin/user/wallet/update", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> updatUserWallet(@Validated(User.UpdateWallet.class) User user, Model model) {
+    public Void updatUserWallet(@Validated(User.UpdateWallet.class) User user, Model model) {
         walletService.update(user.getId(), user.getChangeFee(), user.getPlatform(), 1, null);
         model.addAttribute("user", userService.get(user));
-        return Result.success();
+        return null;
     }
 
     @RequestMapping(value = "/admin/user/vip", method = RequestMethod.GET)
@@ -156,10 +156,10 @@ public class UserController {
 
     @RequestMapping(value = "/admin/user/vip/update", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> updateUserVip(@Validated(User.UpdateVip.class) User user, Model model) {
+    public Void updateUserVip(@Validated(User.UpdateVip.class) User user, Model model) {
         vipService.update(user.getId(), user.getChangeDuration());
         model.addAttribute("user", userService.get(user));
-        return Result.success();
+        return null;
     }
 
     @RequestMapping(value = "/admin/user/invite", method = RequestMethod.GET)
@@ -192,7 +192,7 @@ public class UserController {
      */
     @RequestMapping(value = "/admin/user/export", method = RequestMethod.GET)
     @ResponseBody
-    public Result<?> export(User user, HttpServletResponse response) throws Exception {
+    public Void export(User user, HttpServletResponse response) throws Exception {
         SimpleDateFormat sdf = new SimpleDateFormat("y年M月d日");
         String dateStr = sdf.format(new Date()) + "用户导出.xlsx";
         String filelName = new String(dateStr.getBytes("UTF-8"), "iso-8859-1");
@@ -214,6 +214,6 @@ public class UserController {
             e.printStackTrace();
         }
 
-        return Result.success();
+        return null;
     }
 }

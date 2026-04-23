@@ -2,7 +2,7 @@ package com.company.order.controller;
 
 import cn.hutool.core.date.LocalDateTimeUtil;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
-import com.company.common.api.Result;
+
 import com.company.framework.globalresponse.ExceptionUtil;
 import com.company.framework.lock.LockClient;
 import com.company.framework.lock.annotation.Lock;
@@ -25,6 +25,7 @@ import com.company.order.service.OrderPayRefundService;
 import com.company.order.service.OrderPayService;
 import com.company.tool.api.feign.RetryerFeign;
 import com.company.tool.api.request.RetryerInfoReq;
+import com.company.tool.api.response.RetryerResp;
 import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -75,7 +76,7 @@ public class PayController implements PayFeign {
 
     @Lock("'lock:orderpay:ordercode:'+#payReq.orderCode")
 	@Override
-	public Result<PayResp> unifiedorder(@RequestBody @Valid PayReq payReq) {
+	public PayResp unifiedorder(@RequestBody @Valid PayReq payReq) {
 		String orderCode = payReq.getOrderCode();
         OrderPay orderPay = orderPayService.selectByOrderCode(orderCode);
         if (orderPay == null) {
@@ -130,7 +131,7 @@ public class PayController implements PayFeign {
 
         payResult(orderCode);// 主动查询支付结果
 
-		return Result.success(payResp);
+		return payResp;
 	}
 
 	/**
@@ -165,17 +166,17 @@ public class PayController implements PayFeign {
 	 * @return
 	 */
 	@PostMapping("/timeoutWithRetry")
-	public Result<Boolean> timeoutWithRetry(@RequestBody @Valid PayTimeoutReq payTimeoutReq) {
+	public RetryerResp timeoutWithRetry(@RequestBody @Valid PayTimeoutReq payTimeoutReq) {
 		String orderCode = payTimeoutReq.getOrderCode();
 
 		OrderPay orderPay = orderPayService.selectByOrderCode(orderCode);
 		if (orderPay == null) {
-			return Result.fail("数据不存在");
+            return RetryerResp.goon("数据不存在");
 		}
 		OrderPayEnum.Status status = OrderPayEnum.Status.of(orderPay.getStatus());
 		if (status != OrderPayEnum.Status.WAITPAY) {
 			// 订单不是未支付状态，不允许关闭
-			return Result.success();
+			return RetryerResp.end();
 		}
 
 		PayClient payClient = PayFactory.of(OrderPayEnum.Method.of(orderPay.getMethod()));
@@ -183,7 +184,7 @@ public class PayController implements PayFeign {
 		if (payOrderQuery.getResult()) {
 			if (payOrderQuery.getPaySuccess()) {
 				// 订单已支付
-				return Result.success();
+                return RetryerResp.end();
 			}
 			// 出结果是未支付成功，走关闭逻辑
 		} else {
@@ -191,9 +192,9 @@ public class PayController implements PayFeign {
 		}
 
 		PayCloseResp payCloseResp = payClient.payClose(orderCode);
-		log.info("关闭订单结果:{}", JsonUtil.toJsonString(payCloseResp));
+		log.info("关闭订单结果:{}", payCloseResp);
 		if (!payCloseResp.getSuccess()) {
-			return Result.fail(payCloseResp.getMessage());
+            return RetryerResp.goon(payCloseResp.getMessage());
 		}
 
 		// 修改状态为已关闭
@@ -207,13 +208,13 @@ public class PayController implements PayFeign {
 		boolean affect = orderPayService.update(orderPay4Update, wrapper);
 		if (!affect) {// 更新不成功，说明订单不是处理中状态
 			log.info("update订单不是处理中状态，不操作关闭:{}", orderCode);
-			return Result.success();
+            return RetryerResp.end();
 		}
 
 		String notifyUrl = orderPay.getNotifyUrl();
 		if (StringUtils.isBlank(notifyUrl)) {
 			log.info("无回调URL");
-			return Result.success();
+            return RetryerResp.end();
 		}
 
 		// 回调超时未支付关闭订单到对应业务中
@@ -223,11 +224,11 @@ public class PayController implements PayFeign {
 		payNotifyReq.setTime(time);
 		payNotifyReq.setAttach(orderPay.getNotifyAttach());
 
-		log.info("超时未支付关闭订单回调,请求地址:{},参数:{}", notifyUrl, JsonUtil.toJsonString(payNotifyReq));
+		log.info("超时未支付关闭订单回调,请求地址:{},参数:{}", notifyUrl, payNotifyReq);
 		RetryerInfoReq retryerInfoReq = RetryerInfoReq.builder().feignUrl(notifyUrl).jsonParams(payNotifyReq).build();
 		retryerFeign.call(retryerInfoReq);
 
-		return Result.success();
+        return RetryerResp.end();
 	}
 
 	/**
@@ -255,27 +256,27 @@ public class PayController implements PayFeign {
 	 * @return
 	 */
 	@PostMapping("/pollingPayResult")
-	public Result<Boolean> pollingPayResult(@RequestBody @Valid PayResultReq payResultReq) {
+	public RetryerResp pollingPayResult(@RequestBody @Valid PayResultReq payResultReq) {
 		String orderCode = payResultReq.getOrderCode();
 
 		OrderPay orderPay = orderPayService.selectByOrderCode(orderCode);
 		if (orderPay == null) {
-			return Result.fail("数据不存在");
+            return RetryerResp.goon("数据不存在");
 		}
 		OrderPayEnum.Status status = OrderPayEnum.Status.of(orderPay.getStatus());
 		if (status != OrderPayEnum.Status.WAITPAY) {
 			// 订单不是未支付状态，结束查询
-			return Result.success(null, "订单不是未支付状态，结束查询");
+            return RetryerResp.end("订单不是未支付状态，结束查询");
 		}
 
 		PayClient payClient = PayFactory.of(OrderPayEnum.Method.of(orderPay.getMethod()));
 		PayOrderQueryResp payOrderQuery = payClient.orderQuery(orderCode);
 		if (!payOrderQuery.getResult()) {
-			return Result.fail(payOrderQuery.getMessage());
+			ExceptionUtil.throwException(payOrderQuery.getMessage());
 		}
 		if (!payOrderQuery.getPaySuccess()) {
 			// 有结果但不是支付成功，结束查询
-			return Result.success(null, "有结果但不是支付成功，结束查询");
+            return RetryerResp.end("有结果但不是支付成功，结束查询");
 		}
 
 		// MQ异步处理
@@ -294,20 +295,20 @@ public class PayController implements PayFeign {
 		messageSender.sendNormalMessage(StrategyConstants.PAY_NOTIFY_STRATEGY, params, messagedrivenProperties.getExchange().getDirect(),
 				Constants.QUEUE.PAY_NOTIFY.KEY);
 
-		return Result.success(null, "支付成功");
+		return RetryerResp.end("支付成功");
 	}
 
 	@Override
-	public Result<Void> payClose(@RequestBody @Valid PayCloseReq payCloseReq) {
+	public Void payClose(@RequestBody @Valid PayCloseReq payCloseReq) {
 		String orderCode = payCloseReq.getOrderCode();
 		OrderPay orderPay = orderPayService.selectByOrderCode(orderCode);
 		if (orderPay == null) {
-			return Result.fail("数据不存在");
+			ExceptionUtil.throwException("数据不存在");
 		}
 		OrderPayEnum.Status status = OrderPayEnum.Status.of(orderPay.getStatus());
 		if (status != OrderPayEnum.Status.WAITPAY) {
 			// 订单不是未支付状态，不允许关闭
-			return Result.fail("订单不是待支付状态，不允许关闭");
+			ExceptionUtil.throwException("订单不是待支付状态，不允许关闭");
 		}
 
 		// 修改状态为已关闭
@@ -319,7 +320,7 @@ public class PayController implements PayFeign {
 		boolean affect = orderPayService.update(orderPay4Update, wrapper);
 		if (!affect) {// 更新不成功，说明订单不是处理中状态
 			log.info("update订单不是处理中状态，不操作关闭:{}", orderCode);
-			return Result.success();
+			return null;
 		}
 
 		Map<String, Object> params = new HashMap<>();
@@ -337,19 +338,19 @@ public class PayController implements PayFeign {
 		messageSender.sendDelayMessage(StrategyConstants.PAY_CLOSE_STRATEGY, params, messagedrivenProperties.getExchange().getXdelayed(),
 				messagedrivenProperties.getQueue().getXdelayed().getKey(), delay);
 
-		return Result.success();
+		return null;
 	}
 
 	@Override
-	public Result<PayResp> toPay(@RequestBody ToPayReq toPayReq) {
+	public PayResp toPay(@RequestBody ToPayReq toPayReq) {
 		String orderCode = toPayReq.getOrderCode();
 		OrderPay orderPay = orderPayService.selectByOrderCode(orderCode);
 		if (orderPay == null) {
-			return Result.fail("数据不存在");
+			ExceptionUtil.throwException("数据不存在");
 		}
 
 		if (OrderPayEnum.Status.of(orderPay.getStatus()) != OrderPayEnum.Status.WAITPAY) {
-			return Result.fail("订单不是待支付状态，不允许支付");
+			ExceptionUtil.throwException("订单不是待支付状态，不允许支付");
 		}
 
 		OrderPayEnum.Method method = toPayReq.getMethod();
@@ -375,23 +376,23 @@ public class PayController implements PayFeign {
 		PayClient tradeClient = PayFactory.of(method);
 		PayResp payResp = tradeClient.pay(payParams);
 		if (!payResp.getSuccess()) {
-			return Result.fail(payResp.getMessage());
+			ExceptionUtil.throwException(payResp.getMessage());
 		}
 
-		return Result.success(payResp);
+		return payResp;
 	}
 
 	@Override
-	public Result<Void> refund(@RequestBody @Valid PayRefundReq payRefundReq) {
+	public Void refund(@RequestBody @Valid PayRefundReq payRefundReq) {
 		String outTradeNo = payRefundReq.getOrderCode();
 		OrderPay orderPay = orderPayService.selectByOrderCode(outTradeNo);
 		if (orderPay == null) {
-			return Result.fail("订单不存在");
+			ExceptionUtil.throwException("订单不存在");
 		}
 
 		if (OrderPayEnum.Status.of(orderPay.getStatus()) != OrderPayEnum.Status.PAYED) {
 			// 原订单不是已支付状态，不允许退款
-			return Result.fail("订单不是完成状态，不允许退款");
+			ExceptionUtil.throwException("订单不是完成状态，不允许退款");
 		}
 
 		String refundOrderCode = payRefundReq.getRefundOrderCode();
@@ -436,7 +437,7 @@ public class PayController implements PayFeign {
 		});
 
 		if (message != null) {
-			return Result.fail(message);
+			ExceptionUtil.throwException(message);
 		}
 
 		// 异步处理 ========> 逻辑上等同于直接调用 refundWithRetry
@@ -447,7 +448,7 @@ public class PayController implements PayFeign {
 				.build();
 		retryerFeign.call(retryerInfoReq);
 
-		return Result.success();
+		return null;
 	}
 
 	/**
@@ -457,10 +458,10 @@ public class PayController implements PayFeign {
 	 * @return
 	 */
 	@PostMapping("/refundWithRetry")
-	public Result<Void> refundWithRetry(@RequestBody RefundReq refundReq) {
+	public RetryerResp refundWithRetry(@RequestBody RefundReq refundReq) {
 		OrderPayRefund orderPayRefund = orderPayRefundService.selectByRefundOrderCode(refundReq.getRefundOrderCode());
 		if (orderPayRefund == null) {
-			return Result.fail("数据不存在");
+            return RetryerResp.goon("数据不存在");
 		}
 
 		String outTradeNo = orderPayRefund.getOrderCode();
@@ -470,12 +471,12 @@ public class PayController implements PayFeign {
 		PayRefundResp payRefundResp = payClient.refund(outTradeNo, orderPayRefund.getOrderCode(), refundAmount);
 
 		if (!payRefundResp.getSuccess()) {
-			return Result.fail(payRefundResp.getMessage());
+            return RetryerResp.goon(payRefundResp.getMessage());
 		}
 
 		refundResult(refundReq.getRefundOrderCode());// 主动查询退款结果
 
-		return Result.success();
+		return RetryerResp.end();
 	}
 
 	/**
@@ -503,27 +504,27 @@ public class PayController implements PayFeign {
 	 * @return
 	 */
 	@PostMapping("/pollingRefundResult")
-	public Result<Boolean> pollingRefundResult(@RequestBody @Valid RefundResultReq refundResultReq) {
+	public RetryerResp pollingRefundResult(@RequestBody @Valid RefundResultReq refundResultReq) {
 		String refundOrderCode = refundResultReq.getRefundOrderCode();
 
 		OrderPayRefund orderPayRefund = orderPayRefundService.selectByRefundOrderCode(refundOrderCode);
 		if (orderPayRefund == null) {
-			return Result.fail("数据不存在");
+            return RetryerResp.goon("数据不存在");
 		}
 		OrderPayRefundEnum.Status status = OrderPayRefundEnum.Status.of(orderPayRefund.getStatus());
 		if (status != OrderPayRefundEnum.Status.WAIT_APPLY) {
 			// 订单不是未退款状态，结束查询
-			return Result.success(null, "订单不是未退款状态，结束查询");
+            return RetryerResp.end("订单不是未退款状态，结束查询");
 		}
 
 		PayClient payClient = PayFactory.of(OrderPayEnum.Method.of(orderPayRefund.getMethod()));
 		PayRefundQueryResp payRefundQuery = payClient.refundQuery(refundOrderCode);
 		if (!payRefundQuery.getResult()) {
-			return Result.fail(payRefundQuery.getMessage());
+            return RetryerResp.goon(payRefundQuery.getMessage());
 		}
 		if (!payRefundQuery.getRefundSuccess()) {
 			// 有结果但不是退款成功，结束查询
-			return Result.success(null, "有结果但不是退款成功，结束查询");
+            return RetryerResp.end("有结果但不是退款成功，结束查询");
 		}
 
 		// MQ异步处理
@@ -546,7 +547,7 @@ public class PayController implements PayFeign {
 		messageSender.sendNormalMessage(StrategyConstants.REFUND_NOTIFY_STRATEGY, params, messagedrivenProperties.getExchange().getDirect(),
 				messagedrivenProperties.getQueue().getCommon().getKey());
 
-		return Result.success(null, "退款成功");
+        return RetryerResp.end("退款成功");
 	}
 
 }

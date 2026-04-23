@@ -7,7 +7,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 /**
  * 跨域配置
  */
-@Configuration
+@Configuration(proxyBeanMethods = false)
 public class CorsConfigurer implements WebMvcConfigurer {
 
 	@Override

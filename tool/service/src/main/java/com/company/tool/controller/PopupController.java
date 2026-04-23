@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.company.common.api.Result;
+
 import com.company.framework.util.Utils;
 import com.company.framework.context.HeaderContextUtil;
 import com.company.tool.api.feign.PopupFeign;
@@ -37,7 +37,7 @@ public class PopupController implements PopupFeign {
 	private PopupLogService popupLogService;
 
 	@Override
-	public Result<BestPopupResp> bestPopup(@RequestBody BestPopupReq bestPopupReq) {
+	public BestPopupResp bestPopup(@RequestBody BestPopupReq bestPopupReq) {
 		Integer userId = HeaderContextUtil.currentUserIdInt();
 		String deviceid = HeaderContextUtil.deviceid();
 
@@ -48,12 +48,12 @@ public class PopupController implements PopupFeign {
 
 		PopupCanPop popupCanPop = popService.bestPop(userId, deviceid, runtimeAttach);
 		if (popupCanPop == null) {
-			return Result.success();
+			return null;
 		}
 
 		// 转换为前端方便开发的格式
 		BestPopupResp resp = toBestPopupResp(popupCanPop, popupCanPop.getBgImg());
-		return Result.success(resp);
+		return resp;
 	}
 
 
@@ -99,7 +99,7 @@ public class PopupController implements PopupFeign {
 	 * 创建用户弹窗（只弹1次）
 	 */
 	@Override
-	public Result<Void> createUserPopup(@RequestBody CreateUserPopupReq createUserPopupReq) {
+	public Void createUserPopup(@RequestBody CreateUserPopupReq createUserPopupReq) {
 		Integer userId = createUserPopupReq.getUserId();
 		LocalDateTime beginTime = createUserPopupReq.getBeginTime();
 		LocalDateTime endTime = createUserPopupReq.getEndTime();
@@ -125,34 +125,34 @@ public class PopupController implements PopupFeign {
 
 		userPopupService.createUserPopup(userId, beginTime, endTime, priority, title, text, bgImg, closeBtn);
 
-		return Result.success();
+		return null;
 	}
 
 	/**
 	 * 取消用户弹窗（只弹1次）
 	 */
 	@Override
-	public Result<Void> cancelUserPopup(@RequestBody CancelUserPopupReq cancelUserPopupReq) {
+	public Void cancelUserPopup(@RequestBody CancelUserPopupReq cancelUserPopupReq) {
 		Integer userId = cancelUserPopupReq.getUserId();
 		String title = cancelUserPopupReq.getTitle();
 		String remark = cancelUserPopupReq.getRemark();
 
 		userPopupService.cancelUserPopup(userId, title, remark);
 
-		return Result.success();
+		return null;
 	}
 
 	/**
 	 * 前端确认展示了弹窗
 	 */
 	@Override
-	public Result<Void> remarkPopupLog(Integer popupLogId, String remark) {
+	public Void remarkPopupLog(Integer popupLogId, String remark) {
 		PopupLog popupLog = popupLogService.getById(popupLogId);
 		PopupLog popupLog4Update = new PopupLog();
 		popupLog4Update.setId(popupLogId);
 		String newRemark = Utils.rightRemark(popupLog.getRemark(), remark);
 		popupLog4Update.setRemark(newRemark);
 		popupLogService.updateById(popupLog4Update);
-		return Result.success();
+		return null;
 	}
 }

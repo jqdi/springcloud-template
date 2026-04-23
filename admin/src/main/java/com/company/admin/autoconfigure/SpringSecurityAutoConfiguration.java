@@ -7,7 +7,7 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import com.company.admin.springsecurity.JsonRedirectStrategy;
 import com.company.admin.springsecurity.LogSavedRequestAwareAuthenticationSuccessHandler;
 
-@Configuration
+@Configuration(proxyBeanMethods = false)
 public class SpringSecurityAutoConfiguration {
 
 	@Bean

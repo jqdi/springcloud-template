@@ -1,6 +1,6 @@
 package com.company.web.controller;
 
-import com.company.common.api.Result;
+
 import com.company.framework.lock.LockClient;
 import com.company.framework.lock.annotation.Lock;
 import com.company.framework.util.JsonUtil;
@@ -24,27 +24,27 @@ public class LockController {
 
     @Lock("lock:getnoparam")
     @GetMapping(value = "/getnoparam")
-    public Result<Map<String, Object>> getnoparam() {
+    public Map<String, Object> getnoparam() {
         System.out.println("getnoparam");
-        return Result.success();
+        return null;
     }
 
     @Lock("'lock:getnoparam:'+#orderCode")
     @GetMapping(value = "/getparam")
-    public Result<Map<String, Object>> getparam(String orderCode) {
+    public Map<String, Object> getparam(String orderCode) {
         System.out.println("getparam:" + orderCode);
-        return Result.success();
+        return null;
     }
 
     @Lock("'lock:getnoparam:'+#registerOrderReq.orderCode")
     @GetMapping(value = "/postbody")
-    public Result<Map<String, Object>> postbody(@RequestBody RegisterOrderReq registerOrderReq) {
+    public Map<String, Object> postbody(@RequestBody RegisterOrderReq registerOrderReq) {
         System.out.println("postbody:" + JsonUtil.toJsonString(registerOrderReq));
-        return Result.success();
+        return null;
     }
 
     @GetMapping(value = "/lockclient")
-    public Result<Map<String, Object>> lockclient(String orderCode) {
+    public Map<String, Object> lockclient(String orderCode) {
         System.out.println("编程式锁，粒度更细");
         String key = "lock:lockclient:" + orderCode;
         Map<String, Object> result = lockClient.doInLock(key, () -> {
@@ -53,6 +53,6 @@ public class LockController {
             map.put("orderCode", orderCode);
             return map;
         });
-        return Result.success(result);
+        return result;
     }
 }

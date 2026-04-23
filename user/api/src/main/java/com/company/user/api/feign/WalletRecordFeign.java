@@ -1,6 +1,6 @@
 package com.company.user.api.feign;
 
-import com.company.common.api.Result;
+
 import com.company.user.api.constant.Constants;
 import com.company.user.api.feign.fallback.ThrowExceptionFallback;
 import com.company.user.api.response.WalletRecordResp;
@@ -14,5 +14,5 @@ import java.util.List;
 public interface WalletRecordFeign {
 
 	@GetMapping("/pageMain")
-	Result<List<WalletRecordResp>> pageMain(@RequestParam("current") Integer current, @RequestParam("size") Integer size);
+	List<WalletRecordResp> pageMain(@RequestParam("current") Integer current, @RequestParam("size") Integer size);
 }
