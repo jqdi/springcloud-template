@@ -5,7 +5,7 @@ import ${package.Entity}.${entity};
 import org.apache.ibatis.annotations.Mapper;
 
 /**
- * ${table.comment!} Mapper
+ * ${table.comment} Mapper
  * 简单SQL使用 @Select/@Insert/@Update/@Delete 注解，复杂SQL在XML中编写
  *
  * @author ${author}

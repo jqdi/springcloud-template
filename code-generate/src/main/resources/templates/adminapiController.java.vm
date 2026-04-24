@@ -59,34 +59,34 @@ public class ${entity}Controller {
 		return ${entityLower}Feign.query(id);
 	}
 
-	@OperationLog(title = "${table.comment!}保存", businessType = BusinessType.INSERT)
+	@OperationLog(title = "${table.comment}保存", businessType = BusinessType.INSERT)
 	@RequirePermissions("${moduleName}:${entityLower}:save")
 	@PostMapping("/save")
 	public Boolean save(@RequestBody ${entity}Req req) {
 		return ${entityLower}Feign.save(req);
 	}
 
-	@OperationLog(title = "${table.comment!}更新", businessType = BusinessType.UPDATE)
+	@OperationLog(title = "${table.comment}更新", businessType = BusinessType.UPDATE)
 	@RequirePermissions("${moduleName}:${entityLower}:update")
 	@PostMapping("/update")
 	public Boolean update(@RequestBody ${entity}Req req) {
 		return ${entityLower}Feign.update(req);
 	}
 
-	@OperationLog(title = "${table.comment!}删除", businessType = BusinessType.DELETE)
+	@OperationLog(title = "${table.comment}删除", businessType = BusinessType.DELETE)
 	@RequirePermissions("${moduleName}:${entityLower}:remove")
 	@PostMapping("/remove")
 	public Boolean remove(@RequestBody RemoveReq<Integer> req) {
 		return ${entityLower}Feign.remove(req);
 	}
 
-	@OperationLog(title = "${table.comment!}导出", businessType = BusinessType.EXPORT, isSaveResponseData = false)
+	@OperationLog(title = "${table.comment}导出", businessType = BusinessType.EXPORT, isSaveResponseData = false)
 	@RequirePermissions("${moduleName}:${entityLower}:export")
 	@GetMapping("/export")
 	public void export(HttpServletResponse response, $stringFieldParams) {
 		List<${entity}Resp> listResp = ${entityLower}Feign.list($stringFieldNames);
 		List<${entity}Excel> excelList = PropertyUtils.copyArrayProperties(listResp, ${entity}Excel.class);
-		ExcelUtil.write2httpResponse(response, "${table.comment!}", ${entity}Excel.class, excelList);
+		ExcelUtil.write2httpResponse(response, "${table.comment}", ${entity}Excel.class, excelList);
 	}
 
 }

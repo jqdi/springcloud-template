@@ -1,6 +1,5 @@
 package ${package.Service};
 
-import com.baomidou.mybatisplus.extension.service.IService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import ${package.Entity}.${entity};
 import ${package.Mapper}.${table.mapperName};
@@ -8,13 +7,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 /**
- * ${table.comment!} Service
+ * ${table.comment} Service
  *
  * @author ${author}
  * @date ${date}
  */
 @Service
 @RequiredArgsConstructor
-public class ${entity}Service extends ServiceImpl<${table.mapperName}, ${entity}> implements IService<${entity}> {
+public class ${entity}Service extends ServiceImpl<${table.mapperName}, ${entity}> {
 
 }

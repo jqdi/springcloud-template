@@ -63,7 +63,7 @@ code:
       - gen_
       - t_
     module-options: adminapi,admin,system,order,user,tool
-    output-base-path: ../
+    output-base-path: D:/resource/
     database:
       url: jdbc:mysql://localhost:3306/template?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
       username: root

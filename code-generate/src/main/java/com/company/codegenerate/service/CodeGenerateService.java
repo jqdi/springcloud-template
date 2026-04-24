@@ -1,5 +1,6 @@
 package com.company.codegenerate.service;
 
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.baomidou.mybatisplus.generator.FastAutoGenerator;
 import com.baomidou.mybatisplus.generator.config.OutputFile;
 import com.baomidou.mybatisplus.generator.config.TemplateType;
@@ -72,7 +73,7 @@ public class CodeGenerateService {
 
         Map<String, Object> customMap = buildCustomMap(moduleName, entityName, isSplit);
 
-        List<CustomFile> customFiles = buildCustomFiles(moduleName, entityName, apiJavaPath, adminapiJavaPath, overwrite);
+        List<CustomFile> customFiles = buildCustomFiles(moduleName, entityName, serviceJavaPath, apiJavaPath, adminapiJavaPath, overwrite);
 
         final String entityNameFinal = entityName;
 
@@ -96,7 +97,8 @@ public class CodeGenerateService {
                         .mapper("/templates/mapper.java")
                         .service("/templates/service.java")
                         .controller("/templates/controller.java")
-                        .disable(TemplateType.SERVICE_IMPL))
+                        .disable(TemplateType.SERVICE_IMPL)
+                        .disable(TemplateType.ENTITY))
                 .strategyConfig(builder -> builder
                         .addInclude(tableName)
                         .addTablePrefix(properties.getTablePrefixes().toArray(new String[0]))
@@ -106,6 +108,7 @@ public class CodeGenerateService {
                         .enableBaseResultMap()
                         .enableBaseColumnList()
                         .serviceBuilder()
+                        .superServiceClass(ServiceImpl.class)
                         .formatServiceFileName("%sService")
                         .controllerBuilder()
                         .enableRestStyle())
@@ -120,8 +123,16 @@ public class CodeGenerateService {
     }
 
     private List<CustomFile> buildCustomFiles(String moduleName, String entityName,
-                                              String apiJavaPath, String adminapiJavaPath, boolean overwrite) {
+                                              String serviceJavaPath, String apiJavaPath, String adminapiJavaPath, boolean overwrite) {
         List<CustomFile> files = new ArrayList<>();
+
+        // entity
+        CustomFile.Builder entityBuilder = new CustomFile.Builder()
+                .fileName(entityName + ".java")
+                .filePath(serviceJavaPath + "/com/company/" + moduleName + "/entity/")
+                .templatePath("/templates/entity.java.vm");
+        if (overwrite) entityBuilder.enableFileOverride();
+        files.add(entityBuilder.build());
 
         // feign
         CustomFile.Builder feignBuilder = new CustomFile.Builder()
