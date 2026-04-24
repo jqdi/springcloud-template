@@ -1,0 +1,22 @@
+package com.company.adminapi.excel;
+
+import com.alibaba.excel.annotation.ExcelProperty;
+import com.company.adminapi.easyexcel.converter.SysUserConverter;
+import lombok.Data;
+
+import java.time.LocalDateTime;
+
+@Data
+public class ${entity}Excel {
+
+#foreach($field in ${table.fields})
+#if(${field.name} == 'create_by' || ${field.name} == 'update_by')
+	@ExcelProperty(value = "${field.comment}", converter = SysUserConverter.class)
+	private ${field.propertyType} ${field.propertyName};
+#else
+	@ExcelProperty(value = "${field.comment}")
+	private ${field.propertyType} ${field.propertyName};
+#end
+
+#end
+}

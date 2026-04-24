@@ -1,0 +1,17 @@
+package ${respPkg};
+
+import lombok.Data;
+
+import java.time.LocalDateTime;
+
+@Data
+public class ${entity}Resp {
+
+#foreach($field in ${table.fields})
+	/**
+	 * ${field.comment}
+	 */
+	private ${field.propertyType} ${field.propertyName};
+
+#end
+}

@@ -1,0 +1,82 @@
+package ${package.Controller};
+
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.PageDTO;
+import com.company.${moduleName}.api.feign.${entity}Feign;
+import com.company.${moduleName}.api.request.${entity}Req;
+import com.company.${moduleName}.api.response.${entity}Resp;
+import com.company.common.request.RemoveReq;
+import com.company.common.response.PageResp;
+import com.company.framework.util.PropertyUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("${feignPath}")
+public class ${entity}Controller implements ${entity}Feign {
+
+	@Autowired
+	private ${entity}Service ${entityLower}Service;
+
+#set($stringFieldNames = [])
+#foreach($field in ${table.fields})
+#if(${field.propertyType} == 'String' && ${field.name} != 'create_by' && ${field.name} != 'update_by')
+#set($void = $stringFieldNames.add($field.propertyName))
+#end
+#end
+	private QueryWrapper<${entity}> toQueryWrapper($stringFieldNames) {
+		QueryWrapper<${entity}> queryWrapper = new QueryWrapper<>();#foreach($name in $stringFieldNames)
+		if (StringUtils.isNotBlank(${name})) {
+			queryWrapper.like("${name.replaceAll('([A-Z])', '_$0').toLowerCase()}", ${name});
+		}#end
+		return queryWrapper;
+	}
+
+	@Override
+	public PageResp<${entity}Resp> page(Long current, Long size, $stringFieldNames) {
+		QueryWrapper<${entity}> queryWrapper = toQueryWrapper($stringFieldNames);
+		PageDTO page = PageDTO.of(current, size);
+		List<${entity}> list = ${entityLower}Service.list(page, queryWrapper);
+		List<${entity}Resp> respList = PropertyUtils.copyArrayProperties(list, ${entity}Resp.class);
+		return PageResp.of(page.getTotal(), respList);
+	}
+
+	@Override
+	public List<${entity}Resp> list($stringFieldNames) {
+		QueryWrapper<${entity}> queryWrapper = toQueryWrapper($stringFieldNames);
+		List<${entity}> list = ${entityLower}Service.list(queryWrapper);
+		List<${entity}Resp> respList = PropertyUtils.copyArrayProperties(list, ${entity}Resp.class);
+		return respList;
+	}
+
+	@Override
+	public ${entity}Resp query(Integer id) {
+		${entity} entity = ${entityLower}Service.getById(id);
+		return PropertyUtils.copyProperties(entity, ${entity}Resp.class);
+	}
+
+	@Override
+	public Boolean save(@RequestBody ${entity}Req req) {
+		${entity} entity = PropertyUtils.copyProperties(req, ${entity}.class);
+		return ${entityLower}Service.save(entity);
+	}
+
+	@Override
+	public Boolean update(@RequestBody ${entity}Req req) {
+		${entity} entity = PropertyUtils.copyProperties(req, ${entity}.class);
+		return ${entityLower}Service.updateById(entity);
+	}
+
+	@Override
+	public Boolean remove(@RequestBody RemoveReq<Integer> req) {
+		if (req.getIdList() == null || req.getIdList().isEmpty()) {
+			return true;
+		}
+		return ${entityLower}Service.removeBatchByIds(req.getIdList());
+	}
+}

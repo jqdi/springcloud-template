@@ -1,0 +1,92 @@
+package com.company.adminapi.controller;
+
+import com.company.adminapi.annotation.OperationLog;
+import com.company.adminapi.annotation.RequirePermissions;
+import com.company.adminapi.easyexcel.ExcelUtil;
+import com.company.adminapi.enums.OperationLogEnum.BusinessType;
+import com.company.adminapi.excel.${entity}Excel;
+import com.company.${moduleName}.api.feign.${entity}Feign;
+import com.company.${moduleName}.api.request.${entity}Req;
+import com.company.${moduleName}.api.response.${entity}Resp;
+import com.company.common.request.RemoveReq;
+import com.company.common.response.PageResp;
+import com.company.framework.util.PropertyUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+import java.util.List;
+
+@Validated
+@RestController
+@RequestMapping("${feignPath}")
+public class ${entity}Controller {
+
+	@Autowired
+	private ${entity}Feign ${entityLower}Feign;
+
+#set($stringFieldNames = [])
+#set($stringFieldParams = [])
+#foreach($field in ${table.fields})
+#if(${field.propertyType} == 'String' && ${field.name} != 'create_by' && ${field.name} != 'update_by')
+#set($void = $stringFieldNames.add($field.propertyName))
+#set($void = $stringFieldParams.add($field.propertyType + ' ' + $field.propertyName))
+#end
+#end
+
+	@RequirePermissions("${moduleName}:${entityLower}:query")
+	@GetMapping("/page")
+	public PageResp<${entity}Resp> page(@NotNull @Min(1) Long current, @NotNull Long size, $stringFieldParams) {
+		return ${entityLower}Feign.page(current, size, $stringFieldNames);
+	}
+
+	@RequirePermissions("${moduleName}:${entityLower}:query")
+	@GetMapping("/list")
+	public List<${entity}Resp> list($stringFieldParams) {
+		return ${entityLower}Feign.list($stringFieldNames);
+	}
+
+	@RequirePermissions("${moduleName}:${entityLower}:query")
+	@GetMapping("/query")
+	public ${entity}Resp query(@NotNull Integer id) {
+		return ${entityLower}Feign.query(id);
+	}
+
+	@OperationLog(title = "${table.comment!}保存", businessType = BusinessType.INSERT)
+	@RequirePermissions("${moduleName}:${entityLower}:save")
+	@PostMapping("/save")
+	public Boolean save(@RequestBody ${entity}Req req) {
+		return ${entityLower}Feign.save(req);
+	}
+
+	@OperationLog(title = "${table.comment!}更新", businessType = BusinessType.UPDATE)
+	@RequirePermissions("${moduleName}:${entityLower}:update")
+	@PostMapping("/update")
+	public Boolean update(@RequestBody ${entity}Req req) {
+		return ${entityLower}Feign.update(req);
+	}
+
+	@OperationLog(title = "${table.comment!}删除", businessType = BusinessType.DELETE)
+	@RequirePermissions("${moduleName}:${entityLower}:remove")
+	@PostMapping("/remove")
+	public Boolean remove(@RequestBody RemoveReq<Integer> req) {
+		return ${entityLower}Feign.remove(req);
+	}
+
+	@OperationLog(title = "${table.comment!}导出", businessType = BusinessType.EXPORT, isSaveResponseData = false)
+	@RequirePermissions("${moduleName}:${entityLower}:export")
+	@GetMapping("/export")
+	public void export(HttpServletResponse response, $stringFieldParams) {
+		List<${entity}Resp> listResp = ${entityLower}Feign.list($stringFieldNames);
+		List<${entity}Excel> excelList = PropertyUtils.copyArrayProperties(listResp, ${entity}Excel.class);
+		ExcelUtil.write2httpResponse(response, "${table.comment!}", ${entity}Excel.class, excelList);
+	}
+
+}

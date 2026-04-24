@@ -1,0 +1,17 @@
+package ${reqPkg};
+
+import lombok.Data;
+
+@Data
+public class ${entity}Req {
+
+#foreach($field in ${table.fields})
+#if(${field.name} != 'create_time' && ${field.name} != 'create_by' && ${field.name} != 'update_time' && ${field.name} != 'update_by')
+	/**
+	 * ${field.comment}
+	 */
+	private ${field.propertyType} ${field.propertyName};
+
+#end
+#end
+}

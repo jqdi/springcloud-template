@@ -58,15 +58,12 @@ code:
   generate:
     # 默认生成到adminapi模块
     target-module: adminapi
-    # 可选值: adminapi, admin, system, order, user, tool等
-    module-options: adminapi,admin,system,order,user,tool
-    # 输出路径前缀，默认为项目根目录
-    output-base-path: ../
-    # 数据库配置
-    # 去除表前缀（匹配到则去掉，匹配不到则保留）
+    # 表前缀，去除后生成entity名
     table-prefixes:
       - gen_
       - t_
+    module-options: adminapi,admin,system,order,user,tool
+    output-base-path: ../
     database:
       url: jdbc:mysql://localhost:3306/template?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
       username: root

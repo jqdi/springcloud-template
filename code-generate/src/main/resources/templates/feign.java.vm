@@ -1,0 +1,38 @@
+package ${feignPkg};
+
+import com.company.${moduleName}.api.constant.Constants;
+import com.company.${moduleName}.api.feign.fallback.ThrowExceptionFallback;
+import com.company.${moduleName}.api.request.${entity}Req;
+import com.company.${moduleName}.api.response.${entity}Resp;
+import com.company.common.request.RemoveReq;
+import com.company.common.response.PageResp;
+import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.List;
+
+@FeignClient(value = Constants.FEIGNCLIENT_VALUE, path = "${feignPath}", fallbackFactory = ThrowExceptionFallback.class)
+public interface ${entity}Feign {
+
+	@GetMapping("/page")
+	PageResp<${entity}Resp> page(@RequestParam("current") Long current, @RequestParam("size") Long size#foreach($field in ${table.fields})#if(${field.propertyType} == 'String' && ${field.name} != 'create_by' && ${field.name} != 'update_by'), @RequestParam(value = "${field.propertyName}", required = false) ${field.propertyType} ${field.propertyName}#end#end);
+
+	@GetMapping("/list")
+	List<${entity}Resp> list(#foreach($field in ${table.fields})#if(${field.propertyType} == 'String' && ${field.name} != 'create_by' && ${field.name} != 'update_by')@RequestParam(value = "${field.propertyName}", required = false) ${field.propertyType} ${field.propertyName}#if($foreach.hasNext()), #end#end#end);
+
+	@GetMapping("/query")
+	${entity}Resp query(@RequestParam("id") Integer id);
+
+	@PostMapping("/save")
+	Boolean save(@RequestBody ${entity}Req req);
+
+	@PostMapping("/update")
+	Boolean update(@RequestBody ${entity}Req req);
+
+	@PostMapping("/remove")
+	Boolean remove(@RequestBody RemoveReq<Integer> req);
+
+}
