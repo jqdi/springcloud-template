@@ -2,6 +2,8 @@ package com.company.system.controller;
 
 import java.util.List;
 
+import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.company.system.api.request.RemoveReq;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -90,13 +92,12 @@ public class SysLogininfoController implements SysLogininfoFeign {
 	public PageResp<SysLogininfoResp> page(Long current, Long size, Integer sysUserId, String loginTimeStart, String loginTimeEnd, String account, String device, String platform, String operator, String version, String deviceid, String channel, String ip, String address, String source, String lang, String createTimeStart, String createTimeEnd, String updateTimeStart, String updateTimeEnd) {
 		QueryWrapper<SysLogininfo> queryWrapper = toQueryWrapper(sysUserId, loginTimeStart, loginTimeEnd, account, device, platform, operator, version, deviceid, channel, ip, address, source, lang, createTimeStart, createTimeEnd, updateTimeStart, updateTimeEnd);
 
-		long count = sysLogininfoService.count(queryWrapper);
-
 		queryWrapper.orderByDesc("id");
-		List<SysLogininfo> list = sysLogininfoService.list(PageDTO.of(current, size), queryWrapper);
+        Page<SysLogininfo> page = sysLogininfoService.page(Page.of(current, size, false), queryWrapper);
+        long total = page.getTotal();
 
-		List<SysLogininfoResp> respList = PropertyUtils.copyArrayProperties(list, SysLogininfoResp.class);
-		return PageResp.of(count, respList);
+		List<SysLogininfoResp> respList = PropertyUtils.copyArrayProperties(page.getRecords(), SysLogininfoResp.class);
+		return PageResp.of(total, respList);
 	}
 
 	@Override

@@ -1,70 +1,94 @@
 package ${package.Controller};
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.plugins.pagination.PageDTO;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.company.common.api.Result;
-import org.springframework.web.bind.annotation.*;
+import com.company.common.api.PageResp;
+import com.company.framework.util.PropertyUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+
+import java.util.List;
 
 /**
- * ${table.comment} 前端控制器
+ * ${table.comment!}
  * @author CodeGenerate
- * @since ${date}
  */
-@Api(tags = "${table.comment}管理")
+@Api(tags = "${table.comment!}管理")
 @RestController
-@RequestMapping("/${table.name}")
+@RequestMapping("/${table.name?replace("_", "")}")
 public class ${table.controllerName} {
-    
+
     @Autowired
     private ${package.Service}.${table.serviceName} ${table.serviceName?uncap_first};
-    
-    /**
-     * 分页查询${table.comment}
-     */
-    @ApiOperation("分页查询${table.comment}")
+
+    private QueryWrapper<${package.Entity}.${entity}> toQueryWrapper(${table.entityName}Req req) {
+        QueryWrapper<${package.Entity}.${entity}> queryWrapper = new QueryWrapper<>();
+<#list table.fields as field>
+<#if field.propertyType == "String">
+        if (StringUtils.isNotBlank(req.get${field.propertyName?cap_first}())) {
+            queryWrapper.like("${field.name}", req.get${field.propertyName?cap_first}());
+        }
+</#if>
+</#list>
+        queryWrapper.orderByDesc("id");
+        return queryWrapper;
+    }
+
+    @ApiOperation("分页查询${table.comment!}")
     @GetMapping("/page")
-    public Result<Page<${package.Entity}.${entity}>> page(
-        @RequestParam(defaultValue = "1") Long current,
-        @RequestParam(defaultValue = "10") Long size) {
-        Page<${package.Entity}.${entity}> page = new Page<>(current, size);
-        return Result.success(${table.serviceName?uncap_first}.page(page));
+    public PageResp<${package.Entity}.${entity}Resp> page(
+            @RequestParam(defaultValue = "1") Long current,
+            @RequestParam(defaultValue = "10") Long size,
+            ${table.entityName}Req req) {
+        Page<${package.Entity}.${entity}> page = PageDTO.of(current, size);
+        QueryWrapper<${package.Entity}.${entity}> queryWrapper = toQueryWrapper(req);
+        List<${package.Entity}.${entity}> list = ${table.serviceName?uncap_first}.list(page, queryWrapper);
+        List<${package.Entity}.${entity}Resp> respList = PropertyUtils.copyArrayProperties(list, ${package.Entity}.${entity}Resp.class);
+        return PageResp.of(page.getTotal(), respList);
     }
-    
-    /**
-     * 根据ID查询${table.comment}
-     */
-    @ApiOperation("根据ID查询${table.comment}")
+
+    @ApiOperation("查询${table.comment!}列表")
+    @GetMapping("/list")
+    public Result<List<${package.Entity}.${entity}Resp>> list(${table.entityName}Req req) {
+        QueryWrapper<${package.Entity}.${entity}> queryWrapper = toQueryWrapper(req);
+        List<${package.Entity}.${entity}> list = ${table.serviceName?uncap_first}.list(queryWrapper);
+        List<${package.Entity}.${entity}Resp> respList = PropertyUtils.copyArrayProperties(list, ${package.Entity}.${entity}Resp.class);
+        return Result.success(respList);
+    }
+
+    @ApiOperation("根据ID查询${table.comment!}")
     @GetMapping("/{id}")
-    public Result<${package.Entity}.${entity}> get(@PathVariable Integer id) {
-        return Result.success(${table.serviceName?uncap_first}.getById(id));
+    public Result<${package.Entity}.${entity}Resp> query(@PathVariable Integer id) {
+        ${package.Entity}.${entity} ${table.entityName?uncap_first} = ${table.serviceName?uncap_first}.getById(id);
+        ${package.Entity}.${entity}Resp resp = PropertyUtils.copyProperties(${table.entityName?uncap_first}, ${package.Entity}.${entity}Resp.class);
+        return Result.success(resp);
     }
-    
-    /**
-     * 保存${table.comment}
-     */
-    @ApiOperation("保存${table.comment}")
-    @PostMapping("/save")
-    public Result<Boolean> save(@RequestBody ${package.Entity}.${entity} ${entity?uncap_first}) {
-        return Result.success(${table.serviceName?uncap_first}.save(${entity?uncap_first}));
+
+    @ApiOperation("新增${table.comment!}")
+    @PostMapping
+    public Result<Boolean> save(@RequestBody ${package.Entity}.${entity}Req req) {
+        ${package.Entity}.${entity} ${table.entityName?uncap_first} = PropertyUtils.copyProperties(req, ${package.Entity}.${entity}.class);
+        return Result.success(${table.serviceName?uncap_first}.save(${table.entityName?uncap_first}));
     }
-    
-    /**
-     * 更新${table.comment}
-     */
-    @ApiOperation("更新${table.comment}")
-    @PostMapping("/update")
-    public Result<Boolean> update(@RequestBody ${package.Entity}.${entity} ${entity?uncap_first}) {
-        return Result.success(${table.serviceName?uncap_first}.updateById(${entity?uncap_first}));
+
+    @ApiOperation("修改${table.comment!}")
+    @PutMapping
+    public Result<Boolean> update(@RequestBody ${package.Entity}.${entity}Req req) {
+        ${package.Entity}.${entity} ${table.entityName?uncap_first} = PropertyUtils.copyProperties(req, ${package.Entity}.${entity}.class);
+        return Result.success(${table.serviceName?uncap_first}.updateById(${table.entityName?uncap_first}));
     }
-    
-    /**
-     * 删除${table.comment}
-     */
-    @ApiOperation("删除${table.comment}")
-    @PostMapping("/remove")
-    public Result<Boolean> remove(@RequestBody Integer id) {
-        return Result.success(${table.serviceName?uncap_first}.removeById(id));
+
+    @ApiOperation("删除${table.comment!}")
+    @DeleteMapping
+    public Result<Boolean> remove(@RequestBody List<Integer> idList) {
+        if (idList == null || idList.isEmpty()) {
+            return Result.success(true);
+        }
+        return Result.success(${table.serviceName?uncap_first}.removeByIds(idList));
     }
 }

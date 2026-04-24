@@ -1,39 +1,62 @@
 package ${package.Entity};
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.FieldFill;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import com.baomidou.mybatisplus.extension.activerecord.Model;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
-import java.io.Serializable;
-import java.util.Date;
+
+import java.time.LocalDateTime;
 
 /**
  * ${table.comment}
  * @author CodeGenerate
- * @since ${date}
  */
 @Data
-@EqualsAndHashCode(callSuper = false)
 @TableName("${table.name}")
-@ApiModel(value="${entity}对象", description="${table.comment}")
-public class ${entity} implements Serializable {
+public class ${entity} extends Model<${entity}> {
 
-    private static final long serialVersionUID = 1L;
-    
-<#-- ----------  BEGIN 字段循环遍历  ---------->
 <#list table.fields as field>
 <#if field.keyFlag?? && field.keyFlag>
-    @ApiModelProperty(value = "${field.comment!}")
-    @TableId(value = "${field.name}", type = IdType.AUTO)
+    /**
+     * ${field.comment!}
+     */
+    private ${field.propertyType} ${field.propertyName};
+<#elseif field.propertyType == "LocalDateTime">
+    /**
+     * ${field.comment!}
+     */
+    <#if field.name == "create_time" || field.name == "createTime">
+    @TableField(fill = FieldFill.INSERT)
+    <#elseif field.name == "update_time" || field.name == "updateTime">
+    @TableField(fill = FieldFill.INSERT_UPDATE)
+    <#else>
+    @TableField(fill = FieldFill.INSERT_UPDATE)
+    </#if>
+    private ${field.propertyType} ${field.propertyName};
+<#elseif field.propertyType == "Integer">
+    /**
+     * ${field.comment!}
+     */
+    <#if field.name == "create_by" || field.name == "createBy">
+    @TableField(fill = FieldFill.INSERT)
+    <#elseif field.name == "update_by" || field.name == "updateBy">
+    @TableField(fill = FieldFill.INSERT_UPDATE)
+    <#else>
+    @TableField(fill = FieldFill.INSERT_UPDATE)
+    </#if>
+    private ${field.propertyType} ${field.propertyName};
+<#elseif field.name == "deleted" || field.name == "is_deleted">
+    /**
+     * ${field.comment!}
+     */
+    @TableField("${field.name}")
     private ${field.propertyType} ${field.propertyName};
 <#else>
-    @ApiModelProperty(value = "${field.comment!}")
+    /**
+     * ${field.comment!}
+     */
     private ${field.propertyType} ${field.propertyName};
 </#if>
 </#list>
-<#------------  END 字段循环遍历  ---------->
-
 }

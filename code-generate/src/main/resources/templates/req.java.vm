@@ -1,0 +1,27 @@
+package ${package.Entity};
+
+import java.time.LocalDateTime;
+
+import lombok.Data;
+
+/**
+ * ${table.comment}
+ * @author CodeGenerate
+ */
+@Data
+public class ${entity}Req {
+
+<#list table.fields as field>
+<#if field.propertyType == "LocalDateTime" || field.propertyType == "Integer" || field.propertyType == "Long">
+    /**
+     * ${field.comment!}
+     */
+    private ${field.propertyType} ${field.propertyName};
+<#else>
+    /**
+     * ${field.comment!}
+     */
+    private ${field.propertyType} ${field.propertyName};
+</#if>
+</#list>
+}

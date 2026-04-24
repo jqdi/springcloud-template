@@ -56,15 +56,38 @@ template:
 # 代码生成配置
 code:
   generate:
-    # 默认生成到adminapi模块
     target-module: adminapi
-    # 可选值: adminapi, admin, system, order, user, tool等
-    module-options: adminapi,admin,system,order,user,tool
-    # 输出路径前缀，默认为项目根目录
-    output-base-path: ../
-    # 数据库配置
-    database:
-      url: jdbc:mysql://localhost:3306/template?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
-      username: root
-      password: 12345678
-      driver-class-name: com.mysql.cj.jdbc.Driver
+    output-base-path: ./
+    template-path: classpath:/templates
+    modules:
+      adminapi:
+        package-name: com.company.adminapi
+        output-path: ../adminapi/src/main/java
+        controller-template: /templates/adminapi-controller.java.vm
+        enable-validation: true
+        enable-logic-delete: true
+      admin:
+        package-name: com.company.admin
+        output-path: ../admin/src/main/java
+        enable-validation: true
+        enable-logic-delete: false
+      system:
+        package-name: com.company.system
+        output-path: ../system/service/src/main/java
+        enable-validation: true
+        enable-logic-delete: false
+      order:
+        package-name: com.company.order
+        output-path: ../order/service/src/main/java
+        enable-validation: true
+        enable-logic-delete: false
+      user:
+        package-name: com.company.user
+        output-path: ../user/service/src/main/java
+        enable-validation: true
+        enable-logic-delete: false
+      tool:
+        package-name: com.company.tool
+        output-path: ../tool/service/src/main/java
+        enable-validation: true
+        enable-logic-delete: false
