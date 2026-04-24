@@ -1,33 +1,26 @@
 package com.company.codegenerate.controller;
 
-import java.util.Collections;
-import java.util.Map;
-
-import org.springframework.web.bind.annotation.*;
-
+import com.company.codegenerate.dto.GenCodeReq;
+import com.company.codegenerate.dto.GenCodeResp;
+import com.company.codegenerate.service.CodeGenerateService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-/**
- * 代码生成控制器
- */
 @Slf4j
 @RestController
 @RequestMapping("/code/generate")
 @RequiredArgsConstructor
 public class CodeGeneratorController {
 
-    /**
-     * 生成指定模块的代码
-     *
-     * @param moduleName 模块名称
-     * @param tableName 表名
-     * @return 生成结果
-     */
-    @PostMapping("/{moduleName}")
-    public Map<String, String> generateCode(@PathVariable String moduleName, @RequestParam String tableName) {
-        log.info("开始生成代码，模块名: {}，表名: {}", moduleName, tableName);
-        // TODO
-        return Collections.singletonMap("message", "开始生成代码，模块名: " + moduleName + "，表名: " + tableName);
+    private final CodeGenerateService codeGenerateService;
+
+    @PostMapping
+    public GenCodeResp generateCode(@RequestBody GenCodeReq req) {
+        log.info("开始生成代码，模块名: {}，表名: {}", req.getModuleName(), req.getTableNames());
+        return codeGenerateService.generate(req);
     }
 }

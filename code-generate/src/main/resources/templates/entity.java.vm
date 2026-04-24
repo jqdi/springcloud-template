@@ -1,0 +1,33 @@
+package ${package.Entity};
+
+import com.baomidou.mybatisplus.annotation.FieldFill;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.Data;
+#foreach($pkg in ${table.importPackages})
+import ${pkg};
+#end
+
+/**
+ * ${table.comment!}
+ *
+ * @author ${author}
+ * @date ${date}
+ */
+@Data
+@TableName("${table.name}")
+public class ${entity} {
+
+#foreach($field in ${table.fields})
+    /**
+     * ${field.comment}
+     */
+#if(${field.name} == "create_time" || ${field.name} == "create_by")
+    @TableField(fill = FieldFill.INSERT)
+#elseif(${field.name} == "update_time" || ${field.name} == "update_by")
+    @TableField(fill = FieldFill.INSERT_UPDATE)
+#end
+    private ${field.propertyType} ${field.propertyName};
+
+#end
+}
