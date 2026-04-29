@@ -36,10 +36,7 @@ public class UploadService {
      * @return fileKey
      */
     public String upload(String outUrl) {
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        HttpUtil.download(outUrl, out, true);
-        byte[] bytes = out.toByteArray();
-
+        byte[] bytes = HttpUtil.downloadBytes(outUrl);
         return upload(bytes);
     }
 
@@ -95,12 +92,12 @@ public class UploadService {
      * @param fileName 文件名
      * @return 预签名链接
      */
-    public ClientUploadResult clientUpload(String basePath, String fileName) {
+    public PresignedUploadResult presignedUpload(String basePath, String fileName) {
         String fileKey = generateFileKey(basePath, fileName);
 
-        String presignedUrl = fileStorage.clientUpload(fileKey);
+        String presignedUrl = fileStorage.presignedUpload(fileKey);
         log.info("fileName:{}, fileKey:{}, presignedUrl:{}", fileName, fileKey, presignedUrl);
-        return new ClientUploadResult().setFileKey(fileKey).setPresignedUrl(presignedUrl);
+        return new PresignedUploadResult().setFileKey(fileKey).setPresignedUrl(presignedUrl);
     }
 
     /**

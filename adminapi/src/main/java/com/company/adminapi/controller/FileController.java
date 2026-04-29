@@ -4,8 +4,8 @@ import cn.hutool.http.HttpRequest;
 
 import com.company.framework.globalresponse.ExceptionUtil;
 import com.company.tool.api.feign.FileFeign;
-import com.company.tool.api.request.ClientUploadReq;
-import com.company.tool.api.response.ClientUploadResp;
+import com.company.tool.api.request.PresignedUploadReq;
+import com.company.tool.api.response.PresignedUploadResp;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,12 +37,12 @@ public class FileController {
 			ExceptionUtil.throwException("请选择文件");
 		}
 
-		ClientUploadReq clientUploadReq = new ClientUploadReq();
-		clientUploadReq.setBasePath("adminapi");
-		clientUploadReq.setFileName(originalFilename);
-		ClientUploadResp clientUploadResp = fileFeign.clientUpload(clientUploadReq);
-		String fileKey = clientUploadResp.getFileKey();
-		String presignedUrl = clientUploadResp.getPresignedUrl();
+		PresignedUploadReq presignedUploadReq = new PresignedUploadReq();
+		presignedUploadReq.setBasePath("adminapi");
+		presignedUploadReq.setFileName(originalFilename);
+		PresignedUploadResp presignedUploadResp = fileFeign.presignedUpload(presignedUploadReq);
+		String fileKey = presignedUploadResp.getFileKey();
+		String presignedUrl = presignedUploadResp.getPresignedUrl();
 
 		try (InputStream inputStream = file.getInputStream()) {
 			// 客户端使用presignedUrl上传文件
@@ -57,11 +57,11 @@ public class FileController {
 	}
 
 	@PostMapping("/clientUpload")
-	public ClientUploadResp clientUpload(String fileName) {
-		ClientUploadReq clientUploadReq = new ClientUploadReq();
-		clientUploadReq.setBasePath("web");
-		clientUploadReq.setFileName(fileName);
-		return fileFeign.clientUpload(clientUploadReq);
+	public PresignedUploadResp clientUpload(String fileName) {
+		PresignedUploadReq presignedUploadReq = new PresignedUploadReq();
+		presignedUploadReq.setBasePath("web");
+		presignedUploadReq.setFileName(fileName);
+		return fileFeign.presignedUpload(presignedUploadReq);
 	}
 
 	/**

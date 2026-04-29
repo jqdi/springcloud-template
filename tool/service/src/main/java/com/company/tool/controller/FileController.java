@@ -1,11 +1,11 @@
 package com.company.tool.controller;
 
 import com.company.tool.api.feign.FileFeign;
-import com.company.tool.api.request.ClientUploadReq;
+import com.company.tool.api.request.PresignedUploadReq;
 import com.company.tool.api.request.UploadReq;
-import com.company.tool.api.response.ClientUploadResp;
+import com.company.tool.api.response.PresignedUploadResp;
 import com.company.tool.api.response.UploadResp;
-import com.company.tool.filestorage.ClientUploadResult;
+import com.company.tool.filestorage.PresignedUploadResult;
 import com.company.tool.filestorage.UploadService;
 import com.company.framework.globalresponse.ExceptionUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,13 +37,13 @@ public class FileController implements FileFeign {
 	}
 
 	@Override
-	public ClientUploadResp clientUpload(@RequestBody ClientUploadReq clientUploadReq) {
-		String basePath = clientUploadReq.getBasePath();
-		String fileName = clientUploadReq.getFileName();
-		ClientUploadResult clientUploadResult = uploadService.clientUpload(basePath, fileName);
-		ClientUploadResp resp = new ClientUploadResp();
-		resp.setFileKey(clientUploadResult.getFileKey());
-		resp.setPresignedUrl(clientUploadResult.getPresignedUrl());
+	public PresignedUploadResp presignedUpload(@RequestBody PresignedUploadReq presignedUploadReq) {
+		String basePath = presignedUploadReq.getBasePath();
+		String fileName = presignedUploadReq.getFileName();
+		PresignedUploadResult presignedUploadResult = uploadService.presignedUpload(basePath, fileName);
+		PresignedUploadResp resp = new PresignedUploadResp();
+		resp.setFileKey(presignedUploadResult.getFileKey());
+		resp.setPresignedUrl(presignedUploadResult.getPresignedUrl());
 		return resp;
 	}
 
