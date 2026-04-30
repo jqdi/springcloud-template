@@ -41,7 +41,7 @@ public class FileController {
 		}
 
         PresignedUploadReq presignedUploadReq = new PresignedUploadReq();
-        presignedUploadReq.setBasePath("adminapi");
+        presignedUploadReq.setBasePath("web");
         presignedUploadReq.setFileName(originalFilename);
         PresignedUploadResp presignedUploadResp = fileFeign.presignedUpload(presignedUploadReq);
         String fileKey = presignedUploadResp.getFileKey();
@@ -70,7 +70,7 @@ public class FileController {
     @PostMapping("/presignedUpload")
     public PresignedUploadResp presignedUpload(String fileName) {
         PresignedUploadReq presignedUploadReq = new PresignedUploadReq();
-        presignedUploadReq.setBasePath("adminapi");
+        presignedUploadReq.setBasePath("web");
         presignedUploadReq.setFileName(fileName);
         return fileFeign.presignedUpload(presignedUploadReq);
     }
