@@ -1,23 +1,24 @@
 package com.company.tool.filestorage;
 
-import cn.hutool.core.io.FileUtil;
-import cn.hutool.core.io.IoUtil;
-import cn.hutool.core.util.IdUtil;
-import cn.hutool.http.HttpUtil;
-import com.company.framework.globalresponse.ExceptionUtil;
-import com.company.framework.util.Utils;
-import io.github.jqdi.filestorage.core.FileStorage;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.util.Calendar;
+
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.company.framework.globalresponse.ExceptionUtil;
+import com.company.framework.util.Utils;
+
+import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.io.IoUtil;
+import cn.hutool.core.util.IdUtil;
+import cn.hutool.http.HttpUtil;
+import io.github.jqdi.filestorage.core.FileStorage;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 文件上传
@@ -185,9 +186,8 @@ public class UploadService {
 
 //		String outUrl = "https://tfs.alipayobjects.com/images/partner/TB1ynYQXmCwMeJk6XeaXXa9rpXa";
         String outUrl = "https://thirdwx.qlogo.cn/mmopen/vi_32/zRziaYdcx2ib9icsCUSsAmqdhia9bLoCwHRHr02icZAI8DA5n97AVpdwF3ziafzJ0ViaQXia4ibGSAMSUKR1swgufMtS1MA/132";
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        HttpUtil.download(outUrl, out, true);
-        System.out.println(Utils.extraSuffix(out.toByteArray()));
+        byte[] bytes2 = HttpUtil.downloadBytes(outUrl);
+        System.out.println(Utils.extraSuffix(bytes2));
     }
 
 }
