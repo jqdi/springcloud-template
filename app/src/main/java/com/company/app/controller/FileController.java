@@ -1,21 +1,24 @@
 package com.company.app.controller;
 
-import cn.hutool.http.HttpRequest;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Collections;
+import java.util.Map;
 
-import com.company.framework.globalresponse.ExceptionUtil;
-import com.company.tool.api.feign.FileFeign;
-import com.company.tool.api.request.PresignedUploadReq;
-import com.company.tool.api.response.PresignedUploadResp;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Collections;
-import java.util.Map;
+import com.company.framework.globalresponse.ExceptionUtil;
+import com.company.tool.api.feign.FileFeign;
+import com.company.tool.api.request.PresignedUploadReq;
+import com.company.tool.api.response.PresignedUploadResp;
+
+import cn.hutool.http.HttpConfig;
+import cn.hutool.http.HttpRequest;
+import cn.hutool.http.HttpResponse;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RestController
@@ -37,34 +40,42 @@ public class FileController {
 			ExceptionUtil.throwException("请选择文件");
 		}
 
-		PresignedUploadReq presignedUploadReq = new PresignedUploadReq();
-		presignedUploadReq.setBasePath("app");
-		presignedUploadReq.setFileName(originalFilename);
-		PresignedUploadResp presignedUploadResp = fileFeign.presignedUpload(presignedUploadReq);
-		String fileKey = presignedUploadResp.getFileKey();
-		String presignedUrl = presignedUploadResp.getPresignedUrl();
+        PresignedUploadReq presignedUploadReq = new PresignedUploadReq();
+        presignedUploadReq.setBasePath("adminapi");
+        presignedUploadReq.setFileName(originalFilename);
+        PresignedUploadResp presignedUploadResp = fileFeign.presignedUpload(presignedUploadReq);
+        String fileKey = presignedUploadResp.getFileKey();
+        String presignedUrl = presignedUploadResp.getPresignedUrl();
 
-		try (InputStream inputStream = file.getInputStream()) {
-			// 客户端使用presignedUrl上传文件
-			String result = HttpRequest.put(presignedUrl).body(IOUtils.toByteArray(inputStream)).execute().body();
-			log.info("result:{}", result);
-            return Collections.singletonMap("value", fileKey);
-		} catch (IOException e) {
-			log.error("IOException", e);
-			ExceptionUtil.throwException("文件上传失败");
+        byte[] fileBytes;
+        try (InputStream inputStream = file.getInputStream()) {
+            fileBytes = IOUtils.toByteArray(inputStream);
+        } catch (IOException e) {
+            log.error("IOException", e);
+            ExceptionUtil.throwException("文件上传失败");
             return null;
-		}
-	}
+        }
 
-	@PostMapping("/clientUpload")
-	public PresignedUploadResp clientUpload(String fileName) {
-		PresignedUploadReq presignedUploadReq = new PresignedUploadReq();
-		presignedUploadReq.setBasePath("web");
-		presignedUploadReq.setFileName(fileName);
-		return fileFeign.presignedUpload(presignedUploadReq);
-	}
+        // 客户端使用presignedUrl上传文件
+        HttpRequest httpRequest = HttpRequest.put(presignedUrl)
+                // 设置不要自动添加Content-Type，否则会报签名不匹配
+                .setConfig(HttpConfig.create().setUseDefaultContentTypeIfNull(false)).body(fileBytes);
+        try (HttpResponse response = httpRequest.execute()) {
+            String result = response.body();
+            log.info("result:{}", result);
+            return Collections.singletonMap("value", fileKey);
+        }
+    }
 
-	/**
+    @PostMapping("/presignedUpload")
+    public PresignedUploadResp presignedUpload(String fileName) {
+        PresignedUploadReq presignedUploadReq = new PresignedUploadReq();
+        presignedUploadReq.setBasePath("adminapi");
+        presignedUploadReq.setFileName(fileName);
+        return fileFeign.presignedUpload(presignedUploadReq);
+    }
+
+    /**
      * 获取访问链接
      *
      * @param fileKey
