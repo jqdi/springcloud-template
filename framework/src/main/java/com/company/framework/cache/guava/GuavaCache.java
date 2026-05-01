@@ -3,6 +3,7 @@ package com.company.framework.cache.guava;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 import com.company.framework.cache.ICache;
@@ -10,6 +11,7 @@ import com.company.framework.cache.exception.ValueRetrievalException;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 
+import com.google.common.util.concurrent.Striped;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -17,8 +19,8 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 public class GuavaCache implements ICache {
-	private ReentrantLock lock4cache = new ReentrantLock();// 好实现应该根据key来加锁
-	
+    private Striped<Lock> stripedLock = Striped.lock(16);// 分段锁，减少锁竞争
+
 	private Cache<String, String> guavaCache = CacheBuilder.newBuilder()//
 			.maximumSize(10000)//
 			.expireAfterWrite(10, TimeUnit.SECONDS)//
@@ -65,8 +67,9 @@ public class GuavaCache implements ICache {
 	@Override
 	public long increment(String key, long delta) {
 		// guava缓存不支持自增，所以通过锁的方式实现
+        Lock lock4cache = stripedLock.get(key);
 		try {
-			lock4cache.lock();
+            lock4cache.lock();
 			
 			String value = get(key, () -> "0");
 			long result = Long.parseLong(value) + delta;

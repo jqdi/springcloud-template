@@ -10,9 +10,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.company.tool.api.constant.Constants;
 import com.company.tool.api.feign.fallback.ThrowExceptionFallback;
-import com.company.tool.api.request.ClientUploadReq;
+import com.company.tool.api.request.PresignedUploadReq;
 import com.company.tool.api.request.UploadReq;
-import com.company.tool.api.response.ClientUploadResp;
+import com.company.tool.api.response.PresignedUploadResp;
 import com.company.tool.api.response.UploadResp;
 
 @FeignClient(value = Constants.FEIGNCLIENT_VALUE, path = "/file", fallbackFactory = ThrowExceptionFallback.class)
@@ -38,11 +38,11 @@ public interface FileFeign {
      * 2. 前端请求后端接口上传，后端入口服务就使用presignedUrl上传文件，然后再把fileKey返回给前端，避免文件流传递其他微服务
      * </pre>
      *
-     * @param clientUploadReq
+     * @param presignedUploadReq
      * @return 预签名链接
      */
-    @PostMapping(value = "/clientUpload")
-    ClientUploadResp clientUpload(@RequestBody ClientUploadReq clientUploadReq);
+    @PostMapping(value = "/presignedUpload")
+    PresignedUploadResp presignedUpload(@RequestBody PresignedUploadReq presignedUploadReq);
 
     /**
      * 获取预签名链接
