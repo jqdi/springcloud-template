@@ -1,4 +1,4 @@
-package com.company.adminapi.controller;
+package com.company.web.controller;
 
 import java.io.IOException;
 import java.io.InputStream;

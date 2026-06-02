@@ -1,8 +1,9 @@
 # Feign 配置
 feign:
-#  httpclient: # 使用Apache HttpClient作为http客户端，默认HttpURLConnection
-#    enabled: true
-#  okhttp: # 使用okhttp作为http客户端  ，默认HttpURLConnection
+  # 无连接池，默认HttpURLConnection
+  httpclient: # 连接池，使用Apache HttpClient作为feign客户端，需添加依赖feign-httpclient
+    enabled: true
+#  okhttp: # 连接池，使用okhttp作为feign客户端，需添加依赖feign-okhttp
 #    enabled: true
   client:
     config:
