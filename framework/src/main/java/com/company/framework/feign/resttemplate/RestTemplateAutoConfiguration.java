@@ -13,6 +13,7 @@ import org.apache.http.conn.socket.PlainConnectionSocketFactory;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -54,11 +55,12 @@ public class RestTemplateAutoConfiguration {
 	@LoadBalanced // 启用负载，注册在注册中心上的实例有效 需要 通过服务名访问
 //	@SentinelRestTemplate(blockHandler = "handleException", blockHandlerClass = ExceptionUtil.class)
 	@Bean("restTemplate")
-	public RestTemplate restTemplate(ClientHttpRequestFactory httpRequestFactory, TraceManager traceManager) {
+    public RestTemplate restTemplate(ClientHttpRequestFactory httpRequestFactory, TraceManager traceManager,
+        @Value("${template.log.arrMaxLength:1000}") int arrMaxLength) {
         RestTemplate restTemplate = new RestTemplate(httpRequestFactory);
         List<ClientHttpRequestInterceptor> interceptors = new ArrayList<>();
         interceptors.add(new TraceHeaderClientHttpRequestInterceptor(traceManager));
-        interceptors.add(new RestTemplateLoggerClientHttpRequestInterceptor());
+        interceptors.add(new RestTemplateLoggerClientHttpRequestInterceptor(arrMaxLength));
         restTemplate.setInterceptors(interceptors);
         return restTemplate;
     }

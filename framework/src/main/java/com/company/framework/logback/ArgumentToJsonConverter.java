@@ -1,10 +1,11 @@
 package com.company.framework.logback;
 
-import com.fasterxml.classmate.types.ResolvedObjectType;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.helpers.MessageFormatter;
 
 import com.company.framework.util.JsonUtil;
+import com.fasterxml.classmate.types.ResolvedInterfaceType;
+import com.fasterxml.classmate.types.ResolvedObjectType;
 
 import ch.qos.logback.classic.pattern.MessageConverter;
 import ch.qos.logback.classic.spi.ILoggingEvent;
@@ -77,13 +78,33 @@ public class ArgumentToJsonConverter extends MessageConverter {
         }
         // class判断性能次之，所以放在后面判断
         Class<?> clazz = arg.getClass();
+        if (clazz.getName().startsWith("springfox")) {
+            return true;
+        }
         if (clazz.isPrimitive() || clazz.isEnum()) {
             return true;
         }
         // 枚举序列化，上面的判断枚举会false
         if (arg instanceof ResolvedObjectType) {
             ResolvedObjectType resolvedObjectType = (ResolvedObjectType)arg;
+            if (resolvedObjectType.isInstanceOf(CharSequence.class) || resolvedObjectType.isInstanceOf(Number.class)
+                || resolvedObjectType.isInstanceOf(Boolean.class) || resolvedObjectType.isInstanceOf(Character.class)
+                || resolvedObjectType.isInstanceOf(Enum.class) || resolvedObjectType.isInstanceOf(Object.class)) {
+                return true;
+            }
             Class<?> erasedType = resolvedObjectType.getErasedType();
+            if (erasedType.isPrimitive() || erasedType.isEnum()) {
+                return true;
+            }
+        }
+        if (arg instanceof ResolvedInterfaceType) {
+            ResolvedInterfaceType resolvedInterfaceType = (ResolvedInterfaceType)arg;
+            if (resolvedInterfaceType.isInstanceOf(CharSequence.class) || resolvedInterfaceType.isInstanceOf(Number.class)
+                || resolvedInterfaceType.isInstanceOf(Boolean.class) || resolvedInterfaceType.isInstanceOf(Character.class)
+                || resolvedInterfaceType.isInstanceOf(Enum.class) || resolvedInterfaceType.isInstanceOf(Object.class)) {
+                return true;
+            }
+            Class<?> erasedType = resolvedInterfaceType.getErasedType();
             if (erasedType.isPrimitive() || erasedType.isEnum()) {
                 return true;
             }
