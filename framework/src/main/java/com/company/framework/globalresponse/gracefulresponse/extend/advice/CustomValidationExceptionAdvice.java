@@ -43,17 +43,18 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
+import javax.validation.Path;
 import javax.validation.ValidationException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
  * copy from DefaultValidationExceptionAdvice
- * 修改262行：‘s.getConstraintDescriptor().getMessageTemplate()’改为‘s.getMessage()’
+ * 修改：
+ * 1.‘s -> s.getConstraintDescriptor().getMessageTemplate()’
+ * 2.‘DefaultMessageSourceResolvable::getDefaultMessage’
  *
  * 默认的全局异常处理
  *
@@ -121,7 +122,16 @@ public class CustomValidationExceptionAdvice extends DefaultValidationExceptionA
     private ResponseStatus handleBindException(BindException e) {
         BindingResult bindingResult = e.getBindingResult();
         List<ObjectError> allErrors = bindingResult.getAllErrors();
-        String msg = allErrors.stream().map(DefaultMessageSourceResolvable::getDefaultMessage).collect(Collectors.joining(";"));
+//        String msg = allErrors.stream().map(DefaultMessageSourceResolvable::getDefaultMessage).collect(Collectors.joining(";"));
+        String msg = allErrors.stream().map(v->{
+            String defaultMessage = v.getDefaultMessage();
+            if (v instanceof FieldError) {
+                FieldError fieldError = (FieldError)v;
+                String field = fieldError.getField();
+                defaultMessage = String.format("[%s]%s", field, defaultMessage);
+            }
+            return defaultMessage;
+        }).collect(Collectors.joining(";"));
         String code;
 
         ValidationStatusCode validateStatusCode = this.findValidationStatusCode(e);
@@ -259,7 +269,21 @@ public class CustomValidationExceptionAdvice extends DefaultValidationExceptionA
 
         ConstraintViolationException exception = (ConstraintViolationException) e;
         Set<ConstraintViolation<?>> violationSet = exception.getConstraintViolations();
-        String msg = violationSet.stream().map(ConstraintViolation::getMessage).collect(Collectors.joining(";"));
+//        String msg = violationSet.stream().map(s -> s.getConstraintDescriptor().getMessageTemplate()).collect(Collectors.joining(";"));
+        String msg = violationSet.stream().map(s->{
+            String message = s.getMessage();
+            Path propertyPath = s.getPropertyPath();
+            if (propertyPath != null) {
+                Iterator<Path.Node> iterator = propertyPath.iterator();
+                String lastNodeName = null;
+                while (iterator.hasNext()) {
+                    Path.Node node = iterator.next();
+                    lastNodeName = node.getName();
+                }
+                message = String.format("[%s]%s", lastNodeName, message);
+            }
+            return message;
+        }).collect(Collectors.joining(";"));
         String code;
         ValidationStatusCode validationStatusCode = this.findValidationStatusCodeInController();
         if (validationStatusCode != null) {
