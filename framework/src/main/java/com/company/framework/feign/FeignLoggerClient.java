@@ -19,6 +19,7 @@ import java.io.IOException;
  * 备注：feign.Logger+feign.Logger.Level也可以打印feign请求信息，但是无法打印在同一行，可尝试借助ThreadLocal实现
  */
 @Slf4j
+@Deprecated // 初始化会导致
 public class FeignLoggerClient extends Client.Default {
     /**
      * Null parameters imply platform defaults.

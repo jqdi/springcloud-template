@@ -80,6 +80,19 @@
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-openfeign</artifactId>
         </dependency>
+        <!-- 无连接池，不引用feign-httpclient、feign-okhttp等，默认使用HttpURLConnection -->
+        <!-- 连接池，使用Apache HttpClient作为feign客户端 -->
+        <dependency>
+            <groupId>io.github.openfeign</groupId>
+            <artifactId>feign-httpclient</artifactId>
+        </dependency>
+        <!-- 连接池，使用okhttp作为feign客户端 -->
+        <!--
+        <dependency>
+            <groupId>io.github.openfeign</groupId>
+            <artifactId>feign-okhttp</artifactId>
+        </dependency>
+        -->
         <!-- 响应数据封装、异常处理：https://doc.feiniaojin.com/graceful-response/home.html -->
         <dependency>
             <groupId>com.feiniaojin</groupId>

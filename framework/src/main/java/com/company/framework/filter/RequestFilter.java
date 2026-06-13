@@ -86,7 +86,7 @@ public class RequestFilter extends OncePerRequestFilter {
 			responseBodyStr = responseWrapper.getCachedBodyString();
 		}
 
-		log.info("{} {} {} response:{},{}ms", method, requestIp, requestURI, responseBodyStr, System.currentTimeMillis() - start);
+		log.info("{} {} {} {}ms,response:{}", method, requestIp, requestURI, System.currentTimeMillis() - start, responseBodyStr);
 
 		// 内容写出到客户端
 //		responseWrapper.copyBodyToResponse();

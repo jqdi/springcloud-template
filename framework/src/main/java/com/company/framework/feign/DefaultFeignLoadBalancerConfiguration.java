@@ -27,8 +27,9 @@ import feign.Client;
  * @author Olga Maciaszek-Sharma
  * @since 2.2.0
  */
-@Configuration(proxyBeanMethods = false)
+//@Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties(LoadBalancerClientsProperties.class)
+@Deprecated // FeignLoggerClient的写死初始化，会导致无法使用feign-httpclient、feign-okhttp连接池
 class DefaultFeignLoadBalancerConfiguration {
 
 	@Bean
