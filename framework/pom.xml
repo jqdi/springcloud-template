@@ -106,12 +106,6 @@
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-circuitbreaker-resilience4j</artifactId>
 		</dependency>
-		<!-- Resilience4j 增强模块（可选） -->
-		<dependency>
-			<groupId>io.github.resilience4j</groupId>
-			<artifactId>resilience4j-spring-boot2</artifactId>
-			<version>1.7.1</version>
-		</dependency>
 		<!-- Sentinel：https://github.com/alibaba/spring-cloud-alibaba/wiki/Sentinel，相比于Resilience4J优点在于有控制台可以来配置熔断规则 -->
 		<!-- 如果使用 Sentinel，需额外部署 Sentinel Dashboard -->
 		<dependency>
