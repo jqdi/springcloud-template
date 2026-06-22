@@ -6,12 +6,15 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import com.company.tool.i18n.CommonI18nDataProvider;
 
 import io.github.jqdi.i18n.core.annotation.I18nField;
+import io.github.jqdi.i18n.core.annotation.I18nTable;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
 @Data
 @Accessors(chain = true)
 @TableName("banner")
+@I18nTable(i18nTable = "banner_i18n", i18nRelatedColumn = "banner_id", relatedValueFromField = "id") // 独立国际化表方式
+//@I18nTable(i18nTable = "banner_i18n", i18nRelatedColumn = "banner_id", relatedValueFromField = "id", i18nDataProvider = CommonI18nDataProvider.class) // 统一国际化表方式
 public class Banner {
 	private Integer id;
 
@@ -38,8 +41,7 @@ public class Banner {
 	/**
      * 标题
      */
-//    @I18nField(i18nTable = "banner_i18n", i18nColumn = "title", i18nRelatedColumn = "banner_id", relatedValueFromField = "id") // 独立国际化表方式
-    @I18nField(i18nTable = "banner_i18n", i18nColumn = "title", i18nRelatedColumn = "banner_id", relatedValueFromField = "id", i18nDataProvider = CommonI18nDataProvider.class) // 统一国际化表方式
+    @I18nField(i18nColumn = "title")
     private String title;
 
 	/**

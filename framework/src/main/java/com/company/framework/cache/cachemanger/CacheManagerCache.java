@@ -2,6 +2,7 @@ package com.company.framework.cache.cachemanger;
 
 import com.company.framework.cache.ICache;
 import com.company.framework.cache.exception.ValueRetrievalException;
+import com.google.common.util.concurrent.Striped;
 import io.lettuce.core.RedisException;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
@@ -9,6 +10,7 @@ import org.springframework.data.redis.connection.PoolException;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
@@ -17,7 +19,7 @@ import java.util.concurrent.locks.ReentrantLock;
 public class CacheManagerCache implements ICache {
 	private static final String NULL_VALUE = "null";// 缓存空值
 
-	private ReentrantLock lock4cache = new ReentrantLock();// 好实现应该根据key来加锁
+    private Striped<Lock> stripedLock = Striped.lock(16);// 分段锁，减少锁竞争
 
     private Cache cache;
 
@@ -54,7 +56,8 @@ public class CacheManagerCache implements ICache {
 			}
 
 			// redis没有问题的情况下，加载数据需要做同步操作，防止大量请求执行valueLoader获取数据
-			try {
+            Lock lock4cache = stripedLock.get(key);
+            try {
 				lock4cache.lock();
                 value =  cache.get(key, String.class);
 				if (value != null) {
@@ -93,6 +96,7 @@ public class CacheManagerCache implements ICache {
 	@Override
 	public long increment(String key, long delta) {
         // CacheManager缓存不支持自增，所以通过锁的方式实现
+        Lock lock4cache = stripedLock.get(key);
         try {
             lock4cache.lock();
 

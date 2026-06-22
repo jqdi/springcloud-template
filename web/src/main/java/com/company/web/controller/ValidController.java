@@ -1,18 +1,14 @@
 package com.company.web.controller;
 
-
-import com.company.web.req.Param;
 import com.company.web.req.ValidNestingReq;
 import com.company.web.req.ValidReq;
 import com.google.common.collect.Maps;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import java.util.HashMap;
 import java.util.Map;
 
 @Validated
@@ -28,7 +24,7 @@ public class ValidController {
     }
 
     @GetMapping(value = "/get-body-form-data")
-    public Map<String, Object> getbodyformdata(@NotBlank String p1, @NotEmpty String p2, @NotNull Integer p3) {
+    public Map<String, Object> getbodyformdata(@NotBlank(message = "p1不能为空") String p1, @NotBlank String p2, @NotNull Integer p3) {
         // 需结合@Validated使用
         Map<String, Object> map = Maps.newHashMap();
         map.put("p1", p1);
@@ -38,8 +34,7 @@ public class ValidController {
     }
 
 	@GetMapping(value = "/get-body-form-data2")
-    public ValidReq getbodyformdata2(@Valid ValidReq req) {
-        // @Valid无需结合@Validated使用
+    public ValidReq getbodyformdata2(@Validated ValidReq req) {
         return req;
     }
 
@@ -61,8 +56,7 @@ public class ValidController {
 	}
 
 	@PostMapping(value = "/post-body-form-data2")
-	public ValidReq postbodyformdata2(@Valid ValidReq req) {
-        // @Valid无需结合@Validated使用
+	public ValidReq postbodyformdata2(@Validated ValidReq req) {
 		return req;
 	}
 
@@ -75,8 +69,7 @@ public class ValidController {
 	}
 
     @PostMapping(value = "/post-body-row3")
-    public ValidNestingReq postbodyrow3(@Valid @RequestBody ValidNestingReq req) {
-        // @Valid无需结合@Validated使用
+    public ValidNestingReq postbodyrow3(@Validated @RequestBody ValidNestingReq req) {
         return req;
     }
 }

@@ -11,9 +11,9 @@ import com.company.tool.api.enums.WebhookEnum;
 import com.company.tool.api.feign.FileFeign;
 import com.company.tool.api.feign.PopupFeign;
 import com.company.tool.api.request.CancelUserPopupReq;
-import com.company.tool.api.request.ClientUploadReq;
+import com.company.tool.api.request.PresignedUploadReq;
 import com.company.tool.api.request.CreateUserPopupReq;
-import com.company.tool.api.response.ClientUploadResp;
+import com.company.tool.api.response.PresignedUploadResp;
 import com.company.tool.sms.AsyncSmsSender;
 import com.company.tool.webhook.AsyncWebhookSender;
 import com.google.common.collect.Lists;
@@ -85,12 +85,12 @@ public class TestController {
 			ExceptionUtil.throwException("请选择文件");
 		}
 
-		ClientUploadReq clientUploadReq = new ClientUploadReq();
-		clientUploadReq.setBasePath("web");
-		clientUploadReq.setFileName(originalFilename);
-		ClientUploadResp clientUploadResp = fileFeign.clientUpload(clientUploadReq);
-		String fileKey = clientUploadResp.getFileKey();
-		String presignedUrl = clientUploadResp.getPresignedUrl();
+		PresignedUploadReq presignedUploadReq = new PresignedUploadReq();
+		presignedUploadReq.setBasePath("web");
+		presignedUploadReq.setFileName(originalFilename);
+		PresignedUploadResp presignedUploadResp = fileFeign.presignedUpload(presignedUploadReq);
+		String fileKey = presignedUploadResp.getFileKey();
+		String presignedUrl = presignedUploadResp.getPresignedUrl();
 
 		try (InputStream inputStream = file.getInputStream()) {
 			// 客户端使用presignedUrl上传文件

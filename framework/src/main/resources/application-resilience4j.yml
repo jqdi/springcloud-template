@@ -6,8 +6,32 @@ spring:
         enabled: false  # 启用resilience4j，建议与application-sentinel.yml二选一使用
 
 # 熔断器 配置
+# 整体执行顺序：Ratelimiter (限流) → TimeLimiter (超时) → Retry (重试) → CircuitBreaker (熔断) → Feign调用
 resilience4j:
-  circuitbreaker: # 服务调用保护
+  # 限流：防止接口被过载打垮（单机限流），需结合@RateLimiter使用
+  ratelimiter:
+    configs:
+      default:
+        limitForPeriod: 50          # 每个时间段内允许的最大请求数，默认50
+        limitRefreshPeriod: 1s      # 刷新时间段，默认0.00000005s"
+  # 超时限制：防止线程长时间阻塞
+  timelimiter:
+    configs:
+      default:
+        # 熔断器的超时时间 = Ribbon的重试次数(包含首次) * (ribbon.ReadTimeout + ribbon.ConnectTimeout)
+        timeoutDuration: 10s  # 执行超时时间（整个调用过程>=单次请求*重试次数），默认1s
+  # 重试：应对网络抖动、瞬时故障
+  retry:
+    configs:
+      default:
+        maxAttempts: 2              # 最大重试次数（包含首次调用），默认3，2次 = 首次 + 1次重试
+        waitDuration: 500            # 重试间隔时间，默认500ms
+        retryExceptions:            # 重试异常列表，默认空
+          - feign.FeignException
+          - java.net.ConnectException
+          - java.net.SocketTimeoutException
+  # 熔断器：防服务雪崩
+  circuitbreaker:
     configs:
       default:
         registerHealthIndicator: true
@@ -17,23 +41,6 @@ resilience4j:
         slidingWindowSize: 10       # 滑动窗口大小，默认100
         waitDurationInOpenState: 5s # 从OPEN到HALF_OPEN状态需要等待的时间，默认60000（ms，毫秒）
         permittedNumberOfCallsInHalfOpenState: 10 # 断路器在半开的状态下，允许通过的调用次数，默认10
-  retry: # 网络波动、临时故障
-    configs:
-      default:
-        maxAttempts: 1              # 最大重试次数（包含首次调用）
-        waitDuration: 1s            # 重试间隔时间
-        retryExceptions:            # 重试异常列表
-          - java.lang.Exception
-  ratelimiter: # 防止服务过载
-    configs:
-      default:
-        limitForPeriod: 1          # 每个时间段内允许的最大请求数
-        limitRefreshPeriod: 1s      # 刷新时间段
-  timelimiter: # 避免长时间阻塞
-    configs:
-      default:
-        # 熔断器的超时时间 = Ribbon的重试次数(包含首次) * (ribbon.ReadTimeout + ribbon.ConnectTimeout)
-        timeoutDuration: 5s  # 执行超时时间（整个调用过程>=单次请求*重试次数）
 
 # Feign 支持
 feign:

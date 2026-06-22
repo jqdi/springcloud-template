@@ -188,20 +188,22 @@ encrypt:
 
 ### 7. mybatis-i18n 字段国际化
 
-#### 7.1 实体类使用 @I18nField 注解
+#### 7.1 实体类使用 @I18nTable、@I18nField 注解
 
 ```java
 @Data
 @TableName("user_info")
+@I18nTable(i18nTable = "user_info_i18n", i18nRelatedColumn = "user_info_id", relatedValueFromField = "id") // 独立国际化表方式
+//@I18nTable(i18nTable = "user_info_i18n", i18nRelatedColumn = "user_info_id", relatedValueFromField = "id", i18nDataProvider = CommonI18nDataProvider.class) // 统一国际化表方式
 public class UserInfo {
     @TableId(type = IdType.AUTO)
     private Integer id;
     private String username;
 
-    @I18nField(i18nTable = "user_info_i18n", i18nColumn = "nickname", i18nRelatedColumn = "user_info_id", relatedValueFromField = "id") // 独立国际化表方式
+    @I18nField(i18nColumn = "nickname")
     private String nickname;
 
-    @I18nField(i18nTable = "user_info_i18n", i18nColumn = "description", i18nRelatedColumn = "user_info_id", relatedValueFromField = "id", i18nDataProvider = CommonI18nDataProvider.class) // 统一国际化表方式
+    @I18nField(i18nColumn = "description")
     private String description;
 }
 ```

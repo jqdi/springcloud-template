@@ -71,7 +71,7 @@ public class ResponseFilter implements GlobalFilter, Ordered {
 						DataBufferUtils.release(dataBuffer);
 						String responseBody = new String(content, StandardCharsets.UTF_8);
 						traceManager.put(uniqueKey);
-						log.info("{} {} {} response:{},{}ms", method, requestIp, path, responseBody, System.currentTimeMillis() - start);
+						log.info("{} {} {} {}ms,response:{}", method, requestIp, path, System.currentTimeMillis() - start, responseBody);
 						traceManager.remove();
 						return bufferFactory.wrap(content);
 					}));

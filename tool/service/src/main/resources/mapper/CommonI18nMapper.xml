@@ -18,4 +18,20 @@
         and business_type = #{businessType}
         and locale = #{locale}
     </select>
+    <select id="selectByBusinessTypesBusinessIdsLocale" resultType="com.company.tool.entity.CommonI18n">
+        select * from common_i18n
+        where
+        <choose>
+            <when test="commonI18nList != null and commonI18nList.size() > 0">
+                (business_id,business_type) in
+                <foreach collection="commonI18nList" open="(" item="item" close=")" separator=",">
+                    (#{item.businessId},#{item.businessType})
+                </foreach>
+            </when>
+            <otherwise>
+                1 != 1
+            </otherwise>
+        </choose>
+        and locale = #{locale}
+    </select>
 </mapper>

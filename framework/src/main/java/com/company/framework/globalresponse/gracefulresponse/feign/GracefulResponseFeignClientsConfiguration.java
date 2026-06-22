@@ -27,7 +27,7 @@ import feign.optionals.OptionalDecoder;
  * 参考FeignClientsConfiguration
  */
 @Configuration(proxyBeanMethods = false)
-@EnableGracefulResponse
+//@EnableGracefulResponse
 public class GracefulResponseFeignClientsConfiguration {
 
     /**

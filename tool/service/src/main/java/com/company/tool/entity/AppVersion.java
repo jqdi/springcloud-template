@@ -5,12 +5,14 @@ import java.time.LocalDateTime;
 import com.baomidou.mybatisplus.annotation.TableName;
 
 import io.github.jqdi.i18n.core.annotation.I18nField;
+import io.github.jqdi.i18n.core.annotation.I18nTable;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
 @Data
 @Accessors(chain = true)
 @TableName("app_version")
+@I18nTable(i18nTable = "app_version_i18n", i18nRelatedColumn = "app_version_id", relatedValueFromField = "id")
 public class AppVersion {
 	private Integer id;
 
@@ -42,7 +44,7 @@ public class AppVersion {
 	/**
      * 发布说明
      */
-    @I18nField(i18nTable = "app_version_i18n", i18nColumn = "release_notes", i18nRelatedColumn = "app_version_id", relatedValueFromField = "id")
+    @I18nField(i18nColumn = "release_notes")
     private String releaseNotes;
 
 	private String remark;

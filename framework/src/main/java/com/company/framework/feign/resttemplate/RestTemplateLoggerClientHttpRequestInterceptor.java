@@ -8,7 +8,6 @@ import org.springframework.http.client.ClientHttpRequestExecution;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.client.ClientHttpResponse;
 
-import com.company.framework.context.SpringContextUtil;
 import com.company.framework.util.JsonUtil;
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -20,8 +19,11 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 public class RestTemplateLoggerClientHttpRequestInterceptor implements ClientHttpRequestInterceptor {
+    private final int arrMaxLength;
 
-    public RestTemplateLoggerClientHttpRequestInterceptor() {}
+    public RestTemplateLoggerClientHttpRequestInterceptor(int arrMaxLength) {
+        this.arrMaxLength = arrMaxLength;
+    }
 
     @Override
     public ClientHttpResponse intercept(HttpRequest request, byte[] bodyBytes, ClientHttpRequestExecution execution)
@@ -32,7 +34,6 @@ public class RestTemplateLoggerClientHttpRequestInterceptor implements ClientHtt
 
         ClientHttpResponse responseWrapper = new BodyReaderClientHttpResponseWrapper(response);
         try {
-            int arrMaxLength = SpringContextUtil.getIntegerProperty("template.requestFilter.arrMaxLength", 1000);
             String headers = JsonUtil.toJsonStringReplaceProperties(request.getHeaders(), arrMaxLength);
 
             String body = "{}";

@@ -20,4 +20,11 @@ public class CommonI18nService extends ServiceImpl<CommonI18nMapper, CommonI18n>
         }
         return baseMapper.selectByBusinessTypeBusinessidsLocale(businessType, businessTypeIdList, locale);
     }
+
+    public List<CommonI18n> selectByBusinessTypesBusinessIdsLocale(List<CommonI18n> commonI18nList, String locale) {
+        if (CollectionUtils.isEmpty(commonI18nList)) {
+            return Collections.emptyList();
+        }
+        return baseMapper.selectByBusinessTypesBusinessIdsLocale(commonI18nList, locale);
+    }
 }
