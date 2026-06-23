@@ -44,10 +44,10 @@ public class CommandRunner implements CommandLineRunner {
             }
             
             if ("1".equals(option)) {
-                System.out.print("请输入模块名称 (默认adminapi): ");
+                System.out.print("请输入模块名称 (默认order): ");
                 String moduleName = scanner.nextLine().trim();
                 if (moduleName.isEmpty()) {
-                    moduleName = "adminapi";
+                    moduleName = "order";
                 }
                 
                 // 验证模块是否支持

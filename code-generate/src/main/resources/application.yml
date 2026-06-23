@@ -2,7 +2,7 @@ spring:
   config:
     import: classpath:bootstrap.yml # 在Spring Boot 2.7.x版本中，默认情况下，bootstrap.yml件不再被自动加载
   profiles:
-    include: feign,resilience4j,sentinel,redis,rabbitmq,rocketmq,messagedriven,cachemanager,datasource,canal # 项目中增加配置application-*.yml可覆盖boot-starter-*,framework的默认配置application-*.yml
+    include: threadpool,feign,resilience4j,sentinel,redis,rabbitmq,rocketmq,messagedriven,cachemanager,datasource,canal # 项目中增加配置application-*.yml可覆盖boot-starter-*,framework的默认配置application-*.yml
   main:
     allow-bean-definition-overriding: true
 
@@ -44,20 +44,12 @@ mybatis-plus:
 template:
   sequence:
     datacenterId: 1
-  threadpool:
-    corePoolSize: 10
-    maxPoolSize: 20
-    queueCapacity: 200
-    keepAliveSeconds: 60
-    threadNamePrefix: t-subTask-
-    waitForTasksToCompleteOnShutdown: true
-    awaitTerminationSeconds: 60
 
 # 代码生成配置
 code:
   generate:
     # 默认生成到adminapi模块
-    target-module: adminapi
+    target-module: tool
     # 可选值: adminapi, admin, system, order, user, tool等
     module-options: adminapi,admin,system,order,user,tool
     # 输出路径前缀，默认为项目根目录

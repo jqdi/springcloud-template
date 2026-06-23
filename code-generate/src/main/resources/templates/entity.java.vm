@@ -1,39 +1,38 @@
 package ${package.Entity};
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
+import java.time.LocalDateTime;
+
 import com.baomidou.mybatisplus.annotation.TableName;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import com.company.datasource.mybatisplus.activerecord.AuditableModel;
+
 import lombok.Data;
-import lombok.EqualsAndHashCode;
-import java.io.Serializable;
-import java.util.Date;
 
 /**
  * ${table.comment}
+ *
  * @author CodeGenerate
  * @since ${date}
  */
 @Data
-@EqualsAndHashCode(callSuper = false)
-@TableName("${table.name}")
-@ApiModel(value="${entity}对象", description="${table.comment}")
-public class ${entity} implements Serializable {
+@TableName("$!table.name")
+public class $!entity extends AuditableModel<$!entity> {
 
-    private static final long serialVersionUID = 1L;
-    
-<#-- ----------  BEGIN 字段循环遍历  ---------->
-<#list table.fields as field>
-<#if field.keyFlag?? && field.keyFlag>
-    @ApiModelProperty(value = "${field.comment!}")
-    @TableId(value = "${field.name}", type = IdType.AUTO)
-    private ${field.propertyType} ${field.propertyName};
-<#else>
-    @ApiModelProperty(value = "${field.comment!}")
-    private ${field.propertyType} ${field.propertyName};
-</#if>
-</#list>
-<#------------  END 字段循环遍历  ---------->
-
+## ----------  BEGIN 字段循环遍历  ----------
+#foreach($field in $table.fields)
+## AuditableModel内的字段createTime、createBy、updateTime、updateBy去掉
+#if($field.propertyName != "createTime" && $field.propertyName != "createBy" && $field.propertyName != "updateTime" && $field.propertyName != "updateBy")
+#if($field.keyFlag)
+    /**
+     * ${field.comment}
+     */
+    private $!field.propertyType $!field.propertyName;
+#else
+    /**
+     * ${field.comment}
+     */
+    private $!field.propertyType $!field.propertyName;
+#end
+#end
+#end
+## ----------  END 字段循环遍历  ----------
 }

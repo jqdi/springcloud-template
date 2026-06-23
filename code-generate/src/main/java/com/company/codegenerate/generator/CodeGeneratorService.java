@@ -28,17 +28,18 @@ public class CodeGeneratorService {
      */
     public void generateCode(String tableName, String moduleName) {
         String projectPath = System.getProperty("user.dir");
-        String outputPath = Paths.get(projectPath, "..", moduleName).toString();
-        
+//        String outputPath = Paths.get(projectPath, moduleName).toString();
+        String outputPath = Paths.get(projectPath, moduleName, "service").toString();
+
         log.info("开始生成代码，表名: {}，模块名: {}，输出路径: {}", tableName, moduleName, outputPath);
-        
+
         // 构建数据源配置
         DataSourceConfig.Builder dataSourceConfigBuilder = new DataSourceConfig.Builder(
                 codeGeneratorConfig.getDatabase().getUrl(),
                 codeGeneratorConfig.getDatabase().getUsername(),
                 codeGeneratorConfig.getDatabase().getPassword()
         );
-        
+
         FastAutoGenerator.create(dataSourceConfigBuilder)
                 // 全局配置
                 .globalConfig(builder -> builder
@@ -46,7 +47,7 @@ public class CodeGeneratorService {
                         .enableSwagger() // 开启 swagger 模式
 //                        .fileOverride() // 覆盖已生成文件
                         .outputDir(outputPath + "/src/main/java") // 指定输出目录
-                        .dateType(DateType.ONLY_DATE) // 时间策略
+                        .dateType(DateType.TIME_PACK) // 时间策略
                         .build())
                 // 包配置
                 .packageConfig(builder -> builder
@@ -93,11 +94,15 @@ public class CodeGeneratorService {
                 // 注入配置
                 .injectionConfig(consumer -> {
                     // 自定义配置
+//                    consumer.customFile(builder -> builder
+//                            .fileName("DTO.java")
+//                            .filePath("")
+//                            .build());
                 })
                 // 使用Velocity引擎模板
                 .templateEngine(new VelocityTemplateEngine())
                 .execute();
-                
+
         log.info("代码生成完成，表名: {}，模块名: {}", tableName, moduleName);
     }
     

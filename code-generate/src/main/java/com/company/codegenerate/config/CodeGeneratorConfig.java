@@ -11,12 +11,12 @@ public class CodeGeneratorConfig {
     /**
      * 目标模块名称
      */
-    private String targetModule = "adminapi";
+    private String targetModule = "tool";
     
     /**
      * 可选的模块列表
      */
-    private String moduleOptions = "adminapi,admin,system,order,user,tool";
+    private String moduleOptions = "tool,admin,system,order,user,adminapi";
     
     /**
      * 模板路径
@@ -26,7 +26,7 @@ public class CodeGeneratorConfig {
     /**
      * 输出基础路径
      */
-    private String outputBasePath = "../";
+    private String outputBasePath = "D:\\code\\springcloud-template";
     
     /**
      * 数据库配置
