@@ -1,10 +1,5 @@
 package ${package.Entity};
 
-import java.time.LocalDateTime;
-
-import com.baomidou.mybatisplus.annotation.TableName;
-import com.company.datasource.mybatisplus.activerecord.AuditableModel;
-
 import lombok.Data;
 
 /**
@@ -13,13 +8,11 @@ import lombok.Data;
  * @author CodeGenerate
  */
 @Data
-@TableName("$!table.name")
-public class $!entity extends AuditableModel<$!entity> {
+public class $!entity {
 
 ## ----------  BEGIN 字段循环遍历  ----------
 #foreach($field in $table.fields)
 ## AuditableModel内的字段createTime、createBy、updateTime、updateBy去掉
-#if($field.propertyName != "createTime" && $field.propertyName != "createBy" && $field.propertyName != "updateTime" && $field.propertyName != "updateBy")
 #if($field.keyFlag)
     /**
      * ${field.comment}
@@ -30,7 +23,6 @@ public class $!entity extends AuditableModel<$!entity> {
      * ${field.comment}
      */
     private $!field.propertyType $!field.propertyName;
-#end
 #end
 #end
 ## ----------  END 字段循环遍历  ----------

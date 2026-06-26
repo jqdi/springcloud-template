@@ -10,26 +10,25 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 /**
  * ${table.comment} 前端控制器
  * @author CodeGenerate
- * @since ${date}
  */
 @Api(tags = "$!table.comment管理")
 @RestController
-@RequestMapping("/$!table.name")
+@RequestMapping("/${entity.substring(0,1).toLowerCase()}${entity.substring(1)}")
 public class $!table.controllerName {
     
     @Autowired
-    private ${package.Service}.$!table.serviceName $!tool.toLowerCaseFirstChar($table.serviceName);
+    private ${package.Service}.$!table.serviceName ${table.serviceName.substring(0,1).toLowerCase()}${table.serviceName.substring(1)};
     
     /**
      * 分页查询${table.comment}
      */
     @ApiOperation("分页查询${table.comment}")
     @GetMapping("/page")
-    public Result<Page<${package.Entity}.$!entity>> page(
+    public Result<Page<${package.Entity}.${entity}>> page(
         @RequestParam(defaultValue = "1") Long current,
         @RequestParam(defaultValue = "10") Long size) {
-        Page<${package.Entity}.$!entity> page = new Page<>(current, size);
-        return Result.success($!tool.toLowerCaseFirstChar($table.serviceName).page(page));
+        Page<${package.Entity}.${entity}> page = new Page<>(current, size);
+        return Result.success(${table.serviceName.substring(0,1).toLowerCase()}${table.serviceName.substring(1)}.page(page));
     }
     
     /**
@@ -37,8 +36,8 @@ public class $!table.controllerName {
      */
     @ApiOperation("根据ID查询${table.comment}")
     @GetMapping("/query")
-    public Result<${package.Entity}.$!entity> query(@RequestParam Integer id) {
-        return Result.success($!tool.toLowerCaseFirstChar($table.serviceName).getById(id));
+    public Result<${package.Entity}.${entity}> query(@RequestParam Integer id) {
+        return Result.success(${table.serviceName.substring(0,1).toLowerCase()}${table.serviceName.substring(1)}.getById(id));
     }
     
     /**
@@ -46,8 +45,8 @@ public class $!table.controllerName {
      */
     @ApiOperation("保存${table.comment}")
     @PostMapping("/save")
-    public Result<Boolean> save(@RequestBody ${package.Entity}.$!entity $!tool.toLowerCaseFirstChar($entity)) {
-        return Result.success($!tool.toLowerCaseFirstChar($table.serviceName).save($!tool.toLowerCaseFirstChar($entity)));
+    public Result<Boolean> save(@RequestBody ${package.Entity}.${entity} ${entity.substring(0,1).toLowerCase()}${entity.substring(1)}) {
+        return Result.success(${table.serviceName.substring(0,1).toLowerCase()}${table.serviceName.substring(1)}.save(${entity.substring(0,1).toLowerCase()}${entity.substring(1)}));
     }
     
     /**
@@ -55,8 +54,8 @@ public class $!table.controllerName {
      */
     @ApiOperation("更新${table.comment}")
     @PostMapping("/update")
-    public Result<Boolean> update(@RequestBody ${package.Entity}.$!entity $!tool.toLowerCaseFirstChar($entity)) {
-        return Result.success($!tool.toLowerCaseFirstChar($table.serviceName).updateById($!tool.toLowerCaseFirstChar($entity)));
+    public Result<Boolean> update(@RequestBody ${package.Entity}.${entity} ${entity.substring(0,1).toLowerCase()}${entity.substring(1)}) {
+        return Result.success(${table.serviceName.substring(0,1).toLowerCase()}${table.serviceName.substring(1)}.updateById(${entity.substring(0,1).toLowerCase()}${entity.substring(1)}));
     }
     
     /**
@@ -65,6 +64,6 @@ public class $!table.controllerName {
     @ApiOperation("删除${table.comment}")
     @PostMapping("/remove")
     public Result<Boolean> remove(@RequestBody Integer id) {
-        return Result.success($!tool.toLowerCaseFirstChar($table.serviceName).removeById(id));
+        return Result.success(${table.serviceName.substring(0,1).toLowerCase()}${table.serviceName.substring(1)}.removeById(id));
     }
 }

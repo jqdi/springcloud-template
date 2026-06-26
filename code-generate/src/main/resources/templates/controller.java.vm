@@ -1,35 +1,55 @@
 package ${package.Controller};
 
-import com.company.common.api.Result;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 
+import ${package.Entity}.${entity};
+import ${package.Service}.${entity}Feign;
+import ${package.Service}.$!table.serviceName;
+
 /**
  * ${table.comment} 前端控制器
+ *
  * @author CodeGenerate
- * @since ${date}
  */
 @Api(tags = "$!table.comment管理")
 @RestController
-@RequestMapping("/$!table.name")
-public class $!table.controllerName {
+@RequestMapping("/${entity.substring(0,1).toLowerCase()}${entity.substring(1)}")
+public class ${table.controllerName}  implements ${entity}Feign {
     
     @Autowired
-    private ${package.Service}.$!table.serviceName $!tool.toLowerCaseFirstChar($table.serviceName);
-    
+    private $!table.serviceName ${table.serviceName.substring(0,1).toLowerCase()}${table.serviceName.substring(1)};
+
+	private QueryWrapper<${entity}> toQueryWrapper(String name, String code, String value, String configRemark) {
+		QueryWrapper<${entity}> queryWrapper = new QueryWrapper<>();
+		if (StringUtils.isNotBlank(name)) {
+			queryWrapper.like("name", name);
+		}
+		if (StringUtils.isNotBlank(code)) {
+			queryWrapper.like("code", code);
+		}
+		if (StringUtils.isNotBlank(value)) {
+			queryWrapper.like("value", value);
+		}
+		if (StringUtils.isNotBlank(configRemark)) {
+			queryWrapper.like("config_remark", configRemark);
+		}
+		return queryWrapper;
+	}
+
     /**
      * 分页查询${table.comment}
      */
     @ApiOperation("分页查询${table.comment}")
     @GetMapping("/page")
-    public Result<Page<${package.Entity}.$!entity>> page(
+    public Page<${package.Entity}.${entity}> page(
         @RequestParam(defaultValue = "1") Long current,
         @RequestParam(defaultValue = "10") Long size) {
-        Page<${package.Entity}.$!entity> page = new Page<>(current, size);
-        return Result.success($!tool.toLowerCaseFirstChar($table.serviceName).page(page));
+        Page<${package.Entity}.${entity}> page = new Page<>(current, size);
+        return ${table.serviceName.substring(0,1).toLowerCase()}${table.serviceName.substring(1)}.page(page);
     }
     
     /**
@@ -37,8 +57,8 @@ public class $!table.controllerName {
      */
     @ApiOperation("根据ID查询${table.comment}")
     @GetMapping("/{id}")
-    public Result<${package.Entity}.$!entity> get(@PathVariable Integer id) {
-        return Result.success($!tool.toLowerCaseFirstChar($table.serviceName).getById(id));
+    public ${package.Entity}.${entity} get(@PathVariable Integer id) {
+        return ${table.serviceName.substring(0,1).toLowerCase()}${table.serviceName.substring(1)}.getById(id);
     }
     
     /**
@@ -46,8 +66,8 @@ public class $!table.controllerName {
      */
     @ApiOperation("保存${table.comment}")
     @PostMapping("/save")
-    public Result<Boolean> save(@RequestBody ${package.Entity}.$!entity $!tool.toLowerCaseFirstChar($entity)) {
-        return Result.success($!tool.toLowerCaseFirstChar($table.serviceName).save($!tool.toLowerCaseFirstChar($entity)));
+    public Boolean save(@RequestBody ${package.Entity}.${entity} ${entity.substring(0,1).toLowerCase()}${entity.substring(1)}) {
+        return ${table.serviceName.substring(0,1).toLowerCase()}${table.serviceName.substring(1)}.save(${entity.substring(0,1).toLowerCase()}${entity.substring(1)});
     }
     
     /**
@@ -55,8 +75,8 @@ public class $!table.controllerName {
      */
     @ApiOperation("更新${table.comment}")
     @PostMapping("/update")
-    public Result<Boolean> update(@RequestBody ${package.Entity}.$!entity $!tool.toLowerCaseFirstChar($entity)) {
-        return Result.success($!tool.toLowerCaseFirstChar($table.serviceName).updateById($!tool.toLowerCaseFirstChar($entity)));
+    public Boolean update(@RequestBody ${package.Entity}.${entity} ${entity.substring(0,1).toLowerCase()}${entity.substring(1)}) {
+        return ${table.serviceName.substring(0,1).toLowerCase()}${table.serviceName.substring(1)}.updateById(${entity.substring(0,1).toLowerCase()}${entity.substring(1)});
     }
     
     /**
@@ -64,7 +84,7 @@ public class $!table.controllerName {
      */
     @ApiOperation("删除${table.comment}")
     @PostMapping("/remove")
-    public Result<Boolean> remove(@RequestBody Integer id) {
-        return Result.success($!tool.toLowerCaseFirstChar($table.serviceName).removeById(id));
+    public Boolean remove(@RequestBody Integer id) {
+        return ${table.serviceName.substring(0,1).toLowerCase()}${table.serviceName.substring(1)}.removeById(id);
     }
 }
