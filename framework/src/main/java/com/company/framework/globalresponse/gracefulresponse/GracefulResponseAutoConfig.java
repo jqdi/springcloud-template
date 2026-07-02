@@ -24,6 +24,7 @@ public class GracefulResponseAutoConfig extends AutoConfig {
      * @return
      */
     @Bean
+    @Override
     public DefaultValidationExceptionAdvice defaultValidationExceptionAdvice(BeforeControllerAdviceProcess beforeControllerAdviceProcess,
                                                                              @Lazy RejectStrategy rejectStrategy) {
         DefaultValidationExceptionAdvice advice = new CustomValidationExceptionAdvice();

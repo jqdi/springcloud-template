@@ -12,10 +12,9 @@ import org.springframework.boot.autoconfigure.http.HttpMessageConverters;
 import org.springframework.cloud.openfeign.support.HttpMessageConverterCustomizer;
 import org.springframework.cloud.openfeign.support.SpringDecoder;
 
-import com.company.framework.globalresponse.gracefulresponse.feign.context.GracefulResponseExceptionContext;
+import com.company.common.exception.ResultException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.feiniaojin.gracefulresponse.GracefulResponseException;
 import com.feiniaojin.gracefulresponse.GracefulResponseProperties;
 import com.feiniaojin.gracefulresponse.api.ResponseFactory;
 import com.feiniaojin.gracefulresponse.data.ResponseStatus;
@@ -111,8 +110,7 @@ public class GracefulResponseDecoder extends SpringDecoder {
         // 是GracefulResponse包装
         String defaultSuccessCode = gracefulResponseProperties.getDefaultSuccessCode();
         if (!defaultSuccessCode.equals(code)) {
-            GracefulResponseExceptionContext.setException(new GracefulResponseException(code, msg));
-            return null;
+            throw new ResultException(code, msg);
         }
         if (data == null) {
             return null;
