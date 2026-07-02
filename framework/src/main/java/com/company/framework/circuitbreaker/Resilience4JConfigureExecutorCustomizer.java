@@ -19,8 +19,7 @@ import com.company.framework.threadpool.ThreadPoolProperties;
  * resilience4j的线程池替换为自定义线程池
  */
 @Component
-@ConditionalOnProperty(name = { "spring.cloud.circuitbreaker.resilience4j.enabled",
-        "spring.cloud.circuitbreaker.resilience4j.blocking.enabled" }, matchIfMissing = true)
+@ConditionalOnProperty(name = "spring.cloud.circuitbreaker.resilience4j.enabled", matchIfMissing = true)
 public class Resilience4JConfigureExecutorCustomizer implements Customizer<Resilience4JCircuitBreakerFactory> {
     private final ThreadPoolProperties properties;
     private final TaskDecorator taskDecorator;
