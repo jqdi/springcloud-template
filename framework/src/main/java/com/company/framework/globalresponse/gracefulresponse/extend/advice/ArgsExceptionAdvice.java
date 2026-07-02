@@ -28,9 +28,9 @@ import javax.servlet.http.HttpServletResponse;
 public class ArgsExceptionAdvice extends AbstractControllerAdvice
     implements ControllerAdvicePredicate, ControllerAdviceProcessor, ControllerAdviceHttpProcessor {
 
-    private ResponseFactory responseFactory;
-    private GracefulResponseProperties properties;
-    private ResponseStatusFactory responseStatusFactory;
+    private final ResponseFactory responseFactory;
+    private final GracefulResponseProperties properties;
+    private final ResponseStatusFactory responseStatusFactory;
 
     public ArgsExceptionAdvice(BeforeControllerAdviceProcess beforeControllerAdviceProcess, @Lazy RejectStrategy rejectStrategy,
         ResponseFactory responseFactory, GracefulResponseProperties properties, ResponseStatusFactory responseStatusFactory) {
