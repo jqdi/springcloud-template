@@ -48,7 +48,7 @@ public class CustomBeforeControllerAdviceProcessImpl implements BeforeController
             return;
         }
         if (properties.isPrintExceptionInGlobalAdvice()) {
-            String code = "unknown";
+            String code = properties.getDefaultErrorCode();
             String message = ex.getMessage();
             if (ex instanceof GracefulResponseException) {
                 GracefulResponseException gracefulResponseException = (GracefulResponseException)ex;
