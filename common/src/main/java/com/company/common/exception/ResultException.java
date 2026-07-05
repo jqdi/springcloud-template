@@ -11,7 +11,7 @@ public class ResultException extends RuntimeException {
 	private static final long serialVersionUID = 1L;
 
 	@Getter
-	private String code;
+	private final String code;
 
 	public ResultException(String code, String message) {
 		super(message);

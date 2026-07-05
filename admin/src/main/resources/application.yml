@@ -5,9 +5,10 @@ spring:
     include: gracefulresponse,developer,threadpool,redis,rabbitmq,rocketmq,messagedriven,cachemanager,datasource # 项目中增加配置application-*.yml可覆盖boot-starter-*,framework的默认配置application-*.yml
   main:
     allow-bean-definition-overriding: true
-  resources:
-    #用于告诉springboot应该在何处寻找静态资源，springboot默认的位置和优先级：spring.resources.static-locations=classpath:/static,classpath:/public,classpath:/resources,classpath:/META-INF/resources
-    static-locations: /assets/
+  web:
+    resources:
+      #用于告诉springboot应该在何处寻找静态资源，springboot默认的位置和优先级：spring.resources.static-locations=classpath:/static,classpath:/public,classpath:/resources,classpath:/META-INF/resources
+      static-locations: /assets/
   mvc:
     #资源访问路径和spring.mvc.static-path-pattern匹配，当资源访问路径为"%/static/**”时，springboot才会处理请求
     static-path-pattern: /assets/**

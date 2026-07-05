@@ -33,9 +33,9 @@ import lombok.extern.slf4j.Slf4j;
 public class ResultExceptionAdvice extends AbstractControllerAdvice
     implements ControllerAdvicePredicate, ControllerAdviceProcessor, ControllerAdviceHttpProcessor {
 
-    private ResponseFactory responseFactory;
-    private GracefulResponseProperties properties;
-    private ResponseStatusFactory responseStatusFactory;
+    private final ResponseFactory responseFactory;
+    private final GracefulResponseProperties properties;
+    private final ResponseStatusFactory responseStatusFactory;
 
     public ResultExceptionAdvice(BeforeControllerAdviceProcess beforeControllerAdviceProcess, @Lazy RejectStrategy rejectStrategy,
                                  ResponseFactory responseFactory, GracefulResponseProperties properties, ResponseStatusFactory responseStatusFactory) {

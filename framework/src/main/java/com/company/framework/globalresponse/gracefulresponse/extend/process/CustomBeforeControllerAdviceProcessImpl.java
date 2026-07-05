@@ -11,6 +11,7 @@ import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.BindException;
 
+import com.company.common.exception.ResultException;
 import com.feiniaojin.gracefulresponse.ExceptionAliasRegister;
 import com.feiniaojin.gracefulresponse.GracefulResponseException;
 import com.feiniaojin.gracefulresponse.GracefulResponseProperties;
@@ -40,21 +41,32 @@ public class CustomBeforeControllerAdviceProcessImpl implements BeforeController
         Class<? extends Exception> clazz = ex.getClass();
         ExceptionAliasFor exceptionAliasFor = exceptionAliasRegister.getExceptionAliasFor(clazz);
         ExceptionMapper exceptionMapper = clazz.getAnnotation(ExceptionMapper.class);
-        if (!(ex instanceof GracefulResponseException || ex instanceof BindException || ex instanceof ValidationException
-            || exceptionAliasFor != null || exceptionMapper != null)) {
-            // 如果不是GracefulResponseException，则直接打印错误堆栈，方便排查问题
+        if (!(ex instanceof GracefulResponseException || ex instanceof ResultException || ex instanceof BindException
+            || ex instanceof ValidationException || exceptionAliasFor != null || exceptionMapper != null)) {
+            // 如果不是预期内的异常，则直接打印错误堆栈，方便排查问题
             logger.error("捕获到未知异常,message=[{}]", ex.getMessage(), ex);
             return;
         }
         if (properties.isPrintExceptionInGlobalAdvice()) {
+            String code = properties.getDefaultErrorCode();
             String message = ex.getMessage();
-            if (exceptionAliasFor != null) {
+            if (ex instanceof GracefulResponseException) {
+                GracefulResponseException gracefulResponseException = (GracefulResponseException)ex;
+                code = gracefulResponseException.getCode();
+                message = gracefulResponseException.getMsg();
+            } else if (ex instanceof ResultException) {
+                ResultException resultException = (ResultException)ex;
+                code = resultException.getCode();
+                message = resultException.getMessage();
+            } else if (exceptionAliasFor != null) {
+                code = exceptionAliasFor.code();
                 message = exceptionAliasFor.msg();
             } else if (exceptionMapper != null && !exceptionMapper.msgReplaceable()) {
+                code = exceptionMapper.code();
                 message = exceptionMapper.msg();
             }
 //            logger.error("Graceful Response:捕获到异常,message=[{}]", ex.getMessage(), ex);
-            logger.warn("Graceful Response:捕获到异常,message=[{}]", message);// 调整为warn级别，不打印堆栈，降低日志关注度
+            logger.warn("Graceful Response:捕获到异常,code=[{}],message=[{}]", code, message);// 调整为warn级别，不打印堆栈，降低日志关注度
         }
     }
 }

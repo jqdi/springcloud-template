@@ -1,8 +1,10 @@
 # 熔断器 配置，官方整合文档：https://github.com/alibaba/spring-cloud-alibaba/wiki/Sentinel
 spring:
   cloud:
+    circuitbreaker:
+      sentinel:
+        enabled: true # 启用Sentinel，建议与application-resilience4j.yml二选一使用
     sentinel:
-      enabled: true # 启用Sentinel，建议与application-resilience4j.yml二选一使用
       eager: true # 启动马上初始化，默认false
       transport:
         dashboard: localhost:8080 # Sentinel控制台地址
@@ -19,4 +21,4 @@ spring:
 # Feign 支持
 feign:
   sentinel:
-    enabled: ${spring.cloud.sentinel.enabled} # feign启用sentinel熔断支持
+    enabled: ${spring.cloud.circuitbreaker.sentinel.enabled} # feign启用sentinel熔断支持

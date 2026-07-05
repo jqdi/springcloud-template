@@ -12,7 +12,7 @@ import lombok.Getter;
 public class ArgsBusinessException extends GracefulResponseException {
 
     @Getter
-    private Object[] args;
+    private final Object[] args;
 
     protected ArgsBusinessException(String code, String msg, Object... args) {
         super(code, msg);

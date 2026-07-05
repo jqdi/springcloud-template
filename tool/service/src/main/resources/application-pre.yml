@@ -1,7 +1,8 @@
 spring:
-  resources:
-    #用于告诉springboot应该在何处寻找静态资源，springboot默认的位置和优先级：spring.resources.static-locations=classpath:/static,classpath:/public,classpath:/resources,classpath:/META-INF/resources
-    static-locations: file:D:/home/data/oss/buket-template-pre/
+  web:
+    resources:
+      #用于告诉springboot应该在何处寻找静态资源，springboot默认的位置和优先级：spring.resources.static-locations=classpath:/static,classpath:/public,classpath:/resources,classpath:/META-INF/resources
+      static-locations: file:D:/home/data/oss/buket-template-pre/
 
 logging:
   file:
