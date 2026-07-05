@@ -54,10 +54,10 @@ public class SysConfigController implements SysConfigFeign {
 //		long count = sysConfigService.count(queryWrapper);
 
 		queryWrapper.orderByDesc("id");
-		Page<SysConfig> page = PageDTO.of(current, size);
-		List<SysConfig> list = sysConfigService.list(page, queryWrapper);
+		Page<SysConfig> page = sysConfigService.page(PageDTO.of(current, size), queryWrapper);
+//		List<SysConfig> list = sysConfigService.list(page, queryWrapper);
 
-		List<SysConfigResp> respList = PropertyUtils.copyArrayProperties(list, SysConfigResp.class);
+		List<SysConfigResp> respList = PropertyUtils.copyArrayProperties(page.getRecords(), SysConfigResp.class);
 		return PageResp.of(page.getTotal(), respList);
 	}
 

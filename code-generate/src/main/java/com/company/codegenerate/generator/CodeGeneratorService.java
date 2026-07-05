@@ -61,8 +61,11 @@ public class CodeGeneratorService {
                 pathInfo.put(OutputFile.xml, outputPath + "/src/main/resources/mapper");
 
                 builder//
-                    .parent(getPackageParent(moduleName)) // 设置父包名
-                    .moduleName(getModuleName(moduleName)) // 设置父包模块名
+//                    .parent(getPackageParent(moduleName)) // 设置父包名
+//                    .parent("com.company."+moduleName) // 设置父包名
+                    .parent("com.company") // 设置父包名
+//                    .moduleName(getModuleName(moduleName)) // 设置父包模块名
+                    .moduleName(moduleName) // 设置父包模块名
                     .entity("entity") // Entity包名
                     .mapper("mapper") // Mapper包名
                     .xml("mapper.xml") // Mapper XML包名
@@ -113,10 +116,15 @@ public class CodeGeneratorService {
                 // 自定义配置
                 Map<String, Object> customMap = Maps.newHashMap();
                 customMap.put("lowEntity", "aaaa");
+                customMap.put("apiPackage", "com.company." + moduleName + ".api");
                 consumer.customMap(customMap);
+
+                String apiPath = "D:\\code\\me\\springcloud-template\\order\\api\\src\\main\\java\\com\\company\\order\\api";
 
                 consumer.customFile(builder -> builder//
                     .templatePath("/templates/entityReq.java.vm")//
+//                    .filePath("D:\\code\\me\\springcloud-template\\order\\api")
+                    .filePath(apiPath)
                     .packageName("request")//
                     .formatNameFunction(tableInfo -> tableInfo.getEntityName() + "Req")//
                     .fileName(".java")//
@@ -124,6 +132,7 @@ public class CodeGeneratorService {
                 );
                 consumer.customFile(builder -> builder//
                     .templatePath("/templates/entityResp.java.vm")//
+                    .filePath(apiPath)
                     .packageName("response")//
                     .formatNameFunction(tableInfo -> tableInfo.getEntityName() + "Resp")//
                     .fileName(".java")//
@@ -131,6 +140,7 @@ public class CodeGeneratorService {
                 );
                 consumer.customFile(builder -> builder//
                     .templatePath("/templates/feign.java.vm")//
+                    .filePath(apiPath)
                     .packageName("feign")//
                     .formatNameFunction(tableInfo -> tableInfo.getEntityName() + "Feign")//
                     .fileName(".java")//

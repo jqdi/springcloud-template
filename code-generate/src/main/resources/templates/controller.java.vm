@@ -1,13 +1,23 @@
 package ${package.Controller};
 
-import org.springframework.web.bind.annotation.*;
-import org.springframework.beans.factory.annotation.Autowired;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import java.time.LocalDateTime;
+import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.PageDTO;
+import com.company.common.response.PageResp;
+
+import ${apiPackage}.feign.${entity}Feign;
+import ${apiPackage}.request.${entity}Req;
+import ${apiPackage}.response.${entity}Resp;
 import ${package.Entity}.${entity};
-import ${package.Service}.${entity}Feign;
 import ${package.Service}.$!table.serviceName;
 
 /**
@@ -15,15 +25,23 @@ import ${package.Service}.$!table.serviceName;
  *
  * @author CodeGenerate
  */
-@Api(tags = "$!table.comment管理")
 @RestController
 @RequestMapping("/${entity.substring(0,1).toLowerCase()}${entity.substring(1)}")
-public class ${table.controllerName}  implements ${entity}Feign {
-    
+public class ${table.controllerName} implements ${entity}Feign {
+
     @Autowired
     private $!table.serviceName ${table.serviceName.substring(0,1).toLowerCase()}${table.serviceName.substring(1)};
 
-	private QueryWrapper<${entity}> toQueryWrapper(String name, String code, String value, String configRemark) {
+	private QueryWrapper<${entity}> toQueryWrapper(
+    ## ----------  BEGIN 字段循环遍历  ----------
+    #foreach($field in $table.fields)
+        ## AuditableModel内的字段createTime、createBy、updateTime、updateBy去掉
+        #if($field.propertyName != "createTime" && $field.propertyName != "createBy" && $field.propertyName != "updateTime" && $field.propertyName != "updateBy")
+            $!field.propertyType $!field.propertyName,
+        #end
+    #end
+    ## ----------  END 字段循环遍历  ----------
+            String name, String code, String value, String configRemark) {
 		QueryWrapper<${entity}> queryWrapper = new QueryWrapper<>();
 		if (StringUtils.isNotBlank(name)) {
 			queryWrapper.like("name", name);
@@ -40,51 +58,55 @@ public class ${table.controllerName}  implements ${entity}Feign {
 		return queryWrapper;
 	}
 
-    /**
-     * 分页查询${table.comment}
-     */
-    @ApiOperation("分页查询${table.comment}")
-    @GetMapping("/page")
-    public Page<${package.Entity}.${entity}> page(
-        @RequestParam(defaultValue = "1") Long current,
-        @RequestParam(defaultValue = "10") Long size) {
-        Page<${package.Entity}.${entity}> page = new Page<>(current, size);
-        return ${table.serviceName.substring(0,1).toLowerCase()}${table.serviceName.substring(1)}.page(page);
+    @Override
+    public PageResp<${entity}Resp> page(@RequestParam(defaultValue = "1") Long current, @RequestParam(defaultValue = "10") Long size, Integer parentId, String parentIds, String name, Integer orderNum, String status) {
+        QueryWrapper<${entity}> queryWrapper = toQueryWrapper(parentId, parentIds, name, orderNum, status);
+        long count = ${table.serviceName.substring(0,1).toLowerCase()}${table.serviceName.substring(1)}.count(queryWrapper);
+
+        queryWrapper.orderByDesc("id");
+        List<${entity}> list = ${table.serviceName.substring(0,1).toLowerCase()}${table.serviceName.substring(1)}.list(PageDTO.of(current, size), queryWrapper);
+
+        List<${entity}Resp> respList = PropertyUtils.copyArrayProperties(list, ${entity}Resp.class);
+        return PageResp.of(count, respList);
     }
-    
-    /**
-     * 根据ID查询${table.comment}
-     */
-    @ApiOperation("根据ID查询${table.comment}")
-    @GetMapping("/{id}")
-    public ${package.Entity}.${entity} get(@PathVariable Integer id) {
-        return ${table.serviceName.substring(0,1).toLowerCase()}${table.serviceName.substring(1)}.getById(id);
+
+    @Override
+    public List<${entity}Resp> list(Integer parentId, String parentIds, String name, Integer orderNum, String status) {
+        QueryWrapper<${entity}> queryWrapper = toQueryWrapper(parentId, parentIds, name, orderNum, status);
+        queryWrapper.orderByDesc("id");
+        List<${entity}> list = ${table.serviceName.substring(0,1).toLowerCase()}${table.serviceName.substring(1)}.list(queryWrapper);
+
+        List<${entity}Resp> respList = PropertyUtils.copyArrayProperties(list, ${entity}Resp.class);
+        return respList;
     }
-    
-    /**
-     * 保存${table.comment}
-     */
-    @ApiOperation("保存${table.comment}")
-    @PostMapping("/save")
-    public Boolean save(@RequestBody ${package.Entity}.${entity} ${entity.substring(0,1).toLowerCase()}${entity.substring(1)}) {
-        return ${table.serviceName.substring(0,1).toLowerCase()}${table.serviceName.substring(1)}.save(${entity.substring(0,1).toLowerCase()}${entity.substring(1)});
+
+    @Override
+    public ${entity}Resp query(Integer id) {
+        ${entity} entity = ${table.serviceName.substring(0,1).toLowerCase()}${table.serviceName.substring(1)}.getById(id);
+        ${entity}Resp entityResp = PropertyUtils.copyProperties(entity, ${entity}Resp.class);
+        return entityResp;
     }
-    
-    /**
-     * 更新${table.comment}
-     */
-    @ApiOperation("更新${table.comment}")
-    @PostMapping("/update")
-    public Boolean update(@RequestBody ${package.Entity}.${entity} ${entity.substring(0,1).toLowerCase()}${entity.substring(1)}) {
-        return ${table.serviceName.substring(0,1).toLowerCase()}${table.serviceName.substring(1)}.updateById(${entity.substring(0,1).toLowerCase()}${entity.substring(1)});
+
+    @Override
+    public Boolean save(${entity}Req req) {
+        ${entity} entity = PropertyUtils.copyProperties(req, ${entity}.class);
+        boolean success = ${table.serviceName.substring(0,1).toLowerCase()}${table.serviceName.substring(1)}.save(entity);
+        return success;
     }
-    
-    /**
-     * 删除${table.comment}
-     */
-    @ApiOperation("删除${table.comment}")
-    @PostMapping("/remove")
-    public Boolean remove(@RequestBody Integer id) {
-        return ${table.serviceName.substring(0,1).toLowerCase()}${table.serviceName.substring(1)}.removeById(id);
+
+    @Override
+    public Boolean update(${entity}Req req) {
+        ${entity} entity = PropertyUtils.copyProperties(req, ${entity}.class);
+        boolean success = ${table.serviceName.substring(0,1).toLowerCase()}${table.serviceName.substring(1)}.updateById(entity);
+        return success;
+    }
+
+    @Override
+    public Boolean remove(List<Integer> ids) {
+        if (CollectionUtils.isEmpty(ids)) {
+            return true;
+        }
+        boolean success = ${table.serviceName.substring(0,1).toLowerCase()}${table.serviceName.substring(1)}.removeBatchByIds(ids);
+        return success;
     }
 }

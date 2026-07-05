@@ -1,4 +1,6 @@
-package ${package.Entity};
+package ${apiPackage}.request;
+
+import java.time.LocalDateTime;
 
 import lombok.Data;
 
@@ -8,7 +10,7 @@ import lombok.Data;
  * @author CodeGenerate
  */
 @Data
-public class $!entity {
+public class ${entity}Req {
 
 ## ----------  BEGIN 字段循环遍历  ----------
 #foreach($field in $table.fields)

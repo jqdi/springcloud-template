@@ -14,7 +14,7 @@ import lombok.Data;
  */
 @Data
 @TableName("$!table.name")
-public class $!entity extends AuditableModel<$!entity> {
+public class ${entity} extends AuditableModel<${entity}> {
 
 ## ----------  BEGIN 字段循环遍历  ----------
 #foreach($field in $table.fields)

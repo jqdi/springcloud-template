@@ -1,21 +1,20 @@
-package com.company.system.api.feign;
+package ${apiPackage}.feign;
 
-import com.company.system.api.constant.Constants;
-import com.company.system.api.feign.fallback.ThrowExceptionFallback;
-import com.company.system.api.request.RemoveReq;
-import com.company.system.api.request.${entity}Req;
-import com.company.system.api.response.PageResp;
-import com.company.system.api.response.${entity}Resp;
+import java.util.List;
+
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.List;
-import java.util.Map;
+import com.company.common.response.PageResp;
+import ${apiPackage}.constant.Constants;
+import ${apiPackage}.feign.fallback.ThrowExceptionFallback;
+import ${apiPackage}.request.${entity}Req;
+import ${apiPackage}.response.${entity}Resp;
 
-@FeignClient(value = Constants.FEIGNCLIENT_VALUE, path = "/sysConfig", fallbackFactory = ThrowExceptionFallback.class)
+@FeignClient(value = Constants.FEIGNCLIENT_VALUE, path = "/${entity.substring(0,1).toLowerCase()}${entity.substring(1)}", fallbackFactory = ThrowExceptionFallback.class)
 public interface ${entity}Feign {
 
 	@GetMapping("/page")
@@ -28,11 +27,11 @@ public interface ${entity}Feign {
 	${entity}Resp query(@RequestParam("id") Integer id);
 
 	@PostMapping("/save")
-	Boolean save(@RequestBody ${entity}Req sysConfigReq);
+	Boolean save(@RequestBody ${entity}Req req);
 
 	@PostMapping("/update")
-	Boolean update(@RequestBody ${entity}Req sysConfigReq);
+	Boolean update(@RequestBody ${entity}Req req);
 
 	@PostMapping("/remove")
-	Boolean remove(@RequestBody RemoveReq<Integer> req);
+	Boolean remove(@RequestBody List<Integer> ids);
 }
