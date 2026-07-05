@@ -49,7 +49,7 @@ public class CodeGeneratorService {
         FastAutoGenerator.create(dataSourceConfigBuilder)
             // 全局配置
             .globalConfig(builder -> {
-                builder
+                builder//
                     .author("CodeGenerate") // 设置作者
                     .enableSwagger() // 开启 swagger 模式
                     .disableOpenDir() // 禁止打开输出目录
@@ -62,13 +62,17 @@ public class CodeGeneratorService {
                 Map<OutputFile, String> pathInfo = new HashMap<>();
                 pathInfo.put(OutputFile.xml, outputPath + "/src/main/resources/mapper");
 
-                builder
+                builder//
+                       // .parent(getPackageParent(moduleName)) // 设置父包名
+                       // .parent("com.company."+moduleName) // 设置父包名
                     .parent("com.company") // 设置父包名
+                    // .moduleName(getModuleName(moduleName)) // 设置父包模块名
                     .moduleName(moduleName) // 设置父包模块名
                     .entity("entity") // Entity包名
                     .mapper("mapper") // Mapper包名
                     .xml("mapper.xml") // Mapper XML包名
                     .service("service") // Service包名
+                    // .serviceImpl("service.impl") // Service Impl包名
                     .controller("controller") // Controller包名
                     .pathInfo(pathInfo) // 配置其他路径
                 ;
@@ -78,29 +82,33 @@ public class CodeGeneratorService {
                 builder.addInclude(tableName);
 
                 builder.entityBuilder() // 实体策略配置
-                    .javaTemplate("/templates/entity.java.vm")
-                    .enableFileOverride()
+                    .javaTemplate("/templates/entity.java.vm")//
+                    .enableFileOverride()//
                     .enableLombok() // 开启 Lombok
+                    // .logicDeleteColumnName("deleted") // 逻辑删除字段
                     .build();
 
                 builder.mapperBuilder() // Mapper策略配置
-                    .mapperTemplate("/templates/mapper.java.vm")
-                    .mapperXmlTemplate("/templates/mapper.xml.vm")
-                    .enableFileOverride()
+                    .mapperTemplate("/templates/mapper.java.vm")//
+                    .mapperXmlTemplate("/templates/mapper.xml.vm")//
+                    .enableFileOverride()//
+                    // .enableMapperAnnotation() // 开启@Mapper注解
                     .enableBaseResultMap() // 启用 BaseResultMap 生成
                     .enableBaseColumnList() // 启用 BaseColumnList
                     .build();
 
                 builder.serviceBuilder() // 服务策略配置
-                    .serviceTemplate("/templates/service.java.vm")
-                    .enableFileOverride()
+                    .serviceTemplate("/templates/service.java.vm")//
+                    // .serviceImplTemplate("/templates/serviceImpl.java.vm")//
+                    .enableFileOverride()//
                     .formatServiceFileName("%sService") // service命名方式
-                    .disableServiceImpl()
+                    .disableServiceImpl()//
+                    // .formatServiceImplFileName("%sServiceImpl") // service impl命名方式
                     .build();
 
                 builder.controllerBuilder() // 控制器策略配置
-                    .template("/templates/controller.java.vm")
-                    .enableFileOverride()
+                    .template("/templates/controller.java.vm")//
+                    .enableFileOverride()//
                     .enableRestStyle() // 开启@RestController注解
                     .enableHyphenStyle() // 开启驼峰转连字符
                     .build();
@@ -114,53 +122,49 @@ public class CodeGeneratorService {
                 customMap.put("adminapiPackage", "com.company.adminapi");
                 consumer.customMap(customMap);
 
-                consumer.customFile(builder -> builder
-                    .templatePath("/templates/entityReq.java.vm")
-                    .filePath(apiPath)
-                    .packageName("request")
-                    .formatNameFunction(tableInfo -> tableInfo.getEntityName() + "Req")
-                    .fileName(".java")
-                    .enableFileOverride()
+                consumer.customFile(builder -> builder//
+                    .templatePath("/templates/entityReq.java.vm")//
+                    .filePath(apiPath)//
+                    .packageName("request")//
+                    .formatNameFunction(tableInfo -> tableInfo.getEntityName() + "Req")//
+                    .fileName(".java")//
+                    .enableFileOverride()//
                 );
-                // 生成API模块的Resp DTO
-                consumer.customFile(builder -> builder
-                    .templatePath("/templates/entityResp.java.vm")
-                    .filePath(apiPath)
-                    .packageName("response")
-                    .formatNameFunction(tableInfo -> tableInfo.getEntityName() + "Resp")
-                    .fileName(".java")
-                    .enableFileOverride()
+                consumer.customFile(builder -> builder//
+                    .templatePath("/templates/entityResp.java.vm")//
+                    .filePath(apiPath)//
+                    .packageName("response")//
+                    .formatNameFunction(tableInfo -> tableInfo.getEntityName() + "Resp")//
+                    .fileName(".java")//
+                    .enableFileOverride()//
                 );
-                // 生成API模块的Feign接口
-                consumer.customFile(builder -> builder
-                    .templatePath("/templates/feign.java.vm")
-                    .filePath(apiPath)
-                    .packageName("feign")
-                    .formatNameFunction(tableInfo -> tableInfo.getEntityName() + "Feign")
-                    .fileName(".java")
-                    .enableFileOverride()
+                consumer.customFile(builder -> builder//
+                    .templatePath("/templates/feign.java.vm")//
+                    .filePath(apiPath)//
+                    .packageName("feign")//
+                    .formatNameFunction(tableInfo -> tableInfo.getEntityName() + "Feign")//
+                    .fileName(".java")//
+                    .enableFileOverride()//
                 );
-                // 生成AdminAPI模块的Controller
-                consumer.customFile(builder -> builder
-                    .templatePath("/templates/adminapi-controller.java.vm")
-                    .filePath(adminapiPath)
-                    .packageName("controller")
-                    .formatNameFunction(tableInfo -> tableInfo.getControllerName())
-                    .fileName(".java")
-                    .enableFileOverride()
+                consumer.customFile(builder -> builder//
+                    .templatePath("/templates/adminapi-controller.java.vm")//
+                    .filePath(adminapiPath)//
+                    .packageName("controller")//
+                    .formatNameFunction(tableInfo -> tableInfo.getControllerName())//
+                    .fileName(".java")//
+                    .enableFileOverride()//
                 );
-                // 生成AdminAPI模块的Excel DTO
-                consumer.customFile(builder -> builder
-                        .templatePath("/templates/entityExcel.java.vm")
-                        .filePath(adminapiPath)
-                        .packageName("excel")
-                        .formatNameFunction(tableInfo -> tableInfo.getEntityName() + "Excel")
-                        .fileName(".java")
-                        .enableFileOverride()
+                consumer.customFile(builder -> builder//
+                    .templatePath("/templates/adminapi-entityExcel.java.vm")//
+                    .filePath(adminapiPath)//
+                    .packageName("excel")//
+                    .formatNameFunction(tableInfo -> tableInfo.getEntityName() + "Excel")//
+                    .fileName(".java")//
+                    .enableFileOverride()//
                 );
             })
             // 使用Velocity引擎模板
-            .templateEngine(new VelocityTemplateEngine())
+            .templateEngine(new VelocityTemplateEngine()) // 默认VelocityTemplateEngine
             .execute();
 
         log.info("代码生成完成，表名: {}，模块名: {}", tableName, moduleName);
