@@ -1,69 +1,103 @@
-package ${package.Controller};
+package com.company.adminapi.controller;
 
-import com.company.common.api.Result;
-import org.springframework.web.bind.annotation.*;
+import java.time.LocalDateTime;
+import java.util.List;
+
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
+
+import com.company.adminapi.annotation.OperationLog;
+import com.company.adminapi.annotation.RequirePermissions;
+import com.company.adminapi.easyexcel.ExcelUtil;
+import com.company.adminapi.enums.OperationLogEnum.BusinessType;
+import com.company.adminapi.excel.${entity}Excel;
+import com.company.common.response.PageResp;
+import com.company.framework.util.PropertyUtils;
+import ${apiPackage}.feign.${entity}Feign;
+import ${apiPackage}.request.${entity}Req;
+import ${apiPackage}.response.${entity}Resp;
 
 /**
- * ${table.comment} 前端控制器
+ * ${table.comment} AdminAPI控制器
+ *
  * @author CodeGenerate
  */
-@Api(tags = "$!table.comment管理")
+@Validated
 @RestController
 @RequestMapping("/${entity.substring(0,1).toLowerCase()}${entity.substring(1)}")
-public class $!table.controllerName {
-    
+public class ${table.controllerName} {
+
     @Autowired
-    private ${package.Service}.$!table.serviceName ${table.serviceName.substring(0,1).toLowerCase()}${table.serviceName.substring(1)};
-    
-    /**
-     * 分页查询${table.comment}
-     */
-    @ApiOperation("分页查询${table.comment}")
+    private ${entity}Feign ${entity.substring(0,1).toLowerCase()}${entity.substring(1)}Feign;
+
+    @RequirePermissions("${moduleName}:${entity.substring(0,1).toLowerCase()}${entity.substring(1)}:query")
     @GetMapping("/page")
-    public Result<Page<${package.Entity}.${entity}>> page(
-        @RequestParam(defaultValue = "1") Long current,
-        @RequestParam(defaultValue = "10") Long size) {
-        Page<${package.Entity}.${entity}> page = new Page<>(current, size);
-        return Result.success(${table.serviceName.substring(0,1).toLowerCase()}${table.serviceName.substring(1)}.page(page));
+    public PageResp<${entity}Resp> page(@NotNull @Min(value = 1) Long current, @NotNull Long size## ----------  BEGIN 字段循环遍历  ----------
+#foreach($field in $table.fields)
+#if($field.propertyName != "id")
+, $!field.propertyType $!field.propertyName#end
+#end
+## ----------  END 字段循环遍历  ----------
+) {
+        return ${entity.substring(0,1).toLowerCase()}${entity.substring(1)}Feign.page(current, size## ----------  BEGIN 字段循环遍历  ----------
+#foreach($field in $table.fields)
+#if($field.propertyName != "id")
+, $!field.propertyName#end
+#end
+## ----------  END 字段循环遍历  ----------
+);
     }
-    
-    /**
-     * 根据ID查询${table.comment}
-     */
-    @ApiOperation("根据ID查询${table.comment}")
+
+    @RequirePermissions("${moduleName}:${entity.substring(0,1).toLowerCase()}${entity.substring(1)}:query")
     @GetMapping("/query")
-    public Result<${package.Entity}.${entity}> query(@RequestParam Integer id) {
-        return Result.success(${table.serviceName.substring(0,1).toLowerCase()}${table.serviceName.substring(1)}.getById(id));
+    public ${entity}Resp query(@NotNull Integer id) {
+        return ${entity.substring(0,1).toLowerCase()}${entity.substring(1)}Feign.query(id);
     }
-    
-    /**
-     * 保存${table.comment}
-     */
-    @ApiOperation("保存${table.comment}")
+
+    @OperationLog(title = "${table.comment}保存", businessType = BusinessType.INSERT)
+    @RequirePermissions("${moduleName}:${entity.substring(0,1).toLowerCase()}${entity.substring(1)}:save")
     @PostMapping("/save")
-    public Result<Boolean> save(@RequestBody ${package.Entity}.${entity} ${entity.substring(0,1).toLowerCase()}${entity.substring(1)}) {
-        return Result.success(${table.serviceName.substring(0,1).toLowerCase()}${table.serviceName.substring(1)}.save(${entity.substring(0,1).toLowerCase()}${entity.substring(1)}));
+    public Boolean save(@RequestBody ${entity}Req req) {
+        return ${entity.substring(0,1).toLowerCase()}${entity.substring(1)}Feign.save(req);
     }
-    
-    /**
-     * 更新${table.comment}
-     */
-    @ApiOperation("更新${table.comment}")
+
+    @OperationLog(title = "${table.comment}更新", businessType = BusinessType.UPDATE)
+    @RequirePermissions("${moduleName}:${entity.substring(0,1).toLowerCase()}${entity.substring(1)}:update")
     @PostMapping("/update")
-    public Result<Boolean> update(@RequestBody ${package.Entity}.${entity} ${entity.substring(0,1).toLowerCase()}${entity.substring(1)}) {
-        return Result.success(${table.serviceName.substring(0,1).toLowerCase()}${table.serviceName.substring(1)}.updateById(${entity.substring(0,1).toLowerCase()}${entity.substring(1)}));
+    public Boolean update(@RequestBody ${entity}Req req) {
+        return ${entity.substring(0,1).toLowerCase()}${entity.substring(1)}Feign.update(req);
     }
-    
-    /**
-     * 删除${table.comment}
-     */
-    @ApiOperation("删除${table.comment}")
+
+    @OperationLog(title = "${table.comment}删除", businessType = BusinessType.DELETE)
+    @RequirePermissions("${moduleName}:${entity.substring(0,1).toLowerCase()}${entity.substring(1)}:remove")
     @PostMapping("/remove")
-    public Result<Boolean> remove(@RequestBody Integer id) {
-        return Result.success(${table.serviceName.substring(0,1).toLowerCase()}${table.serviceName.substring(1)}.removeById(id));
+    public Boolean remove(@RequestBody List<Integer> ids) {
+        return ${entity.substring(0,1).toLowerCase()}${entity.substring(1)}Feign.remove(ids);
+    }
+
+    @OperationLog(title = "${table.comment}导出", businessType = BusinessType.EXPORT, isSaveResponseData = false)
+    @RequirePermissions("${moduleName}:${entity.substring(0,1).toLowerCase()}${entity.substring(1)}:export")
+    @GetMapping("/export")
+    public void export(HttpServletResponse response## ----------  BEGIN 字段循环遍历  ----------
+#foreach($field in $table.fields)
+#if($field.propertyName != "id")
+, $!field.propertyType $!field.propertyName#end
+#end
+## ----------  END 字段循环遍历  ----------
+) {
+        List<${entity}Resp> listResp = ${entity.substring(0,1).toLowerCase()}${entity.substring(1)}Feign.list(## ----------  BEGIN 字段循环遍历  ----------
+#foreach($field in $table.fields)
+#if($field.propertyName != "id")
+$!field.propertyName#if($foreach.hasNext), #end#end
+#end
+## ----------  END 字段循环遍历  ----------
+);
+        List<${entity}Excel> excelList = PropertyUtils.copyArrayProperties(listResp, ${entity}Excel.class);
+        ExcelUtil.write2httpResponse(response, "${table.comment}", ${entity}Excel.class, excelList);
     }
 }

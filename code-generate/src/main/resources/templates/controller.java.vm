@@ -7,13 +7,13 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.PageDTO;
-import com.company.common.response.PageResp;
 
+import com.company.common.response.PageResp;
+import com.company.framework.util.PropertyUtils;
 import ${apiPackage}.feign.${entity}Feign;
 import ${apiPackage}.request.${entity}Req;
 import ${apiPackage}.response.${entity}Resp;
@@ -32,35 +32,52 @@ public class ${table.controllerName} implements ${entity}Feign {
     @Autowired
     private $!table.serviceName ${table.serviceName.substring(0,1).toLowerCase()}${table.serviceName.substring(1)};
 
-	private QueryWrapper<${entity}> toQueryWrapper(
-    ## ----------  BEGIN 字段循环遍历  ----------
-    #foreach($field in $table.fields)
-        ## AuditableModel内的字段createTime、createBy、updateTime、updateBy去掉
-        #if($field.propertyName != "createTime" && $field.propertyName != "createBy" && $field.propertyName != "updateTime" && $field.propertyName != "updateBy")
-            $!field.propertyType $!field.propertyName,
-        #end
-    #end
-    ## ----------  END 字段循环遍历  ----------
-            String name, String code, String value, String configRemark) {
-		QueryWrapper<${entity}> queryWrapper = new QueryWrapper<>();
-		if (StringUtils.isNotBlank(name)) {
-			queryWrapper.like("name", name);
-		}
-		if (StringUtils.isNotBlank(code)) {
-			queryWrapper.like("code", code);
-		}
-		if (StringUtils.isNotBlank(value)) {
-			queryWrapper.like("value", value);
-		}
-		if (StringUtils.isNotBlank(configRemark)) {
-			queryWrapper.like("config_remark", configRemark);
-		}
-		return queryWrapper;
-	}
+    private QueryWrapper<${entity}> toQueryWrapper(
+## ----------  BEGIN 字段循环遍历  ----------
+#foreach($field in $table.fields)
+## 排除审计字段和主键id字段
+#if($field.propertyName != "id")$!field.propertyType $!field.propertyName#if($foreach.hasNext),#end#end
+#end
+## ----------  END 字段循环遍历  ----------
+            ) {
+        QueryWrapper<${entity}> queryWrapper = new QueryWrapper<>();
+## ----------  BEGIN 字段循环遍历  ----------
+#foreach($field in $table.fields)
+## 排除审计字段和主键id字段
+#if($field.propertyName != "id")
+#if($field.propertyType == "String")
+        if (StringUtils.isNotBlank($!field.propertyName)) {
+            queryWrapper.like("$!field.name", $!field.propertyName);
+        }
+#else
+        if ($!field.propertyName != null) {
+            queryWrapper.eq("$!field.name", $!field.propertyName);
+        }
+#end
+#end
+#end
+## ----------  END 字段循环遍历  ----------
+        return queryWrapper;
+    }
 
     @Override
-    public PageResp<${entity}Resp> page(@RequestParam(defaultValue = "1") Long current, @RequestParam(defaultValue = "10") Long size, Integer parentId, String parentIds, String name, Integer orderNum, String status) {
-        QueryWrapper<${entity}> queryWrapper = toQueryWrapper(parentId, parentIds, name, orderNum, status);
+    public PageResp<${entity}Resp> page(Long current, Long size,## ----------  BEGIN 字段循环遍历  ----------
+#foreach($field in $table.fields)
+#if($field.propertyName != "id")
+    $!field.propertyType $!field.propertyName#if($foreach.hasNext),#end
+#end
+#end
+## ----------  END 字段循环遍历  ----------
+            ) {
+        QueryWrapper<${entity}> queryWrapper = toQueryWrapper(## ----------  BEGIN 字段循环遍历  ----------
+#foreach($field in $table.fields)
+#if($field.propertyName != "id")
+    $!field.propertyName#if($foreach.hasNext),#end
+#end
+#end
+## ----------  END 字段循环遍历  ----------
+            );
+
         long count = ${table.serviceName.substring(0,1).toLowerCase()}${table.serviceName.substring(1)}.count(queryWrapper);
 
         queryWrapper.orderByDesc("id");
@@ -71,8 +88,23 @@ public class ${table.controllerName} implements ${entity}Feign {
     }
 
     @Override
-    public List<${entity}Resp> list(Integer parentId, String parentIds, String name, Integer orderNum, String status) {
-        QueryWrapper<${entity}> queryWrapper = toQueryWrapper(parentId, parentIds, name, orderNum, status);
+    public List<${entity}Resp> list(## ----------  BEGIN 字段循环遍历  ----------
+#foreach($field in $table.fields)
+#if($field.propertyName != "id")
+    $!field.propertyType $!field.propertyName#if($foreach.hasNext),#end
+#end
+#end
+## ----------  END 字段循环遍历  ----------
+            ) {
+        QueryWrapper<${entity}> queryWrapper = toQueryWrapper(## ----------  BEGIN 字段循环遍历  ----------
+#foreach($field in $table.fields)
+#if($field.propertyName != "id")
+    $!field.propertyName#if($foreach.hasNext),#end
+#end
+#end
+## ----------  END 字段循环遍历  ----------
+            );
+
         queryWrapper.orderByDesc("id");
         List<${entity}> list = ${table.serviceName.substring(0,1).toLowerCase()}${table.serviceName.substring(1)}.list(queryWrapper);
 

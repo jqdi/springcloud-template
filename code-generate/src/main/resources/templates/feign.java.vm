@@ -1,5 +1,6 @@
 package ${apiPackage}.feign;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.cloud.openfeign.FeignClient;
@@ -14,24 +15,43 @@ import ${apiPackage}.feign.fallback.ThrowExceptionFallback;
 import ${apiPackage}.request.${entity}Req;
 import ${apiPackage}.response.${entity}Resp;
 
+/**
+ * ${table.comment} Feign接口
+ *
+ * @author CodeGenerate
+ */
 @FeignClient(value = Constants.FEIGNCLIENT_VALUE, path = "/${entity.substring(0,1).toLowerCase()}${entity.substring(1)}", fallbackFactory = ThrowExceptionFallback.class)
 public interface ${entity}Feign {
 
-	@GetMapping("/page")
-	PageResp<${entity}Resp> page(@RequestParam(value = "current") Long current, @RequestParam(value = "size") Long size, @RequestParam(value = "name", required = false) String name, @RequestParam(value = "code", required = false) String code, @RequestParam(value = "value", required = false) String value, @RequestParam(value = "configRemark", required = false) String configRemark);
+    @GetMapping("/page")
+    PageResp<${entity}Resp> page(@RequestParam(value = "current") Long current, @RequestParam(value = "size") Long size## ----------  BEGIN 字段循环遍历  ----------
+#foreach($field in $table.fields)
+## 排除审计字段和主键id字段
+#if($field.propertyName != "id"), @RequestParam(value = "$!field.propertyName", required = false) $!field.propertyType $!field.propertyName#end
+#end
+## ----------  END 字段循环遍历  ----------
+);
 
-	@GetMapping("/list")
-	List<${entity}Resp> list(@RequestParam(value = "name", required = false) String name, @RequestParam(value = "code", required = false) String code, @RequestParam(value = "value", required = false) String value, @RequestParam(value = "configRemark", required = false) String configRemark);
+    @GetMapping("/list")
+    List<${entity}Resp> list(## ----------  BEGIN 字段循环遍历  ----------
+#set($first = true)
+#foreach($field in $table.fields)
+## 排除审计字段和主键id字段
+#if($field.propertyName != "id")
+#if($first)#set($first = false)#else, #end@RequestParam(value = "$!field.propertyName", required = false) $!field.propertyType $!field.propertyName#end
+#end
+## ----------  END 字段循环遍历  ----------
+);
 
-	@GetMapping("/query")
-	${entity}Resp query(@RequestParam("id") Integer id);
+    @GetMapping("/query")
+    ${entity}Resp query(@RequestParam("id") Integer id);
 
-	@PostMapping("/save")
-	Boolean save(@RequestBody ${entity}Req req);
+    @PostMapping("/save")
+    Boolean save(@RequestBody ${entity}Req req);
 
-	@PostMapping("/update")
-	Boolean update(@RequestBody ${entity}Req req);
+    @PostMapping("/update")
+    Boolean update(@RequestBody ${entity}Req req);
 
-	@PostMapping("/remove")
-	Boolean remove(@RequestBody List<Integer> ids);
+    @PostMapping("/remove")
+    Boolean remove(@RequestBody List<Integer> req);
 }
