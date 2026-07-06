@@ -33,10 +33,10 @@ public class CodeGeneratorService {
     public void generateCode(String tableName, String moduleName) {
         String projectPath = System.getProperty("user.dir");
         String outputPath = Paths.get(projectPath, moduleName, "service").toString();
-//        String apiPath = Paths.get(projectPath, moduleName, "api", "src", "main", "java").toString();
-        String apiPath = "D:\\code\\me\\springcloud-template\\order\\api\\src\\main\\java\\com\\company\\order\\api";
-//        String adminapiPath = Paths.get(projectPath, "adminapi", "src", "main", "java").toString();
-        String adminapiPath = "D:\\code\\me\\springcloud-template\\adminapi\\src\\main\\java\\com\\company\\adminapi";
+        String apiPath = Paths
+            .get(projectPath, moduleName, "api", "src", "main", "java", "com", "company", "order", "api").toString();
+        String adminapiPath =
+            Paths.get(projectPath, "adminapi", "src", "main", "java", "com", "company", "adminapi").toString();
 
         log.info("开始生成代码，表名: {}，模块名: {}，输出路径: {}，api路径: {}，adminapi路径: {}",
             tableName, moduleName, outputPath, apiPath, adminapiPath);
