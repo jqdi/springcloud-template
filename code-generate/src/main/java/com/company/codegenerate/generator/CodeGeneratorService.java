@@ -4,6 +4,8 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.sql.DataSource;
+
 import org.springframework.stereotype.Service;
 
 import com.baomidou.mybatisplus.generator.FastAutoGenerator;
@@ -23,6 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 public class CodeGeneratorService {
 
     private final CodeGeneratorConfig codeGeneratorConfig;
+    private final DataSource dataSource;
 
     /**
      * 根据表名和模块名生成代码
@@ -33,18 +36,14 @@ public class CodeGeneratorService {
     public void generateCode(String tableName, String moduleName) {
         String projectPath = System.getProperty("user.dir");
         String outputPath = Paths.get(projectPath, moduleName, "service").toString();
-        String apiPath = Paths
-            .get(projectPath, moduleName, "api", "src", "main", "java", "com", "company", "order", "api").toString();
-        String adminapiPath =
-            Paths.get(projectPath, "adminapi", "src", "main", "java", "com", "company", "adminapi").toString();
+        String apiPath = Paths.get(projectPath, moduleName, "api", "src/main/java", "com", "company", "order", "api").toString();
+        String adminapiPath = Paths.get(projectPath, "adminapi", "src/main/java", "com", "company", "adminapi").toString();
 
-        log.info("开始生成代码，表名: {}，模块名: {}，输出路径: {}，api路径: {}，adminapi路径: {}",
-            tableName, moduleName, outputPath, apiPath, adminapiPath);
+        log.info("开始生成代码，表名: {}，模块名: {}，输出路径: {}，api路径: {}，adminapi路径: {}", tableName, moduleName, outputPath, apiPath,
+            adminapiPath);
 
         // 构建数据源配置
-        DataSourceConfig.Builder dataSourceConfigBuilder =
-            new DataSourceConfig.Builder(codeGeneratorConfig.getDatabase().getUrl(),
-                codeGeneratorConfig.getDatabase().getUsername(), codeGeneratorConfig.getDatabase().getPassword());
+        DataSourceConfig.Builder dataSourceConfigBuilder = new DataSourceConfig.Builder(dataSource);
 
         FastAutoGenerator.create(dataSourceConfigBuilder)
             // 全局配置

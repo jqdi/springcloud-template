@@ -13,34 +13,6 @@ logging:
     #日志文件目录。./表示相对于项目根目录，即项目根目录下的logs目录。也可配置绝对路径，如：/home/webapp/logs
     path: ./logs/${spring.application.name}
 
-# Feign 客户端配置
-feign:
-    #httpclient: # 使用Apache HttpClient作为http客户端，默认HttpURLConnection
-    #enabled: true
-    #okhttp: # 使用okhttp作为http客户端  ，默认HttpURLConnection
-    #enabled: true
-  client:
-    config:
-      default:
-        connectTimeout: 1000 # 连接超时时间，默认1000ms
-        readTimeout: 5000 # 读取超时时间（单次请求），默认1000ms
-
-mybatis-plus:
-  # 配置mapper的扫描，找到所有的mapper.xml映射文件
-  mapper-locations: classpath*:mapper/**/*Mapper.xml
-  # 搜索指定包别名
-  type-aliases-package: com.company.*.entity
-  configuration:
-    cacheEnabled: false # 使全局的映射器启用或禁用缓存
-    lazyLoadingEnabled: true # 全局启用或禁用延迟加载。当禁用时，所有关联对象都会即时加载
-    mapUnderscoreToCamelCase: true # 使用驼峰命名法转换字段
-    jdbcTypeForNull: NULL # 设置但JDBC类型为空时,某些驱动程序要指定值,default:OTHER，插入空值时不需要指定类型
-    logImpl: org.apache.ibatis.logging.log4j2.Log4j2Impl # 打印SQL语句
-  global-config:
-    db-config:
-      #主键类型 0(AUTO):"数据库ID自增", 1(INPUT):"用户输入ID",2(ID_WORKER):"全局唯一ID (数字类型唯一ID)", 3(UUID):"全局唯一ID UUID";
-      id-type: 0
-
 template:
   sequence:
     datacenterId: 1
@@ -54,9 +26,3 @@ code:
     module-options: adminapi,admin,system,order,user,tool
     # 输出路径前缀，默认为项目根目录
     output-base-path: ../
-    # 数据库配置
-    database:
-      url: jdbc:mysql://localhost:3306/template?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
-      username: root
-      password: 12345678
-      driver-class-name: com.mysql.cj.jdbc.Driver
