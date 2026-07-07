@@ -62,22 +62,22 @@ public class ${table.controllerName} {
     @OperationLog(title = "${table.comment}保存", businessType = BusinessType.INSERT)
     @RequirePermissions("${moduleName}:${_entity}:save")
     @PostMapping("/save")
-    public Boolean save(@RequestBody ${entity}Req req) {
-        return ${_entity}Feign.save(req);
+    public Boolean save(@RequestBody ${entity}Req ${_entity}Req) {
+        return ${_entity}Feign.save(${_entity}Req);
     }
 
     @OperationLog(title = "${table.comment}更新", businessType = BusinessType.UPDATE)
     @RequirePermissions("${moduleName}:${_entity}:update")
     @PostMapping("/update")
-    public Boolean update(@RequestBody ${entity}Req req) {
-        return ${_entity}Feign.update(req);
+    public Boolean update(@RequestBody ${entity}Req ${_entity}Req) {
+        return ${_entity}Feign.update(${_entity}Req);
     }
 
     @OperationLog(title = "${table.comment}删除", businessType = BusinessType.DELETE)
     @RequirePermissions("${moduleName}:${_entity}:remove")
     @PostMapping("/remove")
-    public Boolean remove(@RequestBody List<Integer> ids) {
-        return ${_entity}Feign.remove(ids);
+    public Boolean remove(@RequestBody List<Integer> idList) {
+        return ${_entity}Feign.remove(idList);
     }
 
     @OperationLog(title = "${table.comment}导出", businessType = BusinessType.EXPORT, isSaveResponseData = false)
@@ -90,14 +90,14 @@ public class ${table.controllerName} {
 #end
 ## ----------  END 字段循环遍历  ----------
 ) {
-        List<${entity}Resp> listResp = ${_entity}Feign.list(## ----------  BEGIN 字段循环遍历  ----------
+        List<${entity}Resp> ${_entity}RespList = ${_entity}Feign.list(## ----------  BEGIN 字段循环遍历  ----------
 #foreach($field in $table.fields)
 #if($field.propertyName != "id")
 $!field.propertyName#if($foreach.hasNext), #end#end
 #end
 ## ----------  END 字段循环遍历  ----------
 );
-        List<${entity}Excel> excelList = PropertyUtils.copyArrayProperties(listResp, ${entity}Excel.class);
-        ExcelUtil.write2httpResponse(response, "${table.comment}", ${entity}Excel.class, excelList);
+        List<${entity}Excel> ${_entity}ExcelList = PropertyUtils.copyArrayProperties(${_entity}RespList, ${entity}Excel.class);
+        ExcelUtil.write2httpResponse(response, "${table.comment}", ${entity}Excel.class, ${_entity}ExcelList);
     }
 }

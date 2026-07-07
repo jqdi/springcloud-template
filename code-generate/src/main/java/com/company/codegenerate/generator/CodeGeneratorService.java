@@ -2,10 +2,13 @@ package com.company.codegenerate.generator;
 
 import java.nio.file.Paths;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.sql.DataSource;
 
+import com.baomidou.mybatisplus.generator.config.po.TableField;
 import org.springframework.stereotype.Service;
 
 import com.baomidou.mybatisplus.generator.FastAutoGenerator;
@@ -128,6 +131,15 @@ public class CodeGeneratorService {
                     String serviceName = tableInfo.getServiceName();
                     String _serviceName = serviceName.substring(0, 1).toLowerCase() + serviceName.substring(1);
                     objectMap.put("_serviceName", _serviceName);
+
+                    List<TableField> tableFieldList = tableInfo.getFields();
+                    String propertyTypeNameConcat = tableFieldList.stream().map(v -> v.getPropertyType() + " " + v.getPropertyName())
+                        .collect(Collectors.joining(","));
+                    objectMap.put("propertyTypeNameConcat", propertyTypeNameConcat);
+
+                    String propertyTypeNameConcatNoId = tableFieldList.stream().filter(v -> !"id".equals(v.getPropertyName()))
+                        .map(v -> v.getPropertyType() + " " + v.getPropertyName()).collect(Collectors.joining(","));
+                    objectMap.put("propertyTypeNameConcatNoId", propertyTypeNameConcatNoId);
                 });
 
                 consumer.customFile(builder -> builder//

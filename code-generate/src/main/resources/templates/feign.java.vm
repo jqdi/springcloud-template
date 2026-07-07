@@ -26,7 +26,7 @@ public interface ${entity}Feign {
     @GetMapping("/page")
     PageResp<${entity}Resp> page(@RequestParam(value = "current") Long current, @RequestParam(value = "size") Long size## ----------  BEGIN 字段循环遍历  ----------
 #foreach($field in $table.fields)
-## 排除审计字段和主键id字段
+## 排除主键id字段
 #if($field.propertyName != "id"), @RequestParam(value = "$!field.propertyName", required = false) $!field.propertyType $!field.propertyName#end
 #end
 ## ----------  END 字段循环遍历  ----------
@@ -36,7 +36,7 @@ public interface ${entity}Feign {
     List<${entity}Resp> list(## ----------  BEGIN 字段循环遍历  ----------
 #set($first = true)
 #foreach($field in $table.fields)
-## 排除审计字段和主键id字段
+## 排除主键id字段
 #if($field.propertyName != "id")
 #if($first)#set($first = false)#else, #end@RequestParam(value = "$!field.propertyName", required = false) $!field.propertyType $!field.propertyName#end
 #end
@@ -47,11 +47,11 @@ public interface ${entity}Feign {
     ${entity}Resp query(@RequestParam("id") Integer id);
 
     @PostMapping("/save")
-    Boolean save(@RequestBody ${entity}Req req);
+    Boolean save(@RequestBody ${entity}Req ${_entity}Req);
 
     @PostMapping("/update")
-    Boolean update(@RequestBody ${entity}Req req);
+    Boolean update(@RequestBody ${entity}Req ${_entity}Req);
 
     @PostMapping("/remove")
-    Boolean remove(@RequestBody List<Integer> req);
+    Boolean remove(@RequestBody List<Integer> idList);
 }

@@ -48,8 +48,9 @@ public class CommandRunner implements CommandLineRunner {
             String tableName = scanner.nextLine().trim();
 
             if (tableName.isEmpty()) {
-                System.out.println("表名不能为空，请重新输入");
-                continue;
+//                System.out.println("表名不能为空，请重新输入");
+//                continue;
+                tableName = "sms_task";
             }
 
             try {

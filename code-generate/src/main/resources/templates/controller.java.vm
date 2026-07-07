@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.plugins.pagination.PageDTO;
 
 import com.company.common.response.PageResp;
@@ -32,14 +33,13 @@ public class ${table.controllerName} implements ${entity}Feign {
     @Autowired
     private $!table.serviceName ${_serviceName};
 
-    private QueryWrapper<${entity}> toQueryWrapper(
-## ----------  BEGIN 字段循环遍历  ----------
+    private QueryWrapper<${entity}> toQueryWrapper(## ----------  BEGIN 字段循环遍历  ----------
 #foreach($field in $table.fields)
 ## 排除审计字段和主键id字段
-#if($field.propertyName != "id")$!field.propertyType $!field.propertyName#if($foreach.hasNext),#end#end
+#if($field.propertyName != "id")$!field.propertyType $!field.propertyName#if($foreach.hasNext), #end#end
 #end
 ## ----------  END 字段循环遍历  ----------
-            ) {
+) {
         QueryWrapper<${entity}> queryWrapper = new QueryWrapper<>();
 ## ----------  BEGIN 字段循环遍历  ----------
 #foreach($field in $table.fields)
@@ -61,55 +61,52 @@ public class ${table.controllerName} implements ${entity}Feign {
     }
 
     @Override
-    public PageResp<${entity}Resp> page(Long current, Long size,## ----------  BEGIN 字段循环遍历  ----------
+    public PageResp<${entity}Resp> page(Long current, Long size## ----------  BEGIN 字段循环遍历  ----------
 #foreach($field in $table.fields)
-#if($field.propertyName != "id")
-    $!field.propertyType $!field.propertyName#if($foreach.hasNext),#end
-#end
+## 排除主键id字段
+#if($field.propertyName != "id"), $!field.propertyType $!field.propertyName#end
 #end
 ## ----------  END 字段循环遍历  ----------
-            ) {
+) {
         QueryWrapper<${entity}> queryWrapper = toQueryWrapper(## ----------  BEGIN 字段循环遍历  ----------
+#set($first = true)
 #foreach($field in $table.fields)
-#if($field.propertyName != "id")
-    $!field.propertyName#if($foreach.hasNext),#end
-#end
+## 排除主键id字段
+#if($field.propertyName != "id")#if($first)#set($first = false)#else, #end$!field.propertyName#end
 #end
 ## ----------  END 字段循环遍历  ----------
-            );
-
-        long count = ${_serviceName}.count(queryWrapper);
+);
 
         queryWrapper.orderByDesc("id");
-        List<${entity}> list = ${_serviceName}.list(PageDTO.of(current, size), queryWrapper);
+        Page<${entity}> ${_entity}Page = ${_serviceName}.page(PageDTO.of(current, size), queryWrapper);
 
-        List<${entity}Resp> respList = PropertyUtils.copyArrayProperties(list, ${entity}Resp.class);
-        return PageResp.of(count, respList);
+        List<${entity}Resp> ${_entity}RespList = PropertyUtils.copyArrayProperties(${_entity}Page.getRecords(), ${entity}Resp.class);
+        return PageResp.of(${_entity}Page.getTotal(), ${_entity}RespList);
     }
 
     @Override
     public List<${entity}Resp> list(## ----------  BEGIN 字段循环遍历  ----------
+#set($first = true)
 #foreach($field in $table.fields)
-#if($field.propertyName != "id")
-    $!field.propertyType $!field.propertyName#if($foreach.hasNext),#end
-#end
+## 排除主键id字段
+#if($field.propertyName != "id")#if($first)#set($first = false)#else, #end$!field.propertyType $!field.propertyName#end
 #end
 ## ----------  END 字段循环遍历  ----------
-            ) {
+) {
         QueryWrapper<${entity}> queryWrapper = toQueryWrapper(## ----------  BEGIN 字段循环遍历  ----------
+#set($first = true)
 #foreach($field in $table.fields)
-#if($field.propertyName != "id")
-    $!field.propertyName#if($foreach.hasNext),#end
-#end
+## 排除主键id字段
+#if($field.propertyName != "id")#if($first)#set($first = false)#else, #end$!field.propertyName#end
 #end
 ## ----------  END 字段循环遍历  ----------
-            );
+);
 
         queryWrapper.orderByDesc("id");
-        List<${entity}> list = ${_serviceName}.list(queryWrapper);
+        List<${entity}> ${_entity}List = ${_serviceName}.list(queryWrapper);
 
-        List<${entity}Resp> respList = PropertyUtils.copyArrayProperties(list, ${entity}Resp.class);
-        return respList;
+        List<${entity}Resp> ${_entity}RespList = PropertyUtils.copyArrayProperties(${_entity}List, ${entity}Resp.class);
+        return ${_entity}RespList;
     }
 
     @Override
@@ -120,25 +117,25 @@ public class ${table.controllerName} implements ${entity}Feign {
     }
 
     @Override
-    public Boolean save(${entity}Req req) {
-        ${entity} ${_entity} = PropertyUtils.copyProperties(req, ${entity}.class);
+    public Boolean save(${entity}Req ${_entity}Req) {
+        ${entity} ${_entity} = PropertyUtils.copyProperties(${_entity}Req, ${entity}.class);
         boolean success = ${_serviceName}.save(${_entity});
         return success;
     }
 
     @Override
-    public Boolean update(${entity}Req req) {
-        ${entity} ${_entity} = PropertyUtils.copyProperties(req, ${entity}.class);
+    public Boolean update(${entity}Req ${_entity}Req) {
+        ${entity} ${_entity} = PropertyUtils.copyProperties(${_entity}Req, ${entity}.class);
         boolean success = ${_serviceName}.updateById(${_entity});
         return success;
     }
 
     @Override
-    public Boolean remove(List<Integer> ids) {
-        if (CollectionUtils.isEmpty(ids)) {
+    public Boolean remove(List<Integer> idList) {
+        if (CollectionUtils.isEmpty(idList)) {
             return true;
         }
-        boolean success = ${_serviceName}.removeBatchByIds(ids);
+        boolean success = ${_serviceName}.removeBatchByIds(idList);
         return success;
     }
 }
