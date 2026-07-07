@@ -26,11 +26,11 @@ import ${package.Service}.$!table.serviceName;
  * @author CodeGenerate
  */
 @RestController
-@RequestMapping("/${entity.substring(0,1).toLowerCase()}${entity.substring(1)}")
+@RequestMapping("/${_entity}")
 public class ${table.controllerName} implements ${entity}Feign {
 
     @Autowired
-    private $!table.serviceName ${table.serviceName.substring(0,1).toLowerCase()}${table.serviceName.substring(1)};
+    private $!table.serviceName ${_serviceName};
 
     private QueryWrapper<${entity}> toQueryWrapper(
 ## ----------  BEGIN 字段循环遍历  ----------
@@ -78,10 +78,10 @@ public class ${table.controllerName} implements ${entity}Feign {
 ## ----------  END 字段循环遍历  ----------
             );
 
-        long count = ${table.serviceName.substring(0,1).toLowerCase()}${table.serviceName.substring(1)}.count(queryWrapper);
+        long count = ${_serviceName}.count(queryWrapper);
 
         queryWrapper.orderByDesc("id");
-        List<${entity}> list = ${table.serviceName.substring(0,1).toLowerCase()}${table.serviceName.substring(1)}.list(PageDTO.of(current, size), queryWrapper);
+        List<${entity}> list = ${_serviceName}.list(PageDTO.of(current, size), queryWrapper);
 
         List<${entity}Resp> respList = PropertyUtils.copyArrayProperties(list, ${entity}Resp.class);
         return PageResp.of(count, respList);
@@ -106,7 +106,7 @@ public class ${table.controllerName} implements ${entity}Feign {
             );
 
         queryWrapper.orderByDesc("id");
-        List<${entity}> list = ${table.serviceName.substring(0,1).toLowerCase()}${table.serviceName.substring(1)}.list(queryWrapper);
+        List<${entity}> list = ${_serviceName}.list(queryWrapper);
 
         List<${entity}Resp> respList = PropertyUtils.copyArrayProperties(list, ${entity}Resp.class);
         return respList;
@@ -114,22 +114,22 @@ public class ${table.controllerName} implements ${entity}Feign {
 
     @Override
     public ${entity}Resp query(Integer id) {
-        ${entity} entity = ${table.serviceName.substring(0,1).toLowerCase()}${table.serviceName.substring(1)}.getById(id);
-        ${entity}Resp entityResp = PropertyUtils.copyProperties(entity, ${entity}Resp.class);
-        return entityResp;
+        ${entity} ${_entity} = ${_serviceName}.getById(id);
+        ${entity}Resp ${_entity}Resp = PropertyUtils.copyProperties(${_entity}, ${entity}Resp.class);
+        return ${_entity}Resp;
     }
 
     @Override
     public Boolean save(${entity}Req req) {
-        ${entity} entity = PropertyUtils.copyProperties(req, ${entity}.class);
-        boolean success = ${table.serviceName.substring(0,1).toLowerCase()}${table.serviceName.substring(1)}.save(entity);
+        ${entity} ${_entity} = PropertyUtils.copyProperties(req, ${entity}.class);
+        boolean success = ${_serviceName}.save(${_entity});
         return success;
     }
 
     @Override
     public Boolean update(${entity}Req req) {
-        ${entity} entity = PropertyUtils.copyProperties(req, ${entity}.class);
-        boolean success = ${table.serviceName.substring(0,1).toLowerCase()}${table.serviceName.substring(1)}.updateById(entity);
+        ${entity} ${_entity} = PropertyUtils.copyProperties(req, ${entity}.class);
+        boolean success = ${_serviceName}.updateById(${_entity});
         return success;
     }
 
@@ -138,7 +138,7 @@ public class ${table.controllerName} implements ${entity}Feign {
         if (CollectionUtils.isEmpty(ids)) {
             return true;
         }
-        boolean success = ${table.serviceName.substring(0,1).toLowerCase()}${table.serviceName.substring(1)}.removeBatchByIds(ids);
+        boolean success = ${_serviceName}.removeBatchByIds(ids);
         return success;
     }
 }

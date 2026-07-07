@@ -30,16 +30,16 @@ public class CodeGeneratorService {
     /**
      * 根据表名和模块名生成代码
      *
-     * @param tableName 表名
+     * @param tableNames 表名
      * @param moduleName 模块名
      */
-    public void generateCode(String tableName, String moduleName) {
+    public void generateCode(String tableNames, String moduleName) {
         String projectPath = System.getProperty("user.dir");
         String outputPath = Paths.get(projectPath, moduleName, "service").toString();
         String apiPath = Paths.get(projectPath, moduleName, "api", "src/main/java", "com", "company", "order", "api").toString();
         String adminapiPath = Paths.get(projectPath, "adminapi", "src/main/java", "com", "company", "adminapi").toString();
 
-        log.info("开始生成代码，表名: {}，模块名: {}，输出路径: {}，api路径: {}，adminapi路径: {}", tableName, moduleName, outputPath, apiPath,
+        log.info("开始生成代码，表名: {}，模块名: {}，输出路径: {}，api路径: {}，adminapi路径: {}", tableNames, moduleName, outputPath, apiPath,
             adminapiPath);
 
         // 构建数据源配置
@@ -77,7 +77,7 @@ public class CodeGeneratorService {
             })
             // 策略配置
             .strategyConfig(builder -> {
-                builder.addInclude(tableName);
+                builder.addInclude(tableNames);
 
                 builder.entityBuilder() // 实体策略配置
                     .javaTemplate("/templates/entity.java.vm")//
@@ -118,6 +118,17 @@ public class CodeGeneratorService {
                 customMap.put("apiPackage", "com.company." + moduleName + ".api");
                 customMap.put("adminapiPackage", "com.company.adminapi");
                 consumer.customMap(customMap);
+
+                // 在每个文件输出前，动态设置首字母小写的 entity 变量
+                consumer.beforeOutputFile((tableInfo, objectMap) -> {
+                    String entityName = tableInfo.getEntityName();
+                    String _entity = entityName.substring(0, 1).toLowerCase() + entityName.substring(1);
+                    objectMap.put("_entity", _entity);
+
+                    String serviceName = tableInfo.getServiceName();
+                    String _serviceName = serviceName.substring(0, 1).toLowerCase() + serviceName.substring(1);
+                    objectMap.put("_serviceName", _serviceName);
+                });
 
                 consumer.customFile(builder -> builder//
                     .templatePath("/templates/entityReq.java.vm")//
@@ -164,6 +175,6 @@ public class CodeGeneratorService {
             .templateEngine(new VelocityTemplateEngine()) // 默认VelocityTemplateEngine
             .execute();
 
-        log.info("代码生成完成，表名: {}，模块名: {}", tableName, moduleName);
+        log.info("代码生成完成，表名: {}，模块名: {}", tableNames, moduleName);
     }
 }

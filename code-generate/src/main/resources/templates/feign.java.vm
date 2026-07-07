@@ -20,7 +20,7 @@ import ${apiPackage}.response.${entity}Resp;
  *
  * @author CodeGenerate
  */
-@FeignClient(value = Constants.FEIGNCLIENT_VALUE, path = "/${entity.substring(0,1).toLowerCase()}${entity.substring(1)}", fallbackFactory = ThrowExceptionFallback.class)
+@FeignClient(value = Constants.FEIGNCLIENT_VALUE, path = "/${_entity}", fallbackFactory = ThrowExceptionFallback.class)
 public interface ${entity}Feign {
 
     @GetMapping("/page")
