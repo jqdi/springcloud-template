@@ -12,7 +12,11 @@ public class CodeGeneratorConfig {
      * 目标模块名称
      */
     private String targetModule = "tool";
-    
+    /**
+     * 作者
+     */
+    private String author = "CodeGenerate";
+
     /**
      * 可选的模块列表
      */

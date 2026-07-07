@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import com.company.datasource.mybatisplus.activerecord.AuditableModel;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * ${table.comment}
@@ -13,6 +14,7 @@ import lombok.Data;
  * @author CodeGenerate
  */
 @Data
+@EqualsAndHashCode(callSuper = true)
 @TableName("$!table.name")
 public class ${entity} extends AuditableModel<${entity}> {
 

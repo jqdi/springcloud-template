@@ -45,15 +45,17 @@ public class CodeGeneratorService {
         // 构建数据源配置
         DataSourceConfig.Builder dataSourceConfigBuilder = new DataSourceConfig.Builder(dataSource);
 
+        String packageParent = "com.company";
+
         FastAutoGenerator.create(dataSourceConfigBuilder)
             // 全局配置
             .globalConfig(builder -> {
                 builder//
-                    .author("CodeGenerate") // 设置作者
-                    .enableSwagger() // 开启 swagger 模式
+                    .author(codeGeneratorConfig.getAuthor()) // 设置作者
+                    // .enableSwagger() // 开启 swagger 模式
                     .disableOpenDir() // 禁止打开输出目录
                     .outputDir(outputPath + "/src/main/java") // 指定输出目录
-                    .dateType(DateType.TIME_PACK) // 时间策略
+                    .dateType(DateType.TIME_PACK) // 使用 java.time 包下的 java8 新的时间类型
                 ;
             })
             // 包配置
@@ -62,14 +64,11 @@ public class CodeGeneratorService {
                 pathInfo.put(OutputFile.xml, outputPath + "/src/main/resources/mapper");
 
                 builder//
-                       // .parent(getPackageParent(moduleName)) // 设置父包名
-                       // .parent("com.company."+moduleName) // 设置父包名
-                    .parent("com.company") // 设置父包名
-                    // .moduleName(getModuleName(moduleName)) // 设置父包模块名
+                    .parent(packageParent) // 设置父包名
                     .moduleName(moduleName) // 设置父包模块名
                     .entity("entity") // Entity包名
                     .mapper("mapper") // Mapper包名
-                    .xml("mapper.xml") // Mapper XML包名
+                    // .xml("mapper.xml") // Mapper XML包名
                     .service("service") // Service包名
                     // .serviceImpl("service.impl") // Service Impl包名
                     .controller("controller") // Controller包名
@@ -83,7 +82,7 @@ public class CodeGeneratorService {
                 builder.entityBuilder() // 实体策略配置
                     .javaTemplate("/templates/entity.java.vm")//
                     .enableFileOverride()//
-                    .enableLombok() // 开启 Lombok
+                    // .enableLombok() // 开启 Lombok
                     // .logicDeleteColumnName("deleted") // 逻辑删除字段
                     .build();
 
@@ -92,8 +91,8 @@ public class CodeGeneratorService {
                     .mapperXmlTemplate("/templates/mapper.xml.vm")//
                     .enableFileOverride()//
                     // .enableMapperAnnotation() // 开启@Mapper注解
-                    .enableBaseResultMap() // 启用 BaseResultMap 生成
-                    .enableBaseColumnList() // 启用 BaseColumnList
+                    // .enableBaseResultMap() // 启用 BaseResultMap 生成
+                    // .enableBaseColumnList() // 启用 BaseColumnList
                     .build();
 
                 builder.serviceBuilder() // 服务策略配置
@@ -108,15 +107,14 @@ public class CodeGeneratorService {
                 builder.controllerBuilder() // 控制器策略配置
                     .template("/templates/controller.java.vm")//
                     .enableFileOverride()//
-                    .enableRestStyle() // 开启@RestController注解
-                    .enableHyphenStyle() // 开启驼峰转连字符
+                    // .enableRestStyle() // 开启@RestController注解
+                    // .enableHyphenStyle() // 开启驼峰转连字符
                     .build();
             })
             // 注入配置
             .injectionConfig(consumer -> {
                 // 自定义配置
                 Map<String, Object> customMap = Maps.newHashMap();
-                customMap.put("lowEntity", "aaaa");
                 customMap.put("apiPackage", "com.company." + moduleName + ".api");
                 customMap.put("adminapiPackage", "com.company.adminapi");
                 consumer.customMap(customMap);
