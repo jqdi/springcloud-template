@@ -20,7 +20,7 @@ public class CodeGeneratorConfig {
     /**
      * 可选的模块列表
      */
-    private String moduleOptions = "tool,admin,system,order,user,adminapi";
+    private String moduleOptions = "tool,system,user,order";
     
     /**
      * 模板路径
@@ -31,17 +31,4 @@ public class CodeGeneratorConfig {
      * 输出基础路径
      */
     private String outputBasePath = "D:\\code\\springcloud-template";
-    
-    /**
-     * 数据库配置
-     */
-    private DatabaseConfig database = new DatabaseConfig();
-    
-    @Data
-    public static class DatabaseConfig {
-        private String url = "jdbc:mysql://localhost:3306/template?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai";
-        private String username = "root";
-        private String password = "12345678";
-        private String driverClassName = "com.mysql.cj.jdbc.Driver";
-    }
 }

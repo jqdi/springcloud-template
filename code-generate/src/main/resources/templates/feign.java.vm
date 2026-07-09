@@ -16,7 +16,7 @@ import ${apiPackage}.request.${entity}Req;
 import ${apiPackage}.response.${entity}Resp;
 
 /**
- * ${table.comment} Feign接口
+ * ${table.comment}
  *
  * @author CodeGenerate
  */

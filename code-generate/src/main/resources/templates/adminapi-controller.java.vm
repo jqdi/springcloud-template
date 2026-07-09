@@ -23,7 +23,7 @@ import ${apiPackage}.request.${entity}Req;
 import ${apiPackage}.response.${entity}Resp;
 
 /**
- * ${table.comment} AdminAPI控制器
+ * ${table.comment}
  *
  * @author CodeGenerate
  */

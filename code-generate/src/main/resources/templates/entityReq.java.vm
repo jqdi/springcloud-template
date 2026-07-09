@@ -11,21 +11,12 @@ import lombok.Data;
  */
 @Data
 public class ${entity}Req {
-
 ## ----------  BEGIN 字段循环遍历  ----------
 #foreach($field in $table.fields)
-## AuditableModel内的字段createTime、createBy、updateTime、updateBy去掉
-#if($field.keyFlag)
     /**
      * ${field.comment}
      */
     private $!field.propertyType $!field.propertyName;
-#else
-    /**
-     * ${field.comment}
-     */
-    private $!field.propertyType $!field.propertyName;
-#end
 #end
 ## ----------  END 字段循环遍历  ----------
 }

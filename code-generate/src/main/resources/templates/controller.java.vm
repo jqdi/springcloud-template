@@ -22,7 +22,7 @@ import ${package.Entity}.${entity};
 import ${package.Service}.$!table.serviceName;
 
 /**
- * ${table.comment} 前端控制器
+ * ${table.comment}
  *
  * @author CodeGenerate
  */

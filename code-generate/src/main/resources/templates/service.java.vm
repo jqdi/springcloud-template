@@ -8,7 +8,7 @@ import ${package.Entity}.${entity};
 import ${package.Mapper}.${table.mapperName};
 
 /**
- * ${table.comment} 服务类
+ * ${table.comment}
  *
  * @author CodeGenerate
  */
