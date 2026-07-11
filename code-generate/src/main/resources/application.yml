@@ -19,5 +19,5 @@ code:
   generate:
     # 模块
     moduleName: order
-    # 输出路径前缀，默认为项目根目录
-    output-base-path: ../
+    # 表名，多个表名用逗号分隔
+    tableNames: sms_task

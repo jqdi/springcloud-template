@@ -18,11 +18,6 @@ public class CodeGeneratorConfig {
     private String tableNames = "sms_task,sms_task_detail";
 
     /**
-     * 可选的模块列表
-     */
-    private String moduleOptions = "tool,system,user,order";
-
-    /**
      * 作者
      */
     private String author = "CodeGenerate";
@@ -31,9 +26,4 @@ public class CodeGeneratorConfig {
      * 父包名
      */
     private String parentPackage = "com.company";
-
-    /**
-     * 输出基础路径
-     */
-    private String outputBasePath = "D:\\code\\springcloud-template";
 }
