@@ -32,7 +32,7 @@ import com.company.framework.util.PropertyUtils;
 import com.company.system.api.feign.SysMenuFeign;
 import com.company.system.api.request.RemoveReq;
 import com.company.system.api.request.SysMenuReq;
-import com.company.system.api.response.PageResp;
+import com.company.common.response.PageResp;
 import com.company.system.api.response.RouterResp;
 import com.company.system.api.response.SysMenuResp;
 

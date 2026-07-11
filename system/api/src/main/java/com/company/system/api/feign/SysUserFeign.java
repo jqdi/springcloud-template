@@ -6,7 +6,7 @@ import com.company.system.api.feign.fallback.ThrowExceptionFallback;
 import com.company.system.api.request.RemoveReq;
 import com.company.system.api.request.SysUserAssignRoleReq;
 import com.company.system.api.request.SysUserReq;
-import com.company.system.api.response.PageResp;
+import com.company.common.response.PageResp;
 import com.company.system.api.response.SysUserInfoResp;
 import com.company.system.api.response.SysUserResp;
 import org.springframework.cloud.openfeign.FeignClient;

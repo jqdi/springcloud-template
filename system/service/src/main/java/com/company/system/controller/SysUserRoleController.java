@@ -1,9 +1,12 @@
 package com.company.system.controller;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
+import cn.hutool.core.date.DateUtil;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,7 +21,7 @@ import com.company.system.api.constant.Constants;
 import com.company.system.api.feign.SysUserRoleFeign;
 import com.company.system.api.request.RemoveReq;
 import com.company.system.api.request.SysUserRoleReq;
-import com.company.system.api.response.PageResp;
+import com.company.common.response.PageResp;
 import com.company.system.api.response.SysUserRoleResp;
 import com.company.system.entity.SysRole;
 import com.company.system.entity.SysUserRole;
@@ -40,7 +43,7 @@ public class SysUserRoleController implements SysUserRoleFeign {
 	@Autowired
 	private SysMenuService sysMenuService;
 
-	private QueryWrapper<SysUserRole> toQueryWrapper(Integer userId, Integer roleId, String createTimeStart, String createTimeEnd, String updateTimeStart, String updateTimeEnd) {
+	private QueryWrapper<SysUserRole> toQueryWrapper(Integer userId, Integer roleId, Date createTimeStart, String createTimeEnd, String updateTimeStart, String updateTimeEnd) {
 		QueryWrapper<SysUserRole> queryWrapper = new QueryWrapper<>();
 		if (userId != null) {
 			queryWrapper.eq("user_id", userId);
@@ -49,9 +52,11 @@ public class SysUserRoleController implements SysUserRoleFeign {
 			queryWrapper.eq("role_id", roleId);
 		}
         if (StringUtils.isNotBlank(createTimeStart)) {
-            queryWrapper.ge("create_time", createTimeStart + " 00:00:00");
+			Date jdkDate = DateUtil.beginOfDay(createTimeStart).toJdkDate();
+			queryWrapper.ge("create_time", createTimeStart + " 00:00:00");
         }
         if (StringUtils.isNotBlank(createTimeEnd)) {
+			Date jdkDate = DateUtil.endOfDay(createTimeEnd).toJdkDate();
             queryWrapper.le("create_time", createTimeEnd + " 23:59:59");
         }
         if (StringUtils.isNotBlank(updateTimeStart)) {
