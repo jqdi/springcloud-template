@@ -10,10 +10,9 @@
         <version>1.0.0</version>
     </parent>
     
-    <artifactId>code-generate</artifactId>
+    <artifactId>template-code-generate</artifactId>
     <packaging>jar</packaging>
     
-    <name>code-generate</name>
     <description>代码生成模块</description>
     
     <dependencies>

@@ -48,6 +48,7 @@
 		<module>gateway</module>
 		<module>config</module><!-- 替代组件：nacos、apollo -->
 		<module>monitor</module>
+		<module>code-generate</module><!-- 代码生成模块 -->
 		<!-- starter组件 -->
         <module>boot-starter</module>
 		<!-- 内部微服务 -->
@@ -66,7 +67,6 @@
 		<module>adminapi</module><!-- 管理后台，前后端分离，与admin二选一 -->
 		<module>openapi</module>
 		<module>job</module><!-- 流量来自xxl-job-admin -->
-		<module>code-generate</module><!-- 代码生成模块 -->
 	</modules>
 
 	<dependencyManagement>

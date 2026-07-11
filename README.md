@@ -156,23 +156,23 @@ springcloud-template
 
 ### 服务说明
 
-| 服务                | 端口   | 功能说明               |
-|-------------------|------|--------------------|
-| template-eureka   | 7010 | 注册中心（可替换为nacos） |
-| template-gateway  | 7020 | 网关                 |
-| template-config   | 7030 | 配置中心（可替换为nacos）    |
-| template-monitor  | 7040 | 监控                 |
-| template-system   | 8010 | 系统服务               |
-| template-tool     | 8020 | 工具服务               |
-| template-user     | 8030 | 用户服务               |
-| template-order    | 8040 | 订单服务               |
-| template-im       | 8050 | 即时通讯服务             |
-| template-web      | 9010 | WEB端              |
-| template-app      | 9020 | APP端              |
-| template-adminapi | 9030 | 管理后台端 |
-| template-job      | 9040 | 定时任务               |
-| template-openapi  | 9050 | 第三方访问入口          |
-| code-generate     | -    | 代码生成工具（开发辅助，不部署） |
+| 服务                     | 端口  | 功能说明               |
+|------------------------|-----|--------------------|
+| template-eureka        | 7010 | 注册中心（可替换为nacos） |
+| template-gateway       | 7020 | 网关                 |
+| template-config        | 7030 | 配置中心（可替换为nacos）    |
+| template-monitor       | 7040 | 监控                 |
+| template-code-generate | 7050 | 代码生成工具（开发辅助，不部署） |
+| template-system        | 8010 | 系统服务               |
+| template-tool          | 8020 | 工具服务               |
+| template-user          | 8030 | 用户服务               |
+| template-order         | 8040 | 订单服务               |
+| template-im            | 8050 | 即时通讯服务             |
+| template-web           | 9010 | WEB端              |
+| template-app           | 9020 | APP端              |
+| template-adminapi      | 9030 | 管理后台端 |
+| template-job           | 9040 | 定时任务               |
+| template-openapi       | 9050 | 第三方访问入口          |
 
 #### 端口规范
 
