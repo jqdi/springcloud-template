@@ -28,6 +28,7 @@ springcloud-template 是一个企业级的Spring Cloud微服务架构模板，�
 - 动态数据源（主/从读写分离，分库分表）使用demo
 - 导航栏金刚位、轮播图实现demo，能够在不修改表结构的情况增加展示条件，或者增加复杂度更高的展示条件，具有高扩展性
 - APP版本管理demo，精准把控APP版本发布中的推荐更新、强制更新
+- 代码生成模块（code-generate），基于MyBatis Plus Generator + Velocity，一键生成Entity/Mapper/Service/Controller/Req/Resp/Feign/AdminApi全链路代码，支持命令行交互和REST API两种模式
 
 ## 快速开始
 
@@ -146,6 +147,10 @@ springcloud-template
 ├── template-admin -- 管理后台端(前后端一体)
 ├── template-adminapi -- 管理后台端(前后端分离)
 ├── template-openapi -- 开放平台接入层(边缘微服务)
+├── code-generate -- 代码生成工具（开发辅助模块，不参与部署）
+│     └── 支持一键生成 service/api/adminapi 三层代码
+│     └── 命令行交互模式 + REST API 模式
+│     └── 自定义 Velocity 模板
 ├── sql -- 项目中的表结构设计
 ```
 
@@ -167,6 +172,7 @@ springcloud-template
 | template-adminapi | 9030 | 管理后台端 |
 | template-job      | 9040 | 定时任务               |
 | template-openapi  | 9050 | 第三方访问入口          |
+| code-generate     | -    | 代码生成工具（开发辅助，不部署） |
 
 #### 端口规范
 
@@ -182,6 +188,17 @@ springcloud-template
 ### 开发与运行
 
 #### 按需执行[sql](sql)脚本
+
+#### 使用代码生成器（推荐）
+
+在开发新的业务模块时，推荐先使用 [code-generate](code-generate) 模块一键生成骨架代码，大幅提高开发效率。
+
+1. 进入 `code-generate` 模块，确认 `application.yml` 中的数据源配置和默认参数
+2. 运行 `CodeGenerateApplication` 的 main 方法，进入命令行交互模式
+3. 按提示输入目标模块名（如 `order` / `user` / `tool` 等）和表名（多表用逗号分隔）
+4. 生成完成后，在对应模块的 `service` / `api` / `adminapi` 中查看生成的代码，并按需补充业务逻辑
+
+> 详细使用说明、REST API 调用方式、自定义模板方法请参阅 [code-generate/README.md](code-generate/README.md)
 
 #### 开关配置
 
