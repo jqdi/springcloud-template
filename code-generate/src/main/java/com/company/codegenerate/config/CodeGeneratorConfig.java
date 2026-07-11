@@ -9,24 +9,29 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties(prefix = "code.generate")
 public class CodeGeneratorConfig {
     /**
-     * 目标模块名称
+     * 模块
      */
-    private String targetModule = "tool";
+    private String moduleName = "order";
+    /**
+     * 表名，多个表名用逗号分隔
+     */
+    private String tableNames = "sms_task,sms_task_detail";
+
+    /**
+     * 可选的模块列表
+     */
+    private String moduleOptions = "tool,system,user,order";
+
     /**
      * 作者
      */
     private String author = "CodeGenerate";
 
     /**
-     * 可选的模块列表
+     * 父包名
      */
-    private String moduleOptions = "tool,system,user,order";
-    
-    /**
-     * 模板路径
-     */
-    private String templatePath = "classpath:/templates";
-    
+    private String parentPackage = "com.company";
+
     /**
      * 输出基础路径
      */

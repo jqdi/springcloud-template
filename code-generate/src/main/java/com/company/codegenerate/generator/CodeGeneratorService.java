@@ -2,13 +2,10 @@ package com.company.codegenerate.generator;
 
 import java.nio.file.Paths;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import javax.sql.DataSource;
 
-import com.baomidou.mybatisplus.generator.config.po.TableField;
 import org.springframework.stereotype.Service;
 
 import com.baomidou.mybatisplus.generator.FastAutoGenerator;
@@ -38,17 +35,21 @@ public class CodeGeneratorService {
      */
     public void generateCode(String tableNames, String moduleName) {
         String projectPath = System.getProperty("user.dir");
+        String parentPackage = codeGeneratorConfig.getParentPackage();
+        String parentPath = parentPackage.replace(".", "/");
         String outputPath = Paths.get(projectPath, moduleName, "service").toString();
-        String apiPath = Paths.get(projectPath, moduleName, "api", "src/main/java", "com", "company", "order", "api").toString();
-        String adminapiPath = Paths.get(projectPath, "adminapi", "src/main/java", "com", "company", "adminapi").toString();
+        String apiPath = Paths.get(projectPath, moduleName, "api", "src/main/java", parentPath, moduleName, "api").toString();
+        String adminapiPath = Paths.get(projectPath, "adminapi", "src/main/java", parentPath, "adminapi").toString();
 
-        log.info("开始生成代码，表名: {}，模块名: {}，输出路径: {}，api路径: {}，adminapi路径: {}", tableNames, moduleName, outputPath, apiPath,
-            adminapiPath);
+        log.info("开始生成代码，表名: {}，模块名: {}", tableNames, moduleName);
+        log.info("父包名: {}", parentPackage);
+        log.info("父路径: {}", parentPath);
+        log.info("service路径: {}", outputPath);
+        log.info("api路径: {}", apiPath);
+        log.info("adminapi路径: {}", adminapiPath);
 
         // 构建数据源配置
         DataSourceConfig.Builder dataSourceConfigBuilder = new DataSourceConfig.Builder(dataSource);
-
-        String packageParent = "com.company";
 
         FastAutoGenerator.create(dataSourceConfigBuilder)
             // 全局配置
@@ -67,7 +68,7 @@ public class CodeGeneratorService {
                 pathInfo.put(OutputFile.xml, outputPath + "/src/main/resources/mapper");
 
                 builder//
-                    .parent(packageParent) // 设置父包名
+                    .parent(parentPackage) // 设置父包名
                     .moduleName(moduleName) // 设置父包模块名
                     .entity("entity") // Entity包名
                     .mapper("mapper") // Mapper包名
@@ -118,8 +119,8 @@ public class CodeGeneratorService {
             .injectionConfig(consumer -> {
                 // 自定义配置
                 Map<String, Object> customMap = Maps.newHashMap();
-                customMap.put("apiPackage", "com.company." + moduleName + ".api");
-                customMap.put("adminapiPackage", "com.company.adminapi");
+                customMap.put("apiPackage", parentPackage + "." + moduleName + ".api");
+                customMap.put("adminapiPackage", parentPackage + ".adminapi");
                 consumer.customMap(customMap);
 
                 // 在每个文件输出前，动态设置首字母小写的 entity 变量
@@ -132,14 +133,14 @@ public class CodeGeneratorService {
                     String _serviceName = serviceName.substring(0, 1).toLowerCase() + serviceName.substring(1);
                     objectMap.put("_serviceName", _serviceName);
 
-                    List<TableField> tableFieldList = tableInfo.getFields();
-                    String propertyTypeNameConcat = tableFieldList.stream().map(v -> v.getPropertyType() + " " + v.getPropertyName())
-                        .collect(Collectors.joining(","));
-                    objectMap.put("propertyTypeNameConcat", propertyTypeNameConcat);
-
-                    String propertyTypeNameConcatNoId = tableFieldList.stream().filter(v -> !"id".equals(v.getPropertyName()))
-                        .map(v -> v.getPropertyType() + " " + v.getPropertyName()).collect(Collectors.joining(","));
-                    objectMap.put("propertyTypeNameConcatNoId", propertyTypeNameConcatNoId);
+                    // List<TableField> tableFieldList = tableInfo.getFields();
+                    // String propertyTypeNameConcat = tableFieldList.stream()
+                    // .map(v -> v.getPropertyType() + " " + v.getPropertyName()).collect(Collectors.joining(","));
+                    // objectMap.put("propertyTypeNameConcat", propertyTypeNameConcat);
+                    //
+                    // String propertyTypeNameConcatNoId = tableFieldList.stream().filter(v -> !"id".equals(v.getPropertyName()))
+                    // .map(v -> v.getPropertyType() + " " + v.getPropertyName()).collect(Collectors.joining(","));
+                    // objectMap.put("propertyTypeNameConcatNoId", propertyTypeNameConcatNoId);
                 });
 
                 consumer.customFile(builder -> builder//
