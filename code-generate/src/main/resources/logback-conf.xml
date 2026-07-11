@@ -4,5 +4,5 @@
 	<include resource="logback-conf-framework.xml" />
 
     <!--引用数据源日志 -->
-    <include resource="logback-conf-database.xml" />
+	<include resource="logback-conf-datasource.xml" />
 </configuration>
