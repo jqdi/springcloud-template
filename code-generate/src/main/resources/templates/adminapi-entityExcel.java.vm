@@ -2,6 +2,9 @@ package ${adminapiPackage}.excel;
 
 import java.time.LocalDateTime;
 
+import com.alibaba.excel.annotation.ExcelProperty;
+import com.company.adminapi.easyexcel.converter.SysUserConverter;
+
 import lombok.Data;
 
 /**
@@ -13,10 +16,20 @@ import lombok.Data;
 public class ${entity}Excel {
 ## ----------  BEGIN 字段循环遍历  ----------
 #foreach($field in $table.fields)
+## 字段createBy、updateBy转换
+#if($field.propertyName != "createBy" && $field.propertyName != "updateBy")
     /**
      * ${field.comment}
      */
+	@ExcelProperty(value = "${field.comment}")
     private $!field.propertyType $!field.propertyName;
+#else
+    /**
+     * ${field.comment}
+     */
+	@ExcelProperty(value = "${field.comment}, converter = SysUserConverter.class")
+    private $!field.propertyType $!field.propertyName;
+#end
 #end
 ## ----------  END 字段循环遍历  ----------
 }
