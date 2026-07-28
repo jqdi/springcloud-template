@@ -11,7 +11,7 @@ import lombok.EqualsAndHashCode;
 /**
  * ${table.comment}
  *
- * @author CodeGenerate
+ * @author ${author}
  */
 @Data
 @EqualsAndHashCode(callSuper = true)

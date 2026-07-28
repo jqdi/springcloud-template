@@ -7,7 +7,7 @@ import lombok.Data;
 /**
  * ${table.comment}
  *
- * @author CodeGenerate
+ * @author ${author}
  */
 @Data
 public class ${entity}Req {

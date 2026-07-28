@@ -18,7 +18,7 @@ import ${apiPackage}.response.${entity}Resp;
 /**
  * ${table.comment}
  *
- * @author CodeGenerate
+ * @author ${author}
  */
 @FeignClient(value = Constants.FEIGNCLIENT_VALUE, path = "/${_entity}", fallbackFactory = ThrowExceptionFallback.class)
 public interface ${entity}Feign {

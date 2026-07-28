@@ -6,7 +6,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 /**
  * ${table.comment}
  *
- * @author CodeGenerate
+ * @author ${author}
  */
 public interface ${table.mapperName} extends BaseMapper<${entity}> {
 }

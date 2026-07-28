@@ -24,7 +24,7 @@ import ${package.Service}.$!table.serviceName;
 /**
  * ${table.comment}
  *
- * @author CodeGenerate
+ * @author ${author}
  */
 @RestController
 @RequestMapping("/${_entity}")

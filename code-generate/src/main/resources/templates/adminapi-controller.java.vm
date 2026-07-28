@@ -25,7 +25,7 @@ import ${apiPackage}.response.${entity}Resp;
 /**
  * ${table.comment}
  *
- * @author CodeGenerate
+ * @author ${author}
  */
 @Validated
 @RestController

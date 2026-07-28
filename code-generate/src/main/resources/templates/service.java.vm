@@ -10,7 +10,7 @@ import ${package.Mapper}.${table.mapperName};
 /**
  * ${table.comment}
  *
- * @author CodeGenerate
+ * @author ${author}
  */
 @Service
 public class ${table.serviceName} extends ServiceImpl<${table.mapperName}, ${entity}> implements IService<${entity}> {

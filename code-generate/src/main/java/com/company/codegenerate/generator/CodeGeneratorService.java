@@ -184,8 +184,8 @@ public class CodeGeneratorService {
                     .enableFileOverride()//
                 );
             })
-            // 使用Velocity引擎模板
-            .templateEngine(new VelocityTemplateEngine()) // 默认VelocityTemplateEngine
+            // 指定引擎模板，默认VelocityTemplateEngine
+            .templateEngine(new VelocityTemplateEngine())
             .execute();
 
         log.info("代码生成完成，表名: {}，模块名: {}", tableNames, moduleName);
