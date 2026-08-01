@@ -1,0 +1,57 @@
+package ${apiPackage}.feign;
+
+import java.time.LocalDateTime;
+import java.util.List;
+
+import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import com.company.common.response.PageResp;
+import ${apiPackage}.constant.Constants;
+import ${apiPackage}.feign.fallback.ThrowExceptionFallback;
+import ${apiPackage}.request.${entity}Req;
+import ${apiPackage}.response.${entity}Resp;
+
+/**
+ * ${table.comment}
+ *
+ * @author ${author}
+ */
+@FeignClient(value = Constants.FEIGNCLIENT_VALUE, path = "/${_entity}", fallbackFactory = ThrowExceptionFallback.class)
+public interface ${entity}Feign {
+
+    @GetMapping("/page")
+    PageResp<${entity}Resp> page(@RequestParam(value = "current") Long current, @RequestParam(value = "size") Long size## ----------  BEGIN 字段循环遍历  ----------
+#foreach($field in $table.fields)
+## 排除主键id字段
+#if($field.propertyName != "id"), @RequestParam(value = "$!field.propertyName", required = false) $!field.propertyType $!field.propertyName#end
+#end
+## ----------  END 字段循环遍历  ----------
+);
+
+    @GetMapping("/list")
+    List<${entity}Resp> list(## ----------  BEGIN 字段循环遍历  ----------
+#set($first = true)
+#foreach($field in $table.fields)
+## 排除主键id字段
+#if($field.propertyName != "id")
+#if($first)#set($first = false)#else, #end@RequestParam(value = "$!field.propertyName", required = false) $!field.propertyType $!field.propertyName#end
+#end
+## ----------  END 字段循环遍历  ----------
+);
+
+    @GetMapping("/query")
+    ${entity}Resp query(@RequestParam("id") Integer id);
+
+    @PostMapping("/save")
+    Boolean save(@RequestBody ${entity}Req ${_entity}Req);
+
+    @PostMapping("/update")
+    Boolean update(@RequestBody ${entity}Req ${_entity}Req);
+
+    @PostMapping("/remove")
+    Boolean remove(@RequestBody List<Integer> idList);
+}

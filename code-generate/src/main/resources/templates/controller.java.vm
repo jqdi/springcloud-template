@@ -1,0 +1,141 @@
+package ${package.Controller};
+
+import java.time.LocalDateTime;
+import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.plugins.pagination.PageDTO;
+
+import com.company.common.response.PageResp;
+import com.company.framework.util.PropertyUtils;
+import ${apiPackage}.feign.${entity}Feign;
+import ${apiPackage}.request.${entity}Req;
+import ${apiPackage}.response.${entity}Resp;
+import ${package.Entity}.${entity};
+import ${package.Service}.$!table.serviceName;
+
+/**
+ * ${table.comment}
+ *
+ * @author ${author}
+ */
+@RestController
+@RequestMapping("/${_entity}")
+public class ${table.controllerName} implements ${entity}Feign {
+
+    @Autowired
+    private $!table.serviceName ${_serviceName};
+
+    private QueryWrapper<${entity}> toQueryWrapper(## ----------  BEGIN 字段循环遍历  ----------
+#foreach($field in $table.fields)
+## 排除审计字段和主键id字段
+#if($field.propertyName != "id")$!field.propertyType $!field.propertyName#if($foreach.hasNext), #end#end
+#end
+## ----------  END 字段循环遍历  ----------
+) {
+        QueryWrapper<${entity}> queryWrapper = new QueryWrapper<>();
+## ----------  BEGIN 字段循环遍历  ----------
+#foreach($field in $table.fields)
+## 排除审计字段和主键id字段
+#if($field.propertyName != "id")
+#if($field.propertyType == "String")
+        if (StringUtils.isNotBlank($!field.propertyName)) {
+            queryWrapper.like("$!field.name", $!field.propertyName);
+        }
+#else
+        if ($!field.propertyName != null) {
+            queryWrapper.eq("$!field.name", $!field.propertyName);
+        }
+#end
+#end
+#end
+## ----------  END 字段循环遍历  ----------
+        return queryWrapper;
+    }
+
+    @Override
+    public PageResp<${entity}Resp> page(Long current, Long size## ----------  BEGIN 字段循环遍历  ----------
+#foreach($field in $table.fields)
+## 排除主键id字段
+#if($field.propertyName != "id"), $!field.propertyType $!field.propertyName#end
+#end
+## ----------  END 字段循环遍历  ----------
+) {
+        QueryWrapper<${entity}> queryWrapper = toQueryWrapper(## ----------  BEGIN 字段循环遍历  ----------
+#set($first = true)
+#foreach($field in $table.fields)
+## 排除主键id字段
+#if($field.propertyName != "id")#if($first)#set($first = false)#else, #end$!field.propertyName#end
+#end
+## ----------  END 字段循环遍历  ----------
+);
+
+        queryWrapper.orderByDesc("id");
+        Page<${entity}> ${_entity}Page = ${_serviceName}.page(PageDTO.of(current, size), queryWrapper);
+
+        List<${entity}Resp> ${_entity}RespList = PropertyUtils.copyArrayProperties(${_entity}Page.getRecords(), ${entity}Resp.class);
+        return PageResp.of(${_entity}Page.getTotal(), ${_entity}RespList);
+    }
+
+    @Override
+    public List<${entity}Resp> list(## ----------  BEGIN 字段循环遍历  ----------
+#set($first = true)
+#foreach($field in $table.fields)
+## 排除主键id字段
+#if($field.propertyName != "id")#if($first)#set($first = false)#else, #end$!field.propertyType $!field.propertyName#end
+#end
+## ----------  END 字段循环遍历  ----------
+) {
+        QueryWrapper<${entity}> queryWrapper = toQueryWrapper(## ----------  BEGIN 字段循环遍历  ----------
+#set($first = true)
+#foreach($field in $table.fields)
+## 排除主键id字段
+#if($field.propertyName != "id")#if($first)#set($first = false)#else, #end$!field.propertyName#end
+#end
+## ----------  END 字段循环遍历  ----------
+);
+
+        queryWrapper.orderByDesc("id");
+        List<${entity}> ${_entity}List = ${_serviceName}.list(queryWrapper);
+
+        List<${entity}Resp> ${_entity}RespList = PropertyUtils.copyArrayProperties(${_entity}List, ${entity}Resp.class);
+        return ${_entity}RespList;
+    }
+
+    @Override
+    public ${entity}Resp query(Integer id) {
+        ${entity} ${_entity} = ${_serviceName}.getById(id);
+        ${entity}Resp ${_entity}Resp = PropertyUtils.copyProperties(${_entity}, ${entity}Resp.class);
+        return ${_entity}Resp;
+    }
+
+    @Override
+    public Boolean save(${entity}Req ${_entity}Req) {
+        ${entity} ${_entity} = PropertyUtils.copyProperties(${_entity}Req, ${entity}.class);
+        boolean success = ${_serviceName}.save(${_entity});
+        return success;
+    }
+
+    @Override
+    public Boolean update(${entity}Req ${_entity}Req) {
+        ${entity} ${_entity} = PropertyUtils.copyProperties(${_entity}Req, ${entity}.class);
+        boolean success = ${_serviceName}.updateById(${_entity});
+        return success;
+    }
+
+    @Override
+    public Boolean remove(List<Integer> idList) {
+        if (CollectionUtils.isEmpty(idList)) {
+            return true;
+        }
+        boolean success = ${_serviceName}.removeBatchByIds(idList);
+        return success;
+    }
+}

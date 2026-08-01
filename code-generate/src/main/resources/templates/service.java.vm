@@ -1,0 +1,16 @@
+package ${package.Service};
+
+import org.springframework.stereotype.Service;
+
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import ${package.Entity}.${entity};
+import ${package.Mapper}.${table.mapperName};
+
+/**
+ * ${table.comment}
+ *
+ * @author ${author}
+ */
+@Service
+public class ${table.serviceName} extends ServiceImpl<${table.mapperName}, ${entity}> {
+}

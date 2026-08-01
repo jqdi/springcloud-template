@@ -5,7 +5,7 @@ import com.company.system.api.constant.Constants;
 import com.company.system.api.feign.fallback.ThrowExceptionFallback;
 import com.company.system.api.request.RemoveReq;
 import com.company.system.api.request.SysUserRoleReq;
-import com.company.system.api.response.PageResp;
+import com.company.common.response.PageResp;
 import com.company.system.api.response.SysUserRoleResp;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;

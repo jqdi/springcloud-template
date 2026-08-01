@@ -15,7 +15,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.plugins.pagination.PageDTO;
 
-import com.company.system.api.response.PageResp;
+import com.company.common.response.PageResp;
 import com.company.framework.util.PropertyUtils;
 import com.company.system.api.feign.SysConfigFeign;
 import com.company.system.api.request.SysConfigReq;
@@ -54,10 +54,10 @@ public class SysConfigController implements SysConfigFeign {
 //		long count = sysConfigService.count(queryWrapper);
 
 		queryWrapper.orderByDesc("id");
-		Page<SysConfig> page = PageDTO.of(current, size);
-		List<SysConfig> list = sysConfigService.list(page, queryWrapper);
+		Page<SysConfig> page = sysConfigService.page(PageDTO.of(current, size), queryWrapper);
+//		List<SysConfig> list = sysConfigService.list(page, queryWrapper);
 
-		List<SysConfigResp> respList = PropertyUtils.copyArrayProperties(list, SysConfigResp.class);
+		List<SysConfigResp> respList = PropertyUtils.copyArrayProperties(page.getRecords(), SysConfigResp.class);
 		return PageResp.of(page.getTotal(), respList);
 	}
 

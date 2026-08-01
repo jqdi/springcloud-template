@@ -1,0 +1,19 @@
+# bootstrap是系统级配置文件，优先级高于application.yml，建议不可变的配置放在bootstrap.yml中
+server:
+  port: 7050
+  shutdown: graceful # 优雅关闭应用
+  tomcat:
+    threads:
+      min-spare: 10 # 最小工作线程数，初始化分配线程数，默认10
+      max: 200 # 最大工作线程数，默认200
+    max-connections: 8192 # 最大连接数，默认8192
+    accept-count: 100 # 等待队列中的连接最大数，默认100
+
+spring:
+  lifecycle:
+    timeout-per-shutdown-phase: 30s # 优雅关闭等待时间，默认30s，结合server.shutdown=graceful配置使用
+  application:
+    name: template-code-generate
+  profiles:
+    active: dev # dev,test,pre,prod，不同环境jar启动命令后面加上 --spring.profiles.active=prod
+    include: eureka,nacos-discovery,config,apollo,nacos-config,actuator # 引入配置文件：bootstrap-*.yml

@@ -14,7 +14,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.PageDTO;
 import com.google.common.collect.Sets;
 
 import com.company.system.api.request.RemoveReq;
-import com.company.system.api.response.PageResp;
+import com.company.common.response.PageResp;
 import com.company.framework.util.PropertyUtils;
 import com.company.system.api.feign.SysRoleFeign;
 import com.company.system.api.request.SysRoleGrantMenuReq;

@@ -7,7 +7,7 @@ import com.company.adminapi.enums.OperationLogEnum.BusinessType;
 import com.company.adminapi.excel.SysUserRoleExcel;
 
 import com.company.system.api.request.RemoveReq;
-import com.company.system.api.response.PageResp;
+import com.company.common.response.PageResp;
 import com.company.framework.util.PropertyUtils;
 import com.company.system.api.feign.SysUserRoleFeign;
 import com.company.system.api.request.SysUserRoleReq;

@@ -1,0 +1,22 @@
+package ${apiPackage}.response;
+
+import java.time.LocalDateTime;
+
+import lombok.Data;
+
+/**
+ * ${table.comment}
+ *
+ * @author ${author}
+ */
+@Data
+public class ${entity}Resp {
+## ----------  BEGIN 字段循环遍历  ----------
+#foreach($field in $table.fields)
+    /**
+     * ${field.comment}
+     */
+    private $!field.propertyType $!field.propertyName;
+#end
+## ----------  END 字段循环遍历  ----------
+}

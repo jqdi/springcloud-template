@@ -29,7 +29,7 @@ import com.company.system.api.feign.SysUserPasswordFeign;
 import com.company.system.api.request.RemoveReq;
 import com.company.system.api.request.SaveNewPasswordReq;
 import com.company.system.api.request.SysUserReq;
-import com.company.system.api.response.PageResp;
+import com.company.common.response.PageResp;
 import com.company.system.api.response.SysUserInfoResp;
 import com.company.system.api.response.SysUserResp;
 
