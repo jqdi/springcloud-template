@@ -15,7 +15,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * 灰度流量染色过滤器（第1层）。
+ * 灰度流量染色过滤器（第1层，仅 release 模式生效）。
  *
  * <p>在负载均衡之前执行，按 {@link GrayProperties#getDyeRules()} 配置的染色规则判断请求是否应路由到灰度版本，
  * 命中则向请求头注入 {@code x-gray-version} 标识，供后续 {@link GrayLoadbalancer} 消费。
@@ -28,6 +28,7 @@ import java.util.List;
  * </ul>
  *
  * <p>多条规则按配置顺序匹配，命中第一个即染色。无命中则不注入（走基线）。
+ * <p>developer 模式下此过滤器不执行染色（直接放行）。
  */
 @Slf4j
 @Component
@@ -48,6 +49,11 @@ public class GrayDyeFilter implements GlobalFilter, Ordered {
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
+        // developer 模式不染色，直接放行
+        if (!grayProperties.isReleaseMode()) {
+            return chain.filter(exchange);
+        }
+
         ServerHttpRequest request = exchange.getRequest();
         String version = determineVersion(request);
 

@@ -16,13 +16,12 @@ import org.springframework.http.HttpHeaders;
 import reactor.core.publisher.Mono;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
- * 灰度负载均衡器（框架层，镜像 gateway 包）。
- *
- * <p>在 RoundRobinLoadBalancer 基础上添加基于版本号的泳道隔离路由。
- * 从请求头提取灰度版本号，构建 {@link GrayContext}，委托 {@link GrayStrategy} 选实例。
+ * 灰度负载均衡器（框架层，镜像 gateway 包），支持 developer 和 release 两种路由模式。
  */
 @Slf4j
 public class GrayLoadbalancer extends RoundRobinLoadBalancer {
@@ -31,20 +30,17 @@ public class GrayLoadbalancer extends RoundRobinLoadBalancer {
     private final ObjectProvider<ServiceInstanceListSupplier> serviceInstanceListSupplierProvider;
     private final GrayStrategy grayStrategy;
     private final GrayProperties grayProperties;
-    private final String grayHeaders;
     private final String serviceId;
 
     public GrayLoadbalancer(ObjectProvider<ServiceInstanceListSupplier> serviceInstanceListSupplierProvider,
                             String serviceId,
                             GrayStrategy grayStrategy,
-                            GrayProperties grayProperties,
-                            String grayHeaders) {
+                            GrayProperties grayProperties) {
         super(serviceInstanceListSupplierProvider, serviceId);
         this.serviceId = serviceId;
         this.serviceInstanceListSupplierProvider = serviceInstanceListSupplierProvider;
         this.grayStrategy = grayStrategy;
         this.grayProperties = grayProperties;
-        this.grayHeaders = grayHeaders;
     }
 
     @Override
@@ -66,7 +62,8 @@ public class GrayLoadbalancer extends RoundRobinLoadBalancer {
 
     private GrayContext buildContext(Request request) {
         String version = null;
-        HttpHeaders httpHeaders = null;
+        List<String> developerList = null;
+        HttpHeaders httpHeaders;
 
         if (request instanceof DefaultRequest) {
             RequestDataContext context = (RequestDataContext) request.getContext();
@@ -74,16 +71,33 @@ public class GrayLoadbalancer extends RoundRobinLoadBalancer {
                     .map(RequestDataContext::getClientRequest)
                     .map(RequestData::getHeaders)
                     .orElse(null);
-            if (httpHeaders != null && StringUtils.isNotBlank(grayHeaders)) {
-                version = Arrays.stream(grayHeaders.split(","))
-                        .filter(StringUtils::isNotBlank)
-                        .map(httpHeaders::getFirst)
-                        .filter(StringUtils::isNotBlank)
-                        .findFirst()
-                        .orElse(null);
+
+            if (httpHeaders != null) {
+                if (grayProperties.isDeveloperMode()) {
+                    String headers = grayProperties.getDeveloperHeaders();
+                    if (StringUtils.isNotBlank(headers)) {
+                        developerList = Arrays.stream(headers.split(","))
+                                .filter(StringUtils::isNotBlank)
+                                .map(h -> httpHeaders.getFirst(h.trim()))
+                                .filter(StringUtils::isNotBlank)
+                                .collect(Collectors.toList());
+                    }
+                } else if (grayProperties.isReleaseMode()) {
+                    String headers = grayProperties.getHeaders();
+                    if (StringUtils.isNotBlank(headers)) {
+                        version = Arrays.stream(headers.split(","))
+                                .filter(StringUtils::isNotBlank)
+                                .map(h -> httpHeaders.getFirst(h.trim()))
+                                .filter(StringUtils::isNotBlank)
+                                .findFirst()
+                                .orElse(null);
+                    }
+                }
             }
+        } else {
+            httpHeaders = null;
         }
 
-        return new GrayContext(version, httpHeaders);
+        return new GrayContext(version, developerList, httpHeaders);
     }
 }

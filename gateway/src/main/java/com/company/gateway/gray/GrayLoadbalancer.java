@@ -16,13 +16,15 @@ import org.springframework.http.HttpHeaders;
 import reactor.core.publisher.Mono;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
- * 灰度负载均衡器，在 RoundRobinLoadBalancer 基础上添加基于版本号的泳道隔离路由。
+ * 灰度负载均衡器，支持 developer 和 release 两种路由模式。
  *
- * <p>从请求头提取灰度版本号，构建 {@link GrayContext}，委托 {@link GrayStrategy} 选实例。
- * 配合 {@link GrayDyeFilter} 流量染色实现端到端灰度路由。
+ * <p>developer 模式：从请求头提取开发者标识列表，路由到开发者本地实例。
+ * release 模式：从请求头提取灰度版本号，按泳道隔离路由。
  */
 @Slf4j
 public class GrayLoadbalancer extends RoundRobinLoadBalancer {
@@ -31,20 +33,17 @@ public class GrayLoadbalancer extends RoundRobinLoadBalancer {
     private final ObjectProvider<ServiceInstanceListSupplier> serviceInstanceListSupplierProvider;
     private final GrayStrategy grayStrategy;
     private final GrayProperties grayProperties;
-    private final String grayHeaders;
     private final String serviceId;
 
     public GrayLoadbalancer(ObjectProvider<ServiceInstanceListSupplier> serviceInstanceListSupplierProvider,
                             String serviceId,
                             GrayStrategy grayStrategy,
-                            GrayProperties grayProperties,
-                            String grayHeaders) {
+                            GrayProperties grayProperties) {
         super(serviceInstanceListSupplierProvider, serviceId);
         this.serviceId = serviceId;
         this.serviceInstanceListSupplierProvider = serviceInstanceListSupplierProvider;
         this.grayStrategy = grayStrategy;
         this.grayProperties = grayProperties;
-        this.grayHeaders = grayHeaders;
     }
 
     @Override
@@ -65,10 +64,11 @@ public class GrayLoadbalancer extends RoundRobinLoadBalancer {
     }
 
     /**
-     * 从请求中提取灰度版本号，构建灰度上下文。
+     * 根据路由模式从请求中提取标识，构建灰度上下文。
      */
     private GrayContext buildContext(Request request) {
         String version = null;
+        List<String> developerList = null;
         HttpHeaders httpHeaders = null;
 
         if (request instanceof DefaultRequest) {
@@ -77,17 +77,33 @@ public class GrayLoadbalancer extends RoundRobinLoadBalancer {
                     .map(RequestDataContext::getClientRequest)
                     .map(RequestData::getHeaders)
                     .orElse(null);
-            if (httpHeaders != null && StringUtils.isNotBlank(grayHeaders)) {
-                // 取第一个非空的配置请求头值作为版本号
-                version = Arrays.stream(grayHeaders.split(","))
-                        .filter(StringUtils::isNotBlank)
-                        .map(httpHeaders::getFirst)
-                        .filter(StringUtils::isNotBlank)
-                        .findFirst()
-                        .orElse(null);
+
+            if (httpHeaders != null) {
+                if (grayProperties.isDeveloperMode()) {
+                    // developer 模式：从 developerHeaders 配置的头取值列表
+                    String headers = grayProperties.getDeveloperHeaders();
+                    if (StringUtils.isNotBlank(headers)) {
+                        developerList = Arrays.stream(headers.split(","))
+                                .filter(StringUtils::isNotBlank)
+                                .map(h -> httpHeaders.getFirst(h.trim()))
+                                .filter(StringUtils::isNotBlank)
+                                .collect(Collectors.toList());
+                    }
+                } else if (grayProperties.isReleaseMode()) {
+                    // release 模式：从 headers 配置的头取版本号
+                    String headers = grayProperties.getHeaders();
+                    if (StringUtils.isNotBlank(headers)) {
+                        version = Arrays.stream(headers.split(","))
+                                .filter(StringUtils::isNotBlank)
+                                .map(h -> httpHeaders.getFirst(h.trim()))
+                                .filter(StringUtils::isNotBlank)
+                                .findFirst()
+                                .orElse(null);
+                    }
+                }
             }
         }
 
-        return new GrayContext(version, httpHeaders);
+        return new GrayContext(version, developerList, httpHeaders);
     }
 }

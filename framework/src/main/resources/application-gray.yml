@@ -1,15 +1,21 @@
-# 灰度路由配置（框架层）
-# 多环境以 '---' 分开，prod 环境启用灰度，dev/test/pre 关闭（使用 developer 模块调试）
-# 染色规则仅在网关层配置，框架层只需配置开关和版本匹配
+# 灰度路由配置（框架层，合并 developer 与 gray 两个模块）
+# 框架层只需配置开关与版本匹配；染色规则仅在网关层配置
+# 通过 gray.mode 切换路由策略：
+#   developer = 开发调试路由（原 developer 模块）
+#   release   = 灰度发布路由（原 gray 模块）
+# 多环境以 '---' 分开
 ---
 # dev环境配置
 spring:
   config:
     activate:
       on-profile: dev
-# 灰度路由配置（dev 环境关闭，使用 developer 调试）
+# 灰度路由配置（dev 环境启用 developer 模式，用于本地联调）
 gray:
-  enabled: false
+  enabled: true
+  mode: developer
+  developer-headers: x-deviceid,Authorization
+  developer-metadata-key: developer
 
 ---
 # test环境配置
@@ -17,9 +23,12 @@ spring:
   config:
     activate:
       on-profile: test
-# 灰度路由配置（test 环境关闭，使用 developer 调试）
+# 灰度路由配置（test 环境启用 developer 模式，用于本地联调）
 gray:
-  enabled: false
+  enabled: true
+  mode: developer
+  developer-headers: x-deviceid,Authorization
+  developer-metadata-key: developer
 
 ---
 # pre环境配置
@@ -27,9 +36,15 @@ spring:
   config:
     activate:
       on-profile: pre
-# 灰度路由配置（pre 环境关闭，使用 developer 调试）
+# 灰度路由配置（pre 环境启用 release 模式，做小流量灰度验证）
 gray:
-  enabled: false
+  enabled: true
+  mode: release
+  headers: x-gray-version
+  version-metadata-key: version
+  weight-metadata-key: weight
+  default-weight: 100
+  fallback-to-baseline: true
 
 ---
 # prod环境配置
@@ -37,9 +52,10 @@ spring:
   config:
     activate:
       on-profile: prod,prod-zone1,prod-zone2
-# 灰度路由配置（prod 环境启用，developer 关闭）
+# 灰度路由配置（prod 环境启用 release 模式，灰度发布）
 gray:
   enabled: true
+  mode: release
   headers: x-gray-version
   version-metadata-key: version
   weight-metadata-key: weight

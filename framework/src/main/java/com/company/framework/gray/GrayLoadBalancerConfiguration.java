@@ -1,7 +1,8 @@
 package com.company.framework.gray;
 
-import com.company.framework.gray.strategy.GrayRuleStrategy;
+import com.company.framework.gray.strategy.DeveloperGrayStrategy;
 import com.company.framework.gray.strategy.GrayStrategy;
+import com.company.framework.gray.strategy.ReleaseGrayStrategy;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.cloud.client.ConditionalOnDiscoveryEnabled;
 import org.springframework.cloud.client.ServiceInstance;
@@ -15,8 +16,7 @@ import org.springframework.core.env.Environment;
 /**
  * 灰度负载均衡器 Bean 注册（框架层，镜像 gateway 包）。
  *
- * <p>每个服务独立创建 {@link GrayLoadbalancer} 和 {@link GrayStrategy} 实例，
- * 确保 {@link GrayRuleStrategy} 的 position 和 serviceId 按服务隔离。
+ * <p>根据 {@code gray.mode} 创建对应的策略实例。
  */
 @Order(GrayLoadBalancerConfiguration.DYNAMIC_ROUTE_ORDER - 1)
 @ConditionalOnDiscoveryEnabled
@@ -31,12 +31,16 @@ public class GrayLoadBalancerConfiguration {
             LoadBalancerClientFactory loadBalancerClientFactory,
             GrayProperties grayProperties) {
         String name = environment.getProperty(LoadBalancerClientFactory.PROPERTY_NAME);
-        GrayStrategy grayStrategy = new GrayRuleStrategy(name);
+        GrayStrategy grayStrategy;
+        if (grayProperties.isReleaseMode()) {
+            grayStrategy = new ReleaseGrayStrategy(name);
+        } else {
+            grayStrategy = new DeveloperGrayStrategy(name);
+        }
         return new GrayLoadbalancer(
                 loadBalancerClientFactory.getLazyProvider(name, ServiceInstanceListSupplier.class),
                 name,
                 grayStrategy,
-                grayProperties,
-                grayProperties.getHeaders());
+                grayProperties);
     }
 }

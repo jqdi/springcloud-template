@@ -14,12 +14,12 @@ import java.util.Arrays;
 /**
  * 灰度标识 Feign 透传拦截器（第2层，仅 framework 层）。
  *
- * <p>在 Feign 调用时，从当前 HTTP 请求中提取灰度版本头，透传到下游服务，
- * 确保全链路灰度不串流。
- *
- * <p>注：项目已有的 {@link com.company.framework.feign.HttpHeaderInterceptor} 透传
- * {@link com.company.framework.context.HeaderContextUtil} 中的固定头列表，但不包含灰度头。
- * 本拦截器专门透传 {@code gray.headers} 配置的灰度头。
+ * <p>在 Feign 调用时，从当前 HTTP 请求中提取灰度标识头，透传到下游服务。
+ * 根据路由模式透传不同的头：
+ * <ul>
+ *   <li>developer 模式：透传 {@code gray.developer-headers} 配置的头（如 x-deviceid, Authorization）</li>
+ *   <li>release 模式：透传 {@code gray.headers} 配置的头（如 x-gray-version）</li>
+ * </ul>
  */
 @Slf4j
 @Component
@@ -39,7 +39,11 @@ public class GrayFeignInterceptor implements RequestInterceptor {
             return;
         }
 
-        String headers = grayProperties.getHeaders();
+        // 根据模式选择透传的头列表
+        String headers = grayProperties.isReleaseMode()
+                ? grayProperties.getHeaders()
+                : grayProperties.getDeveloperHeaders();
+
         if (StringUtils.isBlank(headers)) {
             return;
         }

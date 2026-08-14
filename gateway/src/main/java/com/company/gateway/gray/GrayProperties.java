@@ -8,7 +8,11 @@ import java.util.List;
 /**
  * 灰度路由配置属性。
  *
- * <p>绑定前缀 {@code gray}，支持按环境区分开关、染色规则、版本匹配等配置。
+ * <p>绑定前缀 {@code gray}，支持两种路由模式：
+ * <ul>
+ *   <li>{@code developer}：开发调试路由，将开发者请求路由到本地实例（原 developer 模块功能）</li>
+ *   <li>{@code release}：灰度发布路由，按版本号泳道隔离（原 gray 模块功能）</li>
+ * </ul>
  */
 @ConfigurationProperties(prefix = "gray")
 public class GrayProperties {
@@ -16,22 +20,31 @@ public class GrayProperties {
     /** 灰度路由总开关 */
     private boolean enabled = false;
 
-    /** 灰度请求头名（逗号分隔），从这些头中提取版本号 */
+    /** 路由模式：developer（开发调试）| release（灰度发布） */
+    private String mode = "developer";
+
+    /** developer 模式：请求头名（逗号分隔），从这些头中提取开发者标识 */
+    private String developerHeaders = "x-deviceid,Authorization";
+
+    /** developer 模式：开发者标识在实例 metadata 中的字段名 */
+    private String developerMetadataKey = "developer";
+
+    /** release 模式：灰度请求头名（逗号分隔），从这些头中提取版本号 */
     private String headers = "x-gray-version";
 
-    /** 实例 metadata 中版本字段名 */
+    /** release 模式：实例 metadata 中版本字段名 */
     private String versionMetadataKey = "version";
 
-    /** 实例 metadata 中权重字段名 */
+    /** release 模式：实例 metadata 中权重字段名 */
     private String weightMetadataKey = "weight";
 
-    /** 默认权重（实例无 weight metadata 时使用） */
+    /** release 模式：默认权重 */
     private int defaultWeight = 100;
 
-    /** 无匹配版本实例时是否回退到基线实例 */
+    /** release 模式：无匹配版本实例时是否回退到基线实例 */
     private boolean fallbackToBaseline = true;
 
-    /** 染色规则列表，按配置顺序匹配，命中第一个即染色 */
+    /** release 模式：染色规则列表 */
     private List<DyeRule> dyeRules = new ArrayList<>();
 
     /**
@@ -125,6 +138,30 @@ public class GrayProperties {
         this.enabled = enabled;
     }
 
+    public String getMode() {
+        return mode;
+    }
+
+    public void setMode(String mode) {
+        this.mode = mode;
+    }
+
+    public String getDeveloperHeaders() {
+        return developerHeaders;
+    }
+
+    public void setDeveloperHeaders(String developerHeaders) {
+        this.developerHeaders = developerHeaders;
+    }
+
+    public String getDeveloperMetadataKey() {
+        return developerMetadataKey;
+    }
+
+    public void setDeveloperMetadataKey(String developerMetadataKey) {
+        this.developerMetadataKey = developerMetadataKey;
+    }
+
     public String getHeaders() {
         return headers;
     }
@@ -171,5 +208,15 @@ public class GrayProperties {
 
     public void setDyeRules(List<DyeRule> dyeRules) {
         this.dyeRules = dyeRules;
+    }
+
+    /** 是否为 developer 模式 */
+    public boolean isDeveloperMode() {
+        return "developer".equalsIgnoreCase(mode);
+    }
+
+    /** 是否为 release 模式 */
+    public boolean isReleaseMode() {
+        return "release".equalsIgnoreCase(mode);
     }
 }

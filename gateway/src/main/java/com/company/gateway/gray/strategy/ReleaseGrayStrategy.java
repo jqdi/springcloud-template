@@ -1,7 +1,7 @@
-package com.company.framework.gray.strategy;
+package com.company.gateway.gray.strategy;
 
-import com.company.framework.gray.GrayContext;
-import com.company.framework.gray.GrayProperties;
+import com.company.gateway.gray.GrayContext;
+import com.company.gateway.gray.GrayProperties;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.cloud.client.ServiceInstance;
@@ -14,23 +14,22 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 /**
- * 规则灰度策略：基于版本号的泳道隔离路由（框架层，镜像 gateway 包）。
+ * 灰度发布策略（release 模式）：基于版本号的泳道隔离路由。
  *
  * <p>路由算法：
  * <ol>
  *   <li>请求无灰度版本号 → 路由到基线实例（无 version metadata 的实例）</li>
  *   <li>请求有灰度版本号 → 先匹配同版本实例，命中则组内轮询</li>
- *   <li>无同版本实例且 {@code fallbackToBaseline=true} → 回退到基线实例（不跨版本）</li>
- *   <li>无同版本实例且 {@code fallbackToBaseline=false} → 返回 EmptyResponse</li>
+ *   <li>无同版本实例且 fallbackToBaseline=true → 回退到基线实例（不跨版本）</li>
  * </ol>
  */
 @Slf4j
-public class GrayRuleStrategy implements GrayStrategy {
+public class ReleaseGrayStrategy implements GrayStrategy {
 
     private final AtomicInteger position;
     private final String serviceId;
 
-    public GrayRuleStrategy(String serviceId) {
+    public ReleaseGrayStrategy(String serviceId) {
         this.serviceId = serviceId;
         this.position = new AtomicInteger(new java.util.Random().nextInt(1000));
     }
