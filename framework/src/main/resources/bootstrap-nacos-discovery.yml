@@ -21,6 +21,8 @@ spring:
         group: springcloud-template
         #metadata:
           #developer: 1 # 具体参考上游服务的developer.headers配置
+          #version: v2  # 灰度路由：标识灰度版本（prod 环境灰度发布时放开）
+          #weight: 10   # 灰度路由：权重（可选）
           # 本地服务路由环境流量调试操作步骤：
           # 1.放开配置spring.cloud.nacos.discovery.metadata.developer={userId}设置为登录用户ID
           # 2.bootstrap.yml设置spring.profiles.active=dev
@@ -44,6 +46,8 @@ spring:
         group: springcloud-template
         #metadata:
           #developer: 1 # 具体参考上游服务的developer.headers配置
+          #version: v2  # 灰度路由：标识灰度版本（prod 环境灰度发布时放开）
+          #weight: 10   # 灰度路由：权重（可选）
           # 本地服务路由环境流量调试操作步骤：
           # 1.放开配置spring.cloud.nacos.discovery.metadata.developer={userId}设置为登录用户ID
           # 2.bootstrap.yml设置spring.profiles.active=sit
@@ -67,6 +71,8 @@ spring:
         group: springcloud-template
         #metadata:
           #developer: 1 # 具体参考上游服务的developer.headers配置
+          #version: v2  # 灰度路由：标识灰度版本（prod 环境灰度发布时放开）
+          #weight: 10   # 灰度路由：权重（可选）
           # 本地服务路由环境流量调试操作步骤：
           # 1.放开配置spring.cloud.nacos.discovery.metadata.developer={userId}设置为登录用户ID
           # 2.bootstrap.yml设置spring.profiles.active=pre
@@ -90,6 +96,8 @@ spring:
         group: springcloud-template
         #metadata:
           #developer: 1 # 具体参考上游服务的developer.headers配置
+          #version: v2  # 灰度路由：标识灰度版本（prod 环境灰度发布时放开）
+          #weight: 10   # 灰度路由：权重（可选）
           # 本地服务路由环境流量调试操作步骤：
           # 1.放开配置spring.cloud.nacos.discovery.metadata.developer={userId}设置为登录用户ID
           # 2.bootstrap.yml设置spring.profiles.active=prod

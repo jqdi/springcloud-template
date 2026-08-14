@@ -14,6 +14,9 @@ eureka:
     lease-renewal-interval-in-seconds: 10 # 客户端向注册中心发送心跳的时间间隔（默认30秒）
 #    metadata-map:
 #      developer: 1
+#      # 灰度路由 metadata（prod 环境灰度发布时放开）：
+#      version: v2   # 灰度版本号
+#      weight: 10    # 权重（可选）
     # 本地服务路由环境流量调试操作步骤：
     # 1.放开配置eureka.instance.metadata-map.developer={userId}设置为登录用户ID
     # 2.bootstrap.yml设置spring.profiles.active=dev
@@ -39,6 +42,9 @@ eureka:
     lease-renewal-interval-in-seconds: 10 # 客户端向注册中心发送心跳的时间间隔（默认30秒）
 #    metadata-map:
 #      developer: 1
+#      # 灰度路由 metadata（prod 环境灰度发布时放开）：
+#      version: v2   # 灰度版本号
+#      weight: 10    # 权重（可选）
     # 本地服务路由环境流量调试操作步骤：
     # 1.放开配置eureka.instance.metadata-map.developer={userId}设置为登录用户ID
     # 2.bootstrap.yml设置spring.profiles.active=sit
@@ -64,6 +70,9 @@ eureka:
     lease-renewal-interval-in-seconds: 30 # 客户端向注册中心发送心跳的时间间隔（默认30秒）
 #    metadata-map:
 #      developer: 1
+#      # 灰度路由 metadata（prod 环境灰度发布时放开）：
+#      version: v2   # 灰度版本号
+#      weight: 10    # 权重（可选）
     # 本地服务路由环境流量调试操作步骤：
     # 1.放开配置eureka.instance.metadata-map.developer={userId}设置为登录用户ID
     # 2.bootstrap.yml设置spring.profiles.active=pre
@@ -89,6 +98,9 @@ eureka:
     lease-renewal-interval-in-seconds: 30 # 客户端向注册中心发送心跳的时间间隔（默认30秒）
 #    metadata-map:
 #      developer: 1
+#      # 灰度路由 metadata（prod 环境灰度发布时放开）：
+#      version: v2   # 灰度版本号
+#      weight: 10    # 权重（可选）
     # 本地服务路由环境流量调试操作步骤：
     # 1.放开配置eureka.instance.metadata-map.developer={userId}设置为登录用户ID
     # 2.bootstrap.yml设置spring.profiles.active=prod
@@ -115,6 +127,9 @@ eureka:
     metadata-map:
       zone: zone1  # 标识当前实例的 Zone
 #      developer: 1
+#      # 灰度路由 metadata（prod 环境灰度发布时放开）：
+#      version: v2   # 灰度版本号
+#      weight: 10    # 权重（可选）
     # 本地服务路由环境流量调试操作步骤：
     # 1.放开配置eureka.instance.metadata-map.developer={userId}设置为登录用户ID
     # 2.bootstrap.yml设置spring.profiles.active=prod-zone1
@@ -141,6 +156,9 @@ eureka:
     metadata-map:
       zone: zone2  # 标识当前实例的 Zone
 #      developer: 1
+#      # 灰度路由 metadata（prod 环境灰度发布时放开）：
+#      version: v2   # 灰度版本号
+#      weight: 10    # 权重（可选）
     # 本地服务路由环境流量调试操作步骤：
     # 1.放开配置eureka.instance.metadata-map.developer={userId}设置为登录用户ID
     # 2.bootstrap.yml设置spring.profiles.active=prod-zone2

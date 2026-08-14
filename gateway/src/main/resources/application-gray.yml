@@ -1,0 +1,63 @@
+# 灰度路由配置
+# 多环境以 '---' 分开，prod 环境启用灰度，dev/test/pre 关闭（使用 developer 模块调试）
+---
+# dev环境配置
+spring:
+  config:
+    activate:
+      on-profile: dev
+# 灰度路由配置（dev 环境关闭，使用 developer 调试）
+gray:
+  enabled: false
+
+---
+# test环境配置
+spring:
+  config:
+    activate:
+      on-profile: test
+# 灰度路由配置（test 环境关闭，使用 developer 调试）
+gray:
+  enabled: false
+
+---
+# pre环境配置
+spring:
+  config:
+    activate:
+      on-profile: pre
+# 灰度路由配置（pre 环境关闭，使用 developer 调试）
+gray:
+  enabled: false
+
+---
+# prod环境配置
+spring:
+  config:
+    activate:
+      on-profile: prod,prod-zone1,prod-zone2
+# 灰度路由配置（prod 环境启用，developer 关闭）
+gray:
+  enabled: true
+  headers: x-gray-version
+  version-metadata-key: version
+  weight-metadata-key: weight
+  default-weight: 100
+  fallback-to-baseline: true
+  # 染色规则（按顺序匹配，命中第一个即染色）
+  # 注意：染色规则建议放配置中心（Nacos/Apollo）动态管理，此处仅为示例
+  dye-rules:
+    # 规则1：VIP 用户路由到 v2
+    - type: header
+      header-name: x-user-type
+      header-value: vip
+      version: v2
+    # 规则2：白名单用户路由到 v2
+    - type: whitelist
+      user-header: x-user-id
+      user-ids: 1001,1002,1005
+      version: v2
+    # 规则3：5% 流量路由到 v2
+    - type: percent
+      percent: 5
+      version: v2
