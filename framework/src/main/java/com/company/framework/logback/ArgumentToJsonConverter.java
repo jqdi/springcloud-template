@@ -1,5 +1,8 @@
 package com.company.framework.logback;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.helpers.MessageFormatter;
 
@@ -18,10 +21,19 @@ public class ArgumentToJsonConverter extends MessageConverter {
     public String convert(ILoggingEvent event) {
         String contextMessage = "";
         if (Level.ERROR.equals(event.getLevel())) {
-            // 仅处理ERROR级别，增加上下文信息的输出，方便排查
+            // 仅处理ERROR级别，增加上下文信息的输出，方便根据用户信息快速定位问题
+            List<String> contextMessageList = new ArrayList<>();
             String userId = HeaderContextUtil.currentUserId();
+            if (StringUtils.isNotBlank(userId)) {
+                contextMessageList.add("userId:" + userId);
+            }
             String device = HeaderContextUtil.currentDevice();
-            contextMessage = contextMessage + String.format("[userId:%s,device:%s]", userId, device);
+            if (StringUtils.isNotBlank(device)) {
+                contextMessageList.add("device:" + device);
+            }
+            if (!contextMessageList.isEmpty()) {
+                contextMessage = "[" + String.join(",", contextMessageList) + "]";
+            }
         }
 
         Object[] argumentArray = event.getArgumentArray();
