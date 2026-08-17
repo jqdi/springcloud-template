@@ -20,7 +20,7 @@ spring:
         # Group，默认DEFAULT_GROUP，一般配置为项目名，如果命名空间下沉，可以下沉到微服务名或不配置
         group: springcloud-template
         #metadata:
-          #developer: 1 # 具体参考上游服务的developer.headers配置
+          #developer: 1 # 灰度developer模式：参考上游gray.developer-headers配置
           # 本地服务路由环境流量调试操作步骤：
           # 1.放开配置spring.cloud.nacos.discovery.metadata.developer={userId}设置为登录用户ID
           # 2.bootstrap.yml设置spring.profiles.active=dev
@@ -43,7 +43,7 @@ spring:
         # Group，默认DEFAULT_GROUP，一般配置为项目名，如果命名空间下沉，可以下沉到微服务名或不配置
         group: springcloud-template
         #metadata:
-          #developer: 1 # 具体参考上游服务的developer.headers配置
+          #developer: 1 # 灰度developer模式：参考上游gray.developer-headers配置
           # 本地服务路由环境流量调试操作步骤：
           # 1.放开配置spring.cloud.nacos.discovery.metadata.developer={userId}设置为登录用户ID
           # 2.bootstrap.yml设置spring.profiles.active=sit
@@ -66,7 +66,7 @@ spring:
         # Group，默认DEFAULT_GROUP，一般配置为项目名，如果命名空间下沉，可以下沉到微服务名或不配置
         group: springcloud-template
         #metadata:
-          #developer: 1 # 具体参考上游服务的developer.headers配置
+          #developer: 1 # 灰度developer模式：参考上游gray.developer-headers配置
           # 本地服务路由环境流量调试操作步骤：
           # 1.放开配置spring.cloud.nacos.discovery.metadata.developer={userId}设置为登录用户ID
           # 2.bootstrap.yml设置spring.profiles.active=pre
@@ -89,7 +89,7 @@ spring:
         # Group，默认DEFAULT_GROUP，一般配置为项目名，如果命名空间下沉，可以下沉到微服务名或不配置
         group: springcloud-template
         #metadata:
-          #developer: 1 # 具体参考上游服务的developer.headers配置
+          #developer: 1 # 灰度developer模式：参考上游gray.developer-headers配置
           # 本地服务路由环境流量调试操作步骤：
           # 1.放开配置spring.cloud.nacos.discovery.metadata.developer={userId}设置为登录用户ID
           # 2.bootstrap.yml设置spring.profiles.active=prod

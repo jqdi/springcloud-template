@@ -13,7 +13,7 @@ eureka:
     lease-expiration-duration-in-seconds: 30 # Eureka注册中心（服务端）在收到客户端心跳之后，等待下一次心跳的超时时间，如果在这个时间内没有收到下次心跳，则移除该客户端。（默认90秒）
     lease-renewal-interval-in-seconds: 10 # 客户端向注册中心发送心跳的时间间隔（默认30秒）
 #    metadata-map:
-#      developer: 1
+#      developer: 1 # 灰度developer模式：开发者标识（参考gray.developer-headers配置）
 #      # 灰度路由 metadata（prod 环境灰度发布时放开）：
 #      version: v2   # 灰度版本号
 #      weight: 10    # 权重（可选）
@@ -41,7 +41,7 @@ eureka:
     lease-expiration-duration-in-seconds: 30 # Eureka注册中心（服务端）在收到客户端心跳之后，等待下一次心跳的超时时间，如果在这个时间内没有收到下次心跳，则移除该客户端。（默认90秒）
     lease-renewal-interval-in-seconds: 10 # 客户端向注册中心发送心跳的时间间隔（默认30秒）
 #    metadata-map:
-#      developer: 1
+#      developer: 1 # 灰度developer模式：开发者标识（参考gray.developer-headers配置）
 #      # 灰度路由 metadata（prod 环境灰度发布时放开）：
 #      version: v2   # 灰度版本号
 #      weight: 10    # 权重（可选）
@@ -69,7 +69,7 @@ eureka:
     lease-expiration-duration-in-seconds: 90 # Eureka注册中心（服务端）在收到客户端心跳之后，等待下一次心跳的超时时间，如果在这个时间内没有收到下次心跳，则移除该客户端。（默认90秒）
     lease-renewal-interval-in-seconds: 30 # 客户端向注册中心发送心跳的时间间隔（默认30秒）
 #    metadata-map:
-#      developer: 1
+#      developer: 1 # 灰度developer模式：开发者标识（参考gray.developer-headers配置）
 #      # 灰度路由 metadata（prod 环境灰度发布时放开）：
 #      version: v2   # 灰度版本号
 #      weight: 10    # 权重（可选）
@@ -97,7 +97,7 @@ eureka:
     lease-expiration-duration-in-seconds: 90 # Eureka注册中心（服务端）在收到客户端心跳之后，等待下一次心跳的超时时间，如果在这个时间内没有收到下次心跳，则移除该客户端。（默认90秒）
     lease-renewal-interval-in-seconds: 30 # 客户端向注册中心发送心跳的时间间隔（默认30秒）
 #    metadata-map:
-#      developer: 1
+#      developer: 1 # 灰度developer模式：开发者标识（参考gray.developer-headers配置）
 #      # 灰度路由 metadata（prod 环境灰度发布时放开）：
 #      version: v2   # 灰度版本号
 #      weight: 10    # 权重（可选）
@@ -126,7 +126,7 @@ eureka:
     lease-renewal-interval-in-seconds: 30 # 客户端向注册中心发送心跳的时间间隔（默认30秒）
     metadata-map:
       zone: zone1  # 标识当前实例的 Zone
-#      developer: 1
+#      developer: 1 # 灰度developer模式：开发者标识（参考gray.developer-headers配置）
 #      # 灰度路由 metadata（prod 环境灰度发布时放开）：
 #      version: v2   # 灰度版本号
 #      weight: 10    # 权重（可选）
@@ -155,7 +155,7 @@ eureka:
     lease-renewal-interval-in-seconds: 30 # 客户端向注册中心发送心跳的时间间隔（默认30秒）
     metadata-map:
       zone: zone2  # 标识当前实例的 Zone
-#      developer: 1
+#      developer: 1 # 灰度developer模式：开发者标识（参考gray.developer-headers配置）
 #      # 灰度路由 metadata（prod 环境灰度发布时放开）：
 #      version: v2   # 灰度版本号
 #      weight: 10    # 权重（可选）

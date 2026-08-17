@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Configuration;
  * 灰度路由自动配置（框架层，镜像 gateway 包）。
  *
  * <p>通过 {@code gray.enabled=true} 开启，注册 {@link GrayLoadBalancerConfiguration} 作为默认 LB 配置。
- * 与 developer 模块互斥：同一环境不可同时启用 {@code developer.enabled} 和 {@code gray.enabled}。
+ * 通过 {@code gray.mode} 切换路由策略：developer（开发调试）| release（灰度发布）。
  */
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnProperty(name = "gray.enabled", havingValue = "true")
