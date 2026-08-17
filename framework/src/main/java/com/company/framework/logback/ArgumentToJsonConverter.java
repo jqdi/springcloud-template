@@ -3,10 +3,12 @@ package com.company.framework.logback;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.helpers.MessageFormatter;
 
+import com.company.framework.context.HeaderContextUtil;
 import com.company.framework.util.JsonUtil;
 import com.fasterxml.classmate.types.ResolvedInterfaceType;
 import com.fasterxml.classmate.types.ResolvedObjectType;
 
+import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.pattern.MessageConverter;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 
@@ -14,13 +16,21 @@ public class ArgumentToJsonConverter extends MessageConverter {
 
     @Override
     public String convert(ILoggingEvent event) {
+        String contextMessage = "";
+        if (Level.ERROR.equals(event.getLevel())) {
+            // 仅处理ERROR级别，增加上下文信息的输出，方便排查
+            String userId = HeaderContextUtil.currentUserId();
+            String device = HeaderContextUtil.currentDevice();
+            contextMessage = contextMessage + String.format("[userId:%s,device:%s]", userId, device);
+        }
+
         Object[] argumentArray = event.getArgumentArray();
         if (isArgumentArrayAllSimpleType(argumentArray)) {
             // 如果所有参数都是简单类型，直接使用父类处理消息
-            return super.convert(event);
+            return contextMessage + super.convert(event);
         }
         Object[] newArgumentArray = convertArgumentArray(argumentArray);
-        return MessageFormatter.arrayFormat(event.getMessage(), newArgumentArray).getMessage();
+        return contextMessage + MessageFormatter.arrayFormat(event.getMessage(), newArgumentArray).getMessage();
     }
 
     /**
