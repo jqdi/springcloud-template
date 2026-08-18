@@ -1,0 +1,6 @@
+# 灰度路由 配置，官方整合文档：https://github.com/Nepxion/Discovery
+nepxion:
+  discovery:
+    enabled: true
+    strategy:
+      enabled: true

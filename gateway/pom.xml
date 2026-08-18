@@ -61,6 +61,37 @@
 		</dependency>
 		<!-- 配置中心，config、apollo、nacos选其中一个就行 -->
 
+        <!-- Nepxion Discovery 灰度路由 -->
+        <!-- Nepxion nacos桥接 -->
+        <!--<dependency>
+            <groupId>com.nepxion</groupId>
+            <artifactId>discovery-plugin-starter-nacos</artifactId>
+            <version>6.1.0</version>
+        </dependency>-->
+        <dependency>
+            <groupId>com.nepxion</groupId>
+            <artifactId>discovery-plugin-register-center-starter-nacos</artifactId>
+            <version>6.23.0</version>
+        </dependency>
+        <!-- Nepxion eureka桥接 -->
+        <!--<dependency>
+            <groupId>com.nepxion</groupId>
+            <artifactId>discovery-plugin-starter-eureka</artifactId>
+            <version>6.1.0</version>
+        </dependency>-->
+        <dependency>
+            <groupId>com.nepxion</groupId>
+            <artifactId>discovery-plugin-register-center-starter-eureka</artifactId>
+            <version>6.23.0</version>
+        </dependency>
+        <!-- 微服务端灰度策略，Spring‑Cloud‑LoadBalancer、Feign、RestTemplate增强 -->
+        <dependency>
+            <groupId>com.nepxion</groupId>
+            <artifactId>discovery-plugin-strategy-starter-gateway</artifactId>
+            <version>6.13.0</version>
+        </dependency>
+        <!-- Nepxion Discovery 灰度路由 -->
+
 		<!-- 监控，SpringBootAdmin、Prometheus选其中一个就行 -->
 		<!-- actuator端点 -->
 		<dependency>
