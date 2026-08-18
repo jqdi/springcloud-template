@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnProperty(name = "developer.enabled", havingValue = "true")
-@LoadBalancerClients(defaultConfiguration = {DeveloperLoadBalancerConfiguration.class})
+//@LoadBalancerClients(defaultConfiguration = {DeveloperLoadBalancerConfiguration.class})
+@LoadBalancerClients(defaultConfiguration = {DeveloperServiceInstanceListConfiguration.class})
 public class DeveloperRouteAutoConfiguration {
 }
