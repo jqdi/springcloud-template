@@ -1,4 +1,4 @@
-package com.company.framework.developer;
+package com.company.developer;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.BeanPostProcessor;
@@ -6,7 +6,7 @@ import org.springframework.cloud.client.ConditionalOnDiscoveryEnabled;
 import org.springframework.cloud.loadbalancer.core.RetryAwareServiceInstanceListSupplier;
 import org.springframework.cloud.loadbalancer.core.ServiceInstanceListSupplier;
 
-import com.company.framework.developer.policy.ServicePriorityPolicyManager;
+import com.company.developer.policy.ServicePriorityPolicyManager;
 
 /**
  * 将DeveloperServiceInstanceListSupplier插入到Supplier链中

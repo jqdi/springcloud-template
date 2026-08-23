@@ -1,12 +1,12 @@
-package com.company.gateway.developer.policy.impl;
-
-import com.company.gateway.developer.policy.ServicePriorityPolicy;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.cloud.client.ServiceInstance;
-import org.springframework.lang.NonNull;
+package com.company.developer.policy.impl;
 
 import java.util.Arrays;
 import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.cloud.client.ServiceInstance;
+
+import com.company.developer.policy.ServicePriorityPolicy;
 
 public class OnLineServicePriorityPolicy implements ServicePriorityPolicy {
     private static final String TAG_ONLINE = "ONLINE";
@@ -14,7 +14,7 @@ public class OnLineServicePriorityPolicy implements ServicePriorityPolicy {
     public OnLineServicePriorityPolicy() {
     }
 
-    public boolean support(@NonNull ServiceInstance serviceInstance, List<String> developerList) {
+    public boolean support(ServiceInstance serviceInstance, List<String> developerList) {
         String developRouteTags = serviceInstance.getMetadata().get("developer_route_tag");
         if (StringUtils.isBlank(developRouteTags)) {
             return false;
@@ -23,7 +23,7 @@ public class OnLineServicePriorityPolicy implements ServicePriorityPolicy {
         return online;
     }
 
-    public int serverOrder(@NonNull ServiceInstance serviceInstance) {
+    public int serverOrder(ServiceInstance serviceInstance) {
         return 2000;
     }
 

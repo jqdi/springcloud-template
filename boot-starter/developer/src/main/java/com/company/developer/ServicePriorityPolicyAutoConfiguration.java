@@ -1,18 +1,17 @@
-package com.company.framework.developer;
-
-import com.company.framework.developer.policy.ServicePriorityPolicy;
-import com.company.framework.developer.policy.ServicePriorityPolicyManager;
-import com.company.framework.developer.policy.impl.DeveloperSelfPriorityPolicy;
-import com.company.framework.developer.policy.impl.OnLineServicePriorityPolicy;
-import com.company.framework.developer.policy.impl.OtherDeveloperPriorityPolicy;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+package com.company.developer;
 
 import java.util.List;
 
-@Configuration(proxyBeanMethods = false)
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.context.annotation.Bean;
+
+import com.company.developer.policy.ServicePriorityPolicy;
+import com.company.developer.policy.ServicePriorityPolicyManager;
+import com.company.developer.policy.impl.DeveloperSelfPriorityPolicy;
+import com.company.developer.policy.impl.OnLineServicePriorityPolicy;
+import com.company.developer.policy.impl.OtherDeveloperPriorityPolicy;
+
 @ConditionalOnProperty(name = "developer.enabled", havingValue = "true")
 public class ServicePriorityPolicyAutoConfiguration {
     @Bean

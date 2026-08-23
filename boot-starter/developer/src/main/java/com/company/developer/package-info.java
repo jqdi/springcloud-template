@@ -3,4 +3,4 @@
  * 1.环境流量路由到开发本地，有利于开发人员在本地调试和测试。
  * 2.不用启动本地没有代码改动的服务，开发可以利用环境上的服务+本地改代码的服务跑通流程。
  */
-package com.company.framework.developer;
+package com.company.developer;

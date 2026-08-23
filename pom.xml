@@ -20,6 +20,7 @@
         <boot-starter-datasource.version>1.0.0${version.suffix}</boot-starter-datasource.version>
         <boot-starter-token.version>1.0.0${version.suffix}</boot-starter-token.version>
         <boot-starter-encryptbody.version>1.0.0${version.suffix}</boot-starter-encryptbody.version>
+        <boot-starter-developer.version>1.0.0${version.suffix}</boot-starter-developer.version>
 
         <!-- 统一管理api jar版本 -->
         <tool-api.version>1.0.0${version.suffix}</tool-api.version>

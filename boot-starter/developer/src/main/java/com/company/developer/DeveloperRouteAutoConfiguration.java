@@ -1,10 +1,8 @@
-package com.company.gateway.developer;
+package com.company.developer;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.cloud.loadbalancer.annotation.LoadBalancerClients;
-import org.springframework.context.annotation.Configuration;
 
-@Configuration(proxyBeanMethods = false)
 @ConditionalOnProperty(name = "developer.enabled", havingValue = "true")
 @LoadBalancerClients(defaultConfiguration = {DeveloperServiceInstanceListConfiguration.class})
 public class DeveloperRouteAutoConfiguration {

@@ -18,6 +18,12 @@
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
 		</dependency>
+		<!-- developer路由 -->
+		<dependency>
+			<groupId>com.company</groupId>
+			<artifactId>boot-starter-developer</artifactId>
+			<version>${boot-starter-developer.version}</version>
+		</dependency>
 		<!-- gateway -->
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>

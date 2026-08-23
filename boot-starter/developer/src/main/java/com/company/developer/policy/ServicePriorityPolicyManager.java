@@ -1,9 +1,4 @@
-package com.company.gateway.developer.policy;
-
-import com.company.gateway.developer.policy.impl.DefaultServicePriorityPolicy;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.client.ServiceInstance;
-import org.springframework.lang.NonNull;
+package com.company.developer.policy;
 
 import java.util.Comparator;
 import java.util.Iterator;
@@ -11,11 +6,14 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.springframework.cloud.client.ServiceInstance;
+
+import com.company.developer.policy.impl.DefaultServicePriorityPolicy;
+
 public class ServicePriorityPolicyManager {
     private final List<ServicePriorityPolicy> servicePriorityPolicies;
     private ServicePriorityPolicy defaultServicePriorityPolicy;
 
-    @Autowired
     public ServicePriorityPolicyManager(List<ServicePriorityPolicy> servicePriorityPolicies) {
         this.servicePriorityPolicies = servicePriorityPolicies.stream().sorted(Comparator.comparingInt(ServicePriorityPolicy::getOrder)).collect(Collectors.toList());
         this.defaultServicePriorityPolicy = new DefaultServicePriorityPolicy();
@@ -25,7 +23,7 @@ public class ServicePriorityPolicyManager {
         this.defaultServicePriorityPolicy = Optional.ofNullable(defaultServicePriorityPolicy).orElse(new DefaultServicePriorityPolicy());
     }
 
-    public int serverOrder(@NonNull ServiceInstance serviceInstance, List<String> developerList) {
+    public int serverOrder(ServiceInstance serviceInstance, List<String> developerList) {
         Iterator<ServicePriorityPolicy> var2 = this.servicePriorityPolicies.iterator();
 
         ServicePriorityPolicy priorityPolicy;

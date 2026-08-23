@@ -17,6 +17,7 @@
 		<module>datasource</module>
 		<module>token</module>
 		<module>encryptbody</module>
+		<module>developer</module>
 	</modules>
 
 </project>

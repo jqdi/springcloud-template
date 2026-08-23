@@ -19,6 +19,12 @@
 			<artifactId>template-common</artifactId>
 			<version>1.0.0</version>
 		</dependency>
+		<!-- developer路由 -->
+		<dependency>
+			<groupId>com.company</groupId>
+			<artifactId>boot-starter-developer</artifactId>
+			<version>${boot-starter-developer.version}</version>
+		</dependency>
 		<!-- 注册中心，eureka、nacos选其中一个就行 -->
 		<!-- eureka客户端 -->
 		<dependency>

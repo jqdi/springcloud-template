@@ -1,9 +1,8 @@
-package com.company.gateway.developer;
+package com.company.developer;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.loadbalancer.DefaultRequest;
@@ -13,16 +12,15 @@ import org.springframework.cloud.client.loadbalancer.RequestDataContext;
 import org.springframework.cloud.loadbalancer.core.DelegatingServiceInstanceListSupplier;
 import org.springframework.cloud.loadbalancer.core.ServiceInstanceListSupplier;
 import org.springframework.http.HttpHeaders;
+import org.springframework.util.CollectionUtils;
 
-import com.company.gateway.developer.policy.ServicePriorityPolicyManager;
+import com.company.developer.policy.ServicePriorityPolicyManager;
 
-import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Flux;
 
 /**
  * 开发者服务列表，添加了根据请求头过滤服务列表的逻辑
  */
-@Slf4j
 public class DeveloperServiceInstanceListSupplier extends DelegatingServiceInstanceListSupplier {
     private final ServicePriorityPolicyManager servicePriorityPolicyManager;
     private final String developerHeaders;
