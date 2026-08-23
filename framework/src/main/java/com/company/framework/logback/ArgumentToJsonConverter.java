@@ -1,12 +1,17 @@
 package com.company.framework.logback;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.helpers.MessageFormatter;
 
+import com.company.framework.context.HeaderContextUtil;
 import com.company.framework.util.JsonUtil;
 import com.fasterxml.classmate.types.ResolvedInterfaceType;
 import com.fasterxml.classmate.types.ResolvedObjectType;
 
+import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.pattern.MessageConverter;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 
@@ -14,13 +19,30 @@ public class ArgumentToJsonConverter extends MessageConverter {
 
     @Override
     public String convert(ILoggingEvent event) {
+        String contextMessage = "";
+        if (Level.ERROR.equals(event.getLevel())) {
+            // 仅处理ERROR级别，增加上下文信息的输出，方便根据用户信息快速定位问题
+            List<String> contextMessageList = new ArrayList<>();
+            String userId = HeaderContextUtil.currentUserId();
+            if (StringUtils.isNotBlank(userId)) {
+                contextMessageList.add("userId:" + userId);
+            }
+            String device = HeaderContextUtil.currentDevice();
+            if (StringUtils.isNotBlank(device)) {
+                contextMessageList.add("device:" + device);
+            }
+            if (!contextMessageList.isEmpty()) {
+                contextMessage = "[" + String.join(",", contextMessageList) + "]";
+            }
+        }
+
         Object[] argumentArray = event.getArgumentArray();
         if (isArgumentArrayAllSimpleType(argumentArray)) {
             // 如果所有参数都是简单类型，直接使用父类处理消息
-            return super.convert(event);
+            return contextMessage + super.convert(event);
         }
         Object[] newArgumentArray = convertArgumentArray(argumentArray);
-        return MessageFormatter.arrayFormat(event.getMessage(), newArgumentArray).getMessage();
+        return contextMessage + MessageFormatter.arrayFormat(event.getMessage(), newArgumentArray).getMessage();
     }
 
     /**
