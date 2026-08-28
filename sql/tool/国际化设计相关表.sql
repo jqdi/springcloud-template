@@ -54,3 +54,12 @@ CREATE TABLE `app_version_i18n` (
 
 INSERT INTO `app_version_i18n` (`id`, `app_version_id`, `locale`, `release_notes`, `remark`, `create_time`, `create_by`, `update_time`, `update_by`) VALUES (1, 4, 'en-US', 'Major bugs in version 1.0.0 have been fixed, and version 1.0.0 is no longer supported', '', '2026-02-11 17:47:56', 1, '2026-02-11 17:50:14', 1);
 
+
+-- 全局/系统消息国际化：business_id=0 表示不绑定具体业务实体的全局消息，business_type 即消息编码（code）
+-- 供 MysqlMessage 按 (business_type=code, business_id=0, locale) 解析，命中后用 MessageFormat 格式化
+INSERT INTO `common_i18n` (`business_id`, `business_type`, `locale`, `i18n_text`, `remark`, `create_by`, `update_by`) VALUES
+(0, 'test.hello',      'zh-CN', '你好',       '示例：普通消息',                1, 1),
+(0, 'test.hello',      'en-US', 'Hello',      'sample: plain message',        1, 1),
+(0, 'test.hello.name', 'zh-CN', '你好,{0}',   '示例：带占位符消息',           1, 1),
+(0, 'test.hello.name', 'en-US', 'Hello,{0}',  'sample: message with placeholder', 1, 1);
+
