@@ -1,12 +1,13 @@
 package com.company.framework.globalresponse.gracefulresponse.extend.advice;
 
-import com.company.framework.globalresponse.gracefulresponse.extend.advice.context.GracefulResponseExceptionArgsContext;
-import com.company.framework.message.IMessage;
-import com.feiniaojin.gracefulresponse.advice.AbstractResponseBodyAdvice;
-import com.feiniaojin.gracefulresponse.advice.lifecycle.response.ResponseBodyAdvicePredicate;
-import com.feiniaojin.gracefulresponse.advice.lifecycle.response.ResponseBodyAdviceProcessor;
-import com.feiniaojin.gracefulresponse.data.Response;
-import com.feiniaojin.gracefulresponse.data.ResponseStatus;
+import java.util.Locale;
+import java.util.concurrent.CopyOnWriteArrayList;
+
+import javax.annotation.PostConstruct;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.core.MethodParameter;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.MediaType;
@@ -16,9 +17,12 @@ import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.Resource;
-import java.util.concurrent.CopyOnWriteArrayList;
+import com.company.framework.globalresponse.gracefulresponse.extend.advice.context.GracefulResponseExceptionArgsContext;
+import com.feiniaojin.gracefulresponse.advice.AbstractResponseBodyAdvice;
+import com.feiniaojin.gracefulresponse.advice.lifecycle.response.ResponseBodyAdvicePredicate;
+import com.feiniaojin.gracefulresponse.advice.lifecycle.response.ResponseBodyAdviceProcessor;
+import com.feiniaojin.gracefulresponse.data.Response;
+import com.feiniaojin.gracefulresponse.data.ResponseStatus;
 
 /**
  * copy from com.feiniaojin.gracefulresponse.advice.GrI18nResponseBodyAdvice
@@ -38,20 +42,21 @@ public class GrI18nResponseBodyAdvice extends AbstractResponseBodyAdvice impleme
 
 //    @Resource
 //    private MessageSource grMessageSource;
-    @Resource
-    private IMessage imessage;
+    @Autowired
+    private MessageSource messageSource;
 
     @Override
     public Object process(Object body, MethodParameter returnType, MediaType selectedContentType, Class<? extends HttpMessageConverter<?>> selectedConverterType, ServerHttpRequest request, ServerHttpResponse response) {
         if (body instanceof Response) {
             Response res = (Response) body;
-//            Locale locale = LocaleContextHolder.getLocale();
+            Locale locale = LocaleContextHolder.getLocale();
             ResponseStatus bodyStatus = res.getStatus();
 //            String code = bodyStatus.getCode();
             String msg = bodyStatus.getMsg();
             // 这里处理ArgsExceptionAdvice.fromGracefulResponseExceptionInstance记录的args，需要处理好参数替换，再响应给前端
             Object[] args = GracefulResponseExceptionArgsContext.getAndRemoveArgs();
-            String renderMsg = imessage.getMessage(msg, args);
+
+            String renderMsg = messageSource.getMessage(msg, args, locale);
             //有国际化配置的才会替换，否则使用默认配置的
             if (StringUtils.hasText(renderMsg)) {
                 bodyStatus.setMsg(renderMsg);

@@ -10,6 +10,7 @@ spring:
     basename: i18n/messages,i18n-framework/messages,i18n-framework-edge/messages # 默认名称，可以写多个,用逗号分隔
     encoding: UTF-8 # 国际化资源文件编码，默认UTF-8
     fallback-to-system-locale: true # 找不到对应区域的语言时，是否回退到系统区域的语言，默认 true
+    always-use-message-format: true
     use-code-as-default-message: true # 找不到code时,是否直接返回code值，而不是抛异常，默认false，抛异常
   #  web:
   #    locale: en_US # 默认语言
