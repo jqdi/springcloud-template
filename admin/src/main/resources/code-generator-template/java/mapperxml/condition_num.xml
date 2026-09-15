@@ -1,3 +1,0 @@
-			<if test="{columnName}!=null">
-				AND {column_name}=#{{columnName}}
-			</if>

@@ -144,7 +144,6 @@ springcloud-template
           └── 微信小程序登录(旧版)
           └── 微信公众号登录
           └── 支付宝小程序登录
-├── template-admin -- 管理后台端(前后端一体)
 ├── template-adminapi -- 管理后台端(前后端分离)
 ├── template-openapi -- 开放平台接入层(边缘微服务)
 ├── code-generate -- 代码生成工具（开发辅助模块，不参与部署）

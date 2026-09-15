@@ -1,3 +1,0 @@
-			<if test="dynamic!=null and dynamic.{columnName}Begin!=null and dynamic.{columnName}Begin!=''">
-				AND DATE({column_name}) &gt;= #{dynamic.{columnName}Begin}
-			</if>
