@@ -11,7 +11,7 @@ import com.company.adminapi.excel.SysLogininfoExcel;
 import com.company.system.api.request.RemoveReq;
 import com.company.common.response.PageResp;
 import com.company.framework.util.PropertyUtils;
-import com.company.system.api.feign.SysLogininfoFeign;
+import com.company.adminapi.feign.SysLogininfoFeign;
 import com.company.system.api.request.SysLogininfoReq;
 import com.company.system.api.response.SysLogininfoResp;
 import org.springframework.beans.factory.annotation.Autowired;

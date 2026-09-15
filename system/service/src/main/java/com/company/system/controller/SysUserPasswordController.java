@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.company.framework.globalresponse.ExceptionUtil;
-import com.company.system.api.feign.SysUserPasswordFeign;
+import com.company.system.api.feign.SysUserPasswordApi;
 import com.company.system.api.request.RemindPasswordExpireReq;
 import com.company.system.api.request.SaveNewPasswordReq;
 import com.company.system.api.response.SysUserPasswordTipsResp;
@@ -25,9 +25,9 @@ import com.company.system.service.SysUserPasswordService;
 import com.company.system.service.SysUserService;
 import com.company.tool.api.enums.EmailEnum;
 import com.company.tool.api.enums.SmsEnum;
-import com.company.tool.api.feign.EmailFeign;
-import com.company.tool.api.feign.RetryerFeign;
-import com.company.tool.api.feign.SmsFeign;
+import com.company.system.feign.EmailFeign;
+import com.company.system.feign.RetryerFeign;
+import com.company.system.feign.SmsFeign;
 import com.company.tool.api.request.RetryerInfoReq;
 import com.company.tool.api.request.SendEmailReq;
 import com.company.tool.api.request.SendSmsReq;
@@ -38,7 +38,7 @@ import cn.hutool.core.date.LocalDateTimeUtil;
 
 @RestController
 @RequestMapping("/sysUserPassword")
-public class SysUserPasswordController implements SysUserPasswordFeign {
+public class SysUserPasswordController implements SysUserPasswordApi {
 	private static final String NOTIFY_URL_REMINDPASSWORDEXPIRE = com.company.system.api.constant.Constants
 			.feignUrl("/sysUserPassword/remindPasswordExpire");
 

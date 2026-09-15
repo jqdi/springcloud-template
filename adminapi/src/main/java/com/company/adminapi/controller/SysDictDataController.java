@@ -10,7 +10,7 @@ import com.company.system.api.request.RemoveReq;
 import com.company.common.response.PageResp;
 import com.company.system.api.response.SelectResp;
 import com.company.framework.util.PropertyUtils;
-import com.company.system.api.feign.SysDictDataFeign;
+import com.company.adminapi.feign.SysDictDataFeign;
 import com.company.system.api.request.SysDictDataReq;
 import com.company.system.api.response.SysDictDataResp;
 import org.springframework.beans.factory.annotation.Autowired;

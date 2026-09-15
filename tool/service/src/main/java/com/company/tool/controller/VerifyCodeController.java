@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.company.tool.api.enums.EmailEnum;
 import com.company.tool.api.enums.SmsEnum;
-import com.company.tool.api.feign.VerifyCodeFeign;
+import com.company.tool.api.feign.VerifyCodeApi;
 import com.company.tool.api.response.CaptchaResp;
 import com.company.tool.email.AsyncEmailSender;
 import com.company.tool.entity.VerifyCode;
@@ -28,7 +28,7 @@ import cn.hutool.core.util.RandomUtil;
 
 @RestController
 @RequestMapping(value = "/verifyCode")
-public class VerifyCodeController implements VerifyCodeFeign {
+public class VerifyCodeController implements VerifyCodeApi {
 	@Autowired
 	private VerifyCodeService verifyCodeService;
 	@Autowired

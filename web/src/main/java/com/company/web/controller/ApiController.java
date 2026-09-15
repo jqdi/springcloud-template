@@ -9,7 +9,7 @@ import com.company.framework.context.SpringContextUtil;
 import com.company.framework.sequence.SequenceGenerator;
 import com.company.framework.threadpool.ThreadPoolProperties;
 import com.company.framework.util.PropertyUtils;
-import com.company.order.api.feign.OrderFeign;
+import com.company.web.feign.OrderFeign;
 import com.company.order.api.response.Order4Resp;
 import com.company.order.api.response.OrderResp;
 import com.company.user.api.response.UserResp;

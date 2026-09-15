@@ -9,14 +9,14 @@ import com.company.framework.sequence.SequenceGenerator;
 import com.company.framework.util.JsonUtil;
 import com.company.order.api.enums.OrderEnum;
 import com.company.order.api.enums.OrderPayEnum;
-import com.company.order.api.feign.OrderFeign;
-import com.company.order.api.feign.PayFeign;
+import com.company.user.feign.OrderFeign;
+import com.company.user.feign.PayFeign;
 import com.company.order.api.request.*;
 import com.company.order.api.response.PayResp;
 import com.company.tool.api.response.RetryerResp;
 import com.company.user.api.constant.Constants;
 import com.company.user.api.enums.WalletEnum.Type;
-import com.company.user.api.feign.RechargeOrderFeign;
+import com.company.user.api.feign.RechargeOrderApi;
 import com.company.user.api.request.RechargeOrderReq;
 import com.company.user.api.response.RechargeOrderResp;
 import com.company.user.api.response.RechargeSubOrderDetailResp;
@@ -51,7 +51,7 @@ import java.util.Objects;
 @Slf4j
 @RestController
 @RequestMapping("/rechargeOrder")
-public class RechargeOrderController implements RechargeOrderFeign {
+public class RechargeOrderController implements RechargeOrderApi {
 
 	@Autowired
 	private SequenceGenerator sequenceGenerator;

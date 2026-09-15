@@ -2,7 +2,7 @@ package com.company.adminapi.cache;
 
 import com.company.framework.cache.ICache;
 import com.company.framework.util.JsonUtil;
-import com.company.system.api.feign.SysUserFeign;
+import com.company.adminapi.feign.SysUserFeign;
 import com.company.system.api.response.SysUserResp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;

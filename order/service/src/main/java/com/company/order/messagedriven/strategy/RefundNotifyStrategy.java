@@ -18,7 +18,7 @@ import com.company.order.api.request.RefundNotifyReq;
 import com.company.order.entity.OrderPayRefund;
 import com.company.order.service.FinancialFlowService;
 import com.company.order.service.OrderPayRefundService;
-import com.company.tool.api.feign.RetryerFeign;
+import com.company.order.feign.RetryerFeign;
 import com.company.tool.api.request.RetryerInfoReq;
 
 import lombok.extern.slf4j.Slf4j;

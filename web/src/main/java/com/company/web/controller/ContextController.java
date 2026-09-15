@@ -2,7 +2,7 @@ package com.company.web.controller;
 
 
 import com.company.framework.context.HeaderContextUtil;
-import com.company.order.api.feign.FeignTestFeign;
+import com.company.web.feign.FeignTestFeign;
 import com.company.order.api.response.OrderDetailResp;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;

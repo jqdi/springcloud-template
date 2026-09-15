@@ -7,7 +7,7 @@ import com.company.system.api.request.RemoveReq;
 import com.company.common.response.PageResp;
 import com.company.framework.util.PropertyUtils;
 import com.company.system.api.constant.Constants;
-import com.company.system.api.feign.SysUserFeign;
+import com.company.system.api.feign.SysUserApi;
 import com.company.system.api.request.SysUserAssignRoleReq;
 import com.company.system.api.request.SysUserReq;
 import com.company.system.api.response.SysUserInfoResp;
@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/sysUser")
-public class SysUserController implements SysUserFeign {
+public class SysUserController implements SysUserApi {
 
 	@Autowired
 	private SysUserService sysUserService;

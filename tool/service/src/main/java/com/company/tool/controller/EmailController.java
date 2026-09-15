@@ -11,13 +11,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 import com.company.tool.api.enums.EmailEnum;
-import com.company.tool.api.feign.EmailFeign;
+import com.company.tool.api.feign.EmailApi;
 import com.company.tool.api.request.SendEmailReq;
 import com.company.tool.email.AsyncEmailSender;
 
 @RestController
 @RequestMapping(value = "/email")
-public class EmailController implements EmailFeign {
+public class EmailController implements EmailApi {
 
 	@Autowired
 	private AsyncEmailSender asyncEmailSender;

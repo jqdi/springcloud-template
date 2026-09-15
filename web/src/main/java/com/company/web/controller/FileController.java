@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.company.framework.globalresponse.ExceptionUtil;
-import com.company.tool.api.feign.FileFeign;
+import com.company.web.feign.FileFeign;
 import com.company.tool.api.request.PresignedUploadReq;
 import com.company.tool.api.response.PresignedUploadResp;
 

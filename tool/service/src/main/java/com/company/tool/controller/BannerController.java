@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 import com.company.framework.context.HeaderContextUtil;
-import com.company.tool.api.feign.BannerFeign;
+import com.company.tool.api.feign.BannerApi;
 import com.company.tool.api.request.BannerReq;
 import com.company.tool.api.response.BannerResp;
 import com.company.tool.banner.BannerShowService;
@@ -19,7 +19,7 @@ import com.company.tool.banner.dto.BannerCanShow;
 
 @RestController
 @RequestMapping("/banner")
-public class BannerController implements BannerFeign {
+public class BannerController implements BannerApi {
 
 	@Autowired
 	private BannerShowService bannerShowService;

@@ -163,7 +163,7 @@ public class CodeGeneratorService {
                     .templatePath("/templates/feign.java.vm")//
                     .filePath(apiPath)//
                     .packageName("feign")//
-                    .formatNameFunction(tableInfo -> tableInfo.getEntityName() + "Feign")//
+                    .formatNameFunction(tableInfo -> tableInfo.getEntityName() + "Api")//
                     .fileName(".java")//
                     .enableFileOverride()//
                 );

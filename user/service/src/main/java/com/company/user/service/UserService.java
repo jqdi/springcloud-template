@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.company.order.api.feign.OrderFeign;
+import com.company.user.feign.OrderFeign;
 import com.company.user.entity.City;
 import com.company.user.entity.User;
 import com.company.user.mapper.common.CityMapper;

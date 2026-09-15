@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.company.framework.context.HeaderContextUtil;
 import com.company.framework.util.WebUtil;
-import com.company.tool.api.feign.SubscribeFeign;
+import com.company.web.feign.SubscribeFeign;
 import com.company.tool.api.request.SubscribeGrantReq;
 import com.company.web.req.GrantReq;
 

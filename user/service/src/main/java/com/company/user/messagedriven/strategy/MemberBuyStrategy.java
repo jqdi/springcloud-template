@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 import com.company.framework.messagedriven.BaseStrategy;
 import com.company.framework.util.Utils;
 import com.company.order.api.enums.OrderEnum;
-import com.company.order.api.feign.OrderFeign;
+import com.company.user.feign.OrderFeign;
 import com.company.order.api.request.OrderRefundFailReq;
 import com.company.order.api.request.OrderRefundFinishReq;
 import com.company.order.api.response.Order4Resp;

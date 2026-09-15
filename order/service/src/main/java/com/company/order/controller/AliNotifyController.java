@@ -8,7 +8,7 @@ import com.company.framework.messagedriven.MessageSender;
 import com.company.framework.messagedriven.properties.MessagedrivenProperties;
 import com.company.framework.util.JsonUtil;
 import com.company.order.api.enums.OrderPayEnum;
-import com.company.order.api.feign.AliNotifyFeign;
+import com.company.order.api.feign.AliNotifyApi;
 import com.company.order.entity.AliPay;
 import com.company.order.entity.AliPayRefund;
 import com.company.order.entity.PayNotify;
@@ -34,7 +34,7 @@ import java.util.Map;
 @Slf4j
 @RestController
 @RequestMapping(value = "/alinotify")
-public class AliNotifyController implements AliNotifyFeign {
+public class AliNotifyController implements AliNotifyApi {
 
 	@Autowired
 	private AliPayMapper aliPayMapper;

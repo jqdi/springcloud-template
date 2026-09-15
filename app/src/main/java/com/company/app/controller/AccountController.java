@@ -29,9 +29,9 @@ import com.company.framework.messagedriven.constants.BroadcastConstants;
 import com.company.framework.util.RegexUtil;
 import com.company.token.TokenService;
 import com.company.token.accesscontrol.annotation.RequireLogin;
-import com.company.tool.api.feign.VerifyCodeFeign;
+import com.company.app.feign.VerifyCodeFeign;
 import com.company.user.api.enums.UserOauthEnum;
-import com.company.user.api.feign.UserOauthFeign;
+import com.company.app.feign.UserOauthFeign;
 import com.company.user.api.response.UserOauthResp;
 import com.google.common.collect.Maps;
 

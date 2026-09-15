@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.company.framework.util.Utils;
 import com.company.framework.context.HeaderContextUtil;
-import com.company.tool.api.feign.PopupFeign;
+import com.company.tool.api.feign.PopupApi;
 import com.company.tool.api.request.BestPopupReq;
 import com.company.tool.api.request.CancelUserPopupReq;
 import com.company.tool.api.request.CreateUserPopupReq;
@@ -27,7 +27,7 @@ import com.company.tool.service.market.UserPopupService;
 
 @RestController
 @RequestMapping("/popup")
-public class PopupController implements PopupFeign {
+public class PopupController implements PopupApi {
 
 	@Autowired
 	private PopService popService;

@@ -2,7 +2,7 @@ package com.company.user.controller;
 
 import cn.hutool.core.date.LocalDateTimeUtil;
 
-import com.company.user.api.feign.DeviceFeign;
+import com.company.user.api.feign.DeviceApi;
 import com.company.user.entity.DeviceInfo;
 import com.company.user.mapper.user.DeviceInfoMapper;
 import org.apache.commons.lang3.StringUtils;
@@ -16,7 +16,7 @@ import java.time.temporal.ChronoUnit;
 
 @RestController
 @RequestMapping("/device")
-public class DeviceController implements DeviceFeign {
+public class DeviceController implements DeviceApi {
 
     @Autowired
     private DeviceInfoMapper deviceInfoMapper;

@@ -17,8 +17,8 @@
 	<dependencies>
 		<!-- 尽量保持feign-api的依赖简单，不要依赖无用依赖，因为该代码会作为SDK提供给客户端 -->
 		<dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-openfeign</artifactId>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
         </dependency>
 
 		<dependency>

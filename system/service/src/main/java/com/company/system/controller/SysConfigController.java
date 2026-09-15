@@ -17,7 +17,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.PageDTO;
 
 import com.company.common.response.PageResp;
 import com.company.framework.util.PropertyUtils;
-import com.company.system.api.feign.SysConfigFeign;
+import com.company.system.api.feign.SysConfigApi;
 import com.company.system.api.request.SysConfigReq;
 import com.company.system.api.response.SysConfigResp;
 import com.company.system.entity.SysConfig;
@@ -25,7 +25,7 @@ import com.company.system.service.SysConfigService;
 
 @RestController
 @RequestMapping("/sysConfig")
-public class SysConfigController implements SysConfigFeign {
+public class SysConfigController implements SysConfigApi {
 
 	@Autowired
 	private SysConfigService sysConfigService;

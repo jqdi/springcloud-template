@@ -22,11 +22,11 @@ import com.company.framework.context.HeaderContextUtil;
 import com.company.framework.globalresponse.ExceptionUtil;
 import com.company.framework.messagedriven.MessageSender;
 import com.company.framework.messagedriven.constants.BroadcastConstants;
-import com.company.system.api.feign.SysUserPasswordFeign;
+import com.company.adminapi.feign.SysUserPasswordFeign;
 import com.company.system.api.response.SysUserPasswordTipsResp;
 import com.company.token.TokenService;
 import com.company.token.accesscontrol.annotation.RequireLogin;
-import com.company.tool.api.feign.VerifyCodeFeign;
+import com.company.adminapi.feign.VerifyCodeFeign;
 import com.company.tool.api.response.CaptchaResp;
 import com.google.common.collect.Maps;
 

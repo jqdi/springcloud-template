@@ -9,8 +9,8 @@ import com.company.framework.util.Utils;
 import com.company.order.api.constant.Constants;
 import com.company.order.api.enums.OrderPayRefundEnum;
 import com.company.order.api.enums.PayRefundApplyEnum;
-import com.company.order.api.feign.PayFeign;
-import com.company.order.api.feign.RefundApplyFeign;
+import com.company.order.feign.PayFeign;
+import com.company.order.api.feign.RefundApplyApi;
 import com.company.order.api.request.PayRefundApplyReq;
 import com.company.order.api.request.PayRefundReq;
 import com.company.order.api.request.RefundNotifyReq;
@@ -31,7 +31,7 @@ import java.util.Map;
 @Slf4j
 @RestController
 @RequestMapping(value = "/refundApply")
-public class RefundApplyController implements RefundApplyFeign {
+public class RefundApplyController implements RefundApplyApi {
 
 	@Autowired
 	private PayRefundApplyMapper payRefundApplyMapper;

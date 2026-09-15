@@ -10,15 +10,15 @@ import com.company.framework.util.JsonUtil;
 import com.company.framework.util.Utils;
 import com.company.order.api.enums.OrderEnum;
 import com.company.order.api.enums.OrderPayEnum;
-import com.company.order.api.feign.OrderFeign;
-import com.company.order.api.feign.PayFeign;
+import com.company.user.feign.OrderFeign;
+import com.company.user.feign.PayFeign;
 import com.company.order.api.request.*;
 import com.company.order.api.response.PayResp;
 import com.company.tool.api.response.RetryerResp;
 import com.company.user.api.constant.Constants;
 import com.company.user.api.enums.WalletEnum;
 import com.company.user.api.enums.WalletEnum.Type;
-import com.company.user.api.feign.MemberBuyFeign;
+import com.company.user.api.feign.MemberBuyApi;
 import com.company.user.api.request.MemberBuyOrderReq;
 import com.company.user.api.response.CalcCanRefundAmountResp;
 import com.company.user.api.response.MemberBuyOrderResp;
@@ -57,7 +57,7 @@ import java.util.Objects;
 @Slf4j
 @RestController
 @RequestMapping("/memberBuy")
-public class MemberBuyController implements MemberBuyFeign {
+public class MemberBuyController implements MemberBuyApi {
 
 	@Autowired
 	private SequenceGenerator sequenceGenerator;

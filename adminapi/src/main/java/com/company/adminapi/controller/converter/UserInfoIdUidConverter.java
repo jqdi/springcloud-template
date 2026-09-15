@@ -3,7 +3,7 @@ package com.company.adminapi.controller.converter;
 
 import com.company.adminapi.converter.ds.ConverterDataSource;
 import com.company.framework.context.SpringContextUtil;
-import com.company.user.api.feign.UserInfoFeign;
+import com.company.adminapi.feign.UserInfoFeign;
 
 import java.util.Map;
 import java.util.Set;

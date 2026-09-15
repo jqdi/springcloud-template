@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 
-import com.company.tool.api.feign.QrcodeFeign;
+import com.company.tool.api.feign.QrcodeApi;
 import com.company.tool.api.request.WxaCodeReq;
 import com.company.tool.filestorage.UploadService;
 import com.company.tool.qrcode.WxaCodeService;
@@ -25,7 +25,7 @@ import com.company.tool.qrcode.dto.LineColorParam;
  */
 @RestController
 @RequestMapping("/qrcode")
-public class QrcodeController implements QrcodeFeign {
+public class QrcodeController implements QrcodeApi {
 
 	@Autowired
 	private WxaCodeService wxaCodeService;

@@ -11,7 +11,7 @@ import com.company.framework.messagedriven.properties.MessagedrivenProperties;
 import com.company.framework.util.JsonUtil;
 import com.company.order.api.enums.OrderPayEnum;
 import com.company.order.api.enums.OrderPayRefundEnum;
-import com.company.order.api.feign.PayFeign;
+import com.company.order.api.feign.PayApi;
 import com.company.order.api.request.*;
 import com.company.order.api.response.*;
 import com.company.order.entity.OrderPay;
@@ -23,7 +23,7 @@ import com.company.order.pay.core.PayClient;
 import com.company.order.pay.dto.PayParams;
 import com.company.order.service.OrderPayRefundService;
 import com.company.order.service.OrderPayService;
-import com.company.tool.api.feign.RetryerFeign;
+import com.company.order.feign.RetryerFeign;
 import com.company.tool.api.request.RetryerInfoReq;
 import com.company.tool.api.response.RetryerResp;
 import com.google.common.collect.Maps;
@@ -49,7 +49,7 @@ import java.util.Map;
 @Slf4j
 @RestController
 @RequestMapping(value = "/pay")
-public class PayController implements PayFeign {
+public class PayController implements PayApi {
 
 	@Autowired
 	private OrderPayService orderPayService;

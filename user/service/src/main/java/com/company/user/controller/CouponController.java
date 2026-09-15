@@ -6,14 +6,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 import com.company.framework.util.PropertyUtils;
-import com.company.user.api.feign.CouponFeign;
+import com.company.user.api.feign.CouponApi;
 import com.company.user.api.response.UserCouponResp;
 import com.company.user.entity.UserCoupon;
 import com.company.user.service.market.UserCouponService;
 
 @RestController
 @RequestMapping("/coupon")
-public class CouponController implements CouponFeign {
+public class CouponController implements CouponApi {
 
 	@Autowired
 	private UserCouponService userCouponService;

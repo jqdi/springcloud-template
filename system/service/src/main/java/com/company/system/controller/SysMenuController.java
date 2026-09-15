@@ -15,7 +15,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.PageDTO;
 
 import com.company.framework.util.PropertyUtils;
 import com.company.system.api.constant.Constants;
-import com.company.system.api.feign.SysMenuFeign;
+import com.company.system.api.feign.SysMenuApi;
 import com.company.system.api.request.RemoveReq;
 import com.company.system.api.request.SysMenuReq;
 import com.company.common.response.PageResp;
@@ -29,7 +29,7 @@ import com.company.system.service.SysRoleService;
 
 @RestController
 @RequestMapping("/sysMenu")
-public class SysMenuController implements SysMenuFeign {
+public class SysMenuController implements SysMenuApi {
 
 	@Autowired
 	private SysMenuService sysMenuService;

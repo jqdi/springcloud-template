@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.company.framework.i18n.MessageSourceResolver;
-import com.company.tool.api.feign.CommonI18nFeign;
+import com.company.web.feign.CommonI18nFeign;
 import com.company.tool.api.response.CommonI18nResp;
 
 /**

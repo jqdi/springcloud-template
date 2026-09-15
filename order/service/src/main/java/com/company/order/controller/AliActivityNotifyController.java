@@ -12,7 +12,7 @@ import com.company.framework.util.JsonUtil;
 import com.company.framework.util.PropertyUtils;
 import com.company.framework.util.RetryUtils;
 import com.company.order.api.enums.OrderPayEnum;
-import com.company.order.api.feign.AliActivityNotifyFeign;
+import com.company.order.api.feign.AliActivityNotifyApi;
 import com.company.order.api.response.SpiOrderSendNotifyResp;
 import com.company.order.api.response.SpiOrderSendNotifyResp.Response.SendActivityInfoResultList;
 import com.company.order.api.response.SpiOrderSendNotifyResp.Response.SendActivityInfoResultList.SendVoucherInfoResult;
@@ -48,7 +48,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @RestController
 @RequestMapping(value = "/aliactivitynotify")
-public class AliActivityNotifyController implements AliActivityNotifyFeign {
+public class AliActivityNotifyController implements AliActivityNotifyApi {
 	@Autowired
 	private AliActivityNotifyMapper aliActivityNotifyMapper;
 

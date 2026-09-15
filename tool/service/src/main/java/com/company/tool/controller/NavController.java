@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.company.framework.util.JsonUtil;
 import com.company.framework.context.HeaderContextUtil;
-import com.company.tool.api.feign.NavFeign;
+import com.company.tool.api.feign.NavApi;
 import com.company.tool.api.request.NavReq;
 import com.company.tool.api.response.NavResp;
 import com.company.tool.nav.NavShowService;
@@ -21,7 +21,7 @@ import com.company.tool.nav.dto.NavItemCanShow;
 
 @RestController
 @RequestMapping("/nav")
-public class NavController implements NavFeign {
+public class NavController implements NavApi {
 
 	@Autowired
 	private NavShowService navShowService;

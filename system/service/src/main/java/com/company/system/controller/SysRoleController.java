@@ -16,7 +16,7 @@ import com.google.common.collect.Sets;
 import com.company.system.api.request.RemoveReq;
 import com.company.common.response.PageResp;
 import com.company.framework.util.PropertyUtils;
-import com.company.system.api.feign.SysRoleFeign;
+import com.company.system.api.feign.SysRoleApi;
 import com.company.system.api.request.SysRoleGrantMenuReq;
 import com.company.system.api.request.SysRoleReq;
 import com.company.system.api.response.SysRoleResp;
@@ -26,7 +26,7 @@ import com.company.system.service.SysRoleService;
 
 @RestController
 @RequestMapping("/sysRole")
-public class SysRoleController implements SysRoleFeign {
+public class SysRoleController implements SysRoleApi {
 
 	@Autowired
 	private SysRoleService sysRoleService;

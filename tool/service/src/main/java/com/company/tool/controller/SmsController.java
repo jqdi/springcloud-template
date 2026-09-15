@@ -11,13 +11,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 import com.company.tool.api.enums.SmsEnum;
-import com.company.tool.api.feign.SmsFeign;
+import com.company.tool.api.feign.SmsApi;
 import com.company.tool.api.request.SendSmsReq;
 import com.company.tool.sms.AsyncSmsSender;
 
 @RestController
 @RequestMapping(value = "/sms")
-public class SmsController implements SmsFeign {
+public class SmsController implements SmsApi {
 
 	@Autowired
 	private AsyncSmsSender asyncSmsSender;

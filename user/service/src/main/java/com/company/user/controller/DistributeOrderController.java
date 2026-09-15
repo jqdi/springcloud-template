@@ -11,14 +11,14 @@ import com.company.framework.util.Utils;
 import com.company.order.api.enums.OrderEnum;
 import com.company.order.api.enums.OrderEnum.StatusEnum;
 import com.company.order.api.enums.OrderPayEnum;
-import com.company.order.api.feign.OrderFeign;
-import com.company.order.api.feign.PayFeign;
+import com.company.user.feign.OrderFeign;
+import com.company.user.feign.PayFeign;
 import com.company.order.api.request.*;
 import com.company.order.api.request.OrderReq.ProductReq;
 import com.company.order.api.response.PayResp;
 import com.company.tool.api.response.RetryerResp;
 import com.company.user.api.constant.Constants;
-import com.company.user.api.feign.DistributeOrderFeign;
+import com.company.user.api.feign.DistributeOrderApi;
 import com.company.user.api.request.DistributeBuyOrderReq;
 import com.company.user.api.request.DistributeBuyOrderReq.UserRemarkReq;
 import com.company.user.api.response.DistributeBuyOrderResp;
@@ -56,7 +56,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @RestController
 @RequestMapping("/distributeOrder")
-public class DistributeOrderController implements DistributeOrderFeign {
+public class DistributeOrderController implements DistributeOrderApi {
 
 	@Autowired
 	private SequenceGenerator sequenceGenerator;
