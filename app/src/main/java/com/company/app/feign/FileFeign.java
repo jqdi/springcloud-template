@@ -1,10 +1,9 @@
 package com.company.app.feign;
 
-import com.company.app.constants.Constants;
 import com.company.app.feign.fallback.ThrowExceptionFallback;
 import com.company.tool.api.feign.FileApi;
 import org.springframework.cloud.openfeign.FeignClient;
 
-@FeignClient(value = Constants.FeignClient.TOOL, path = "/file", fallbackFactory = ThrowExceptionFallback.class)
+@FeignClient(value = FeignConstants.TOOL, path = "/file", fallbackFactory = ThrowExceptionFallback.class)
 public interface FileFeign extends FileApi {
 }

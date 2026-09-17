@@ -16,7 +16,7 @@ import com.company.order.api.request.*;
 import com.company.order.api.request.OrderReq.ProductReq;
 import com.company.order.api.response.PayResp;
 import com.company.tool.api.response.RetryerResp;
-import com.company.user.constant.Constants;
+import com.company.user.feign.FeignConstants;
 import com.company.user.api.feign.DistributeOrderApi;
 import com.company.user.api.request.DistributeBuyOrderReq;
 import com.company.user.api.request.DistributeBuyOrderReq.UserRemarkReq;
@@ -163,7 +163,7 @@ public class DistributeOrderController implements DistributeOrderApi {
 		registerOrderReq.setOrderAmount(orderAmount);
 		registerOrderReq.setReduceAmount(reduceAmount);
 		registerOrderReq.setNeedPayAmount(needPayAmount);
-		registerOrderReq.setSubOrderUrl(Constants.feignUrl("/distributeOrder/subOrder"));
+		registerOrderReq.setSubOrderUrl(FeignConstants.feignUrl("/distributeOrder/subOrder"));
 
 		List<RegisterOrderReq.OrderProductReq> orderProductReqList = Lists.newArrayList();
 
@@ -225,7 +225,7 @@ public class DistributeOrderController implements DistributeOrderApi {
 		payReq.setBody("配送下单");
 		payReq.setSpbillCreateIp(HeaderContextUtil.requestip());
 		payReq.setOpenid(HeaderContextUtil.deviceid());
-		payReq.setNotifyUrl(Constants.feignUrl("/distributeOrder/buyNotify"));
+		payReq.setNotifyUrl(FeignConstants.feignUrl("/distributeOrder/buyNotify"));
 		PayResp payResp = payFeign.unifiedorder(payReq);
 		if (!payResp.getSuccess()) {
 			ExceptionUtil.throwException("支付失败，请稍后重试");

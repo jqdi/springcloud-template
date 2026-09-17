@@ -14,7 +14,7 @@ import com.company.user.feign.PayFeign;
 import com.company.order.api.request.*;
 import com.company.order.api.response.PayResp;
 import com.company.tool.api.response.RetryerResp;
-import com.company.user.constant.Constants;
+import com.company.user.feign.FeignConstants;
 import com.company.user.api.enums.WalletEnum;
 import com.company.user.api.enums.WalletEnum.Type;
 import com.company.user.api.feign.MemberBuyApi;
@@ -289,7 +289,7 @@ public class MemberBuyController implements MemberBuyApi {
 		registerOrderReq.setOrderAmount(orderAmount);
 		registerOrderReq.setReduceAmount(reduceAmount);
 		registerOrderReq.setNeedPayAmount(orderNeedPayAmount);
-		registerOrderReq.setSubOrderUrl(Constants.feignUrl("/memberBuy/subOrder"));
+		registerOrderReq.setSubOrderUrl(FeignConstants.feignUrl("/memberBuy/subOrder"));
 
 		String memberBuyAttach = Utils.append2Json(payAttach, "userRemark", memberBuyOrderReq.getUserRemark());
 		registerOrderReq.setAttach(memberBuyAttach);
@@ -340,7 +340,7 @@ public class MemberBuyController implements MemberBuyApi {
 		payReq.setSpbillCreateIp(HeaderContextUtil.requestip());
 //		payReq.setProductId(productId);
 		payReq.setOpenid(HeaderContextUtil.deviceid());
-		payReq.setNotifyUrl(Constants.feignUrl("/memberBuy/buyNotify"));
+		payReq.setNotifyUrl(FeignConstants.feignUrl("/memberBuy/buyNotify"));
 		payReq.setAttach(payAttach);
 //		payReq.setTimeoutSeconds(timeoutSeconds);
 //		payReq.setRemark(remark);

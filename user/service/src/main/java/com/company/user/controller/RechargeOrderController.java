@@ -13,7 +13,7 @@ import com.company.user.feign.PayFeign;
 import com.company.order.api.request.*;
 import com.company.order.api.response.PayResp;
 import com.company.tool.api.response.RetryerResp;
-import com.company.user.constant.Constants;
+import com.company.user.feign.FeignConstants;
 import com.company.user.api.enums.WalletEnum.Type;
 import com.company.user.api.feign.RechargeOrderApi;
 import com.company.user.api.request.RechargeOrderReq;
@@ -122,7 +122,7 @@ public class RechargeOrderController implements RechargeOrderApi {
 		registerOrderReq.setOrderAmount(orderAmount);
 		registerOrderReq.setReduceAmount(reduceAmount);
 		registerOrderReq.setNeedPayAmount(needPayAmount);
-		registerOrderReq.setSubOrderUrl(Constants.feignUrl("/rechargeOrder/subOrder"));
+		registerOrderReq.setSubOrderUrl(FeignConstants.feignUrl("/rechargeOrder/subOrder"));
 		// registerOrderReq.setAttach(JsonUtil.toJsonString(rechargeOrderAttach));
 
 		List<RegisterOrderReq.OrderProductReq> orderProductReqList = Lists.newArrayList();
@@ -165,7 +165,7 @@ public class RechargeOrderController implements RechargeOrderApi {
 		payReq.setSpbillCreateIp(HeaderContextUtil.requestip());
 		// payReq.setProductId(productId);
 		payReq.setOpenid(HeaderContextUtil.deviceid());
-		payReq.setNotifyUrl(Constants.feignUrl("/rechargeOrder/buyNotify"));
+		payReq.setNotifyUrl(FeignConstants.feignUrl("/rechargeOrder/buyNotify"));
 		// payReq.setAttach(attach);
 		// payReq.setTimeoutSeconds(timeoutSeconds);
 		// payReq.setRemark(remark);

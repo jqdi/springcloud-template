@@ -15,6 +15,7 @@ import com.company.order.api.request.*;
 import com.company.order.api.response.*;
 import com.company.order.entity.OrderPay;
 import com.company.order.entity.OrderPayRefund;
+import com.company.order.feign.FeignConstants;
 import com.company.order.messagedriven.Constants;
 import com.company.order.messagedriven.strategy.StrategyConstants;
 import com.company.order.pay.PayFactory;
@@ -68,10 +69,10 @@ public class PayController implements PayApi {
 	@Autowired
 	private LockClient lockClient;
 
-	private static final String NOTIFY_URL_REFUND = com.company.order.constant.Constants.feignUrl("/pay/refundWithRetry");
-	private static final String NOTIFY_URL_TIMEOUT = com.company.order.constant.Constants.feignUrl("/pay/timeoutWithRetry");
-	private static final String NOTIFY_URL_PAYRESULT = com.company.order.constant.Constants.feignUrl("/pay/pollingPayResult");
-	private static final String NOTIFY_URL_REFUNDRESULT = com.company.order.constant.Constants.feignUrl("/pay/pollingRefundResult");
+	private static final String NOTIFY_URL_REFUND = FeignConstants.feignUrl("/pay/refundWithRetry");
+	private static final String NOTIFY_URL_TIMEOUT = FeignConstants.feignUrl("/pay/timeoutWithRetry");
+	private static final String NOTIFY_URL_PAYRESULT = FeignConstants.feignUrl("/pay/pollingPayResult");
+	private static final String NOTIFY_URL_REFUNDRESULT = FeignConstants.feignUrl("/pay/pollingRefundResult");
 
     @Lock("'lock:orderpay:ordercode:'+#payReq.orderCode")
 	@Override
