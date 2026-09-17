@@ -1,5 +1,8 @@
-package com.company.app.constants;
+package com.company.system.constant;
 
+/**
+ * 常量
+ */
 public interface Constants {
     /**
      * 服务名
@@ -11,7 +14,10 @@ public interface Constants {
         String ORDER = "template-order";
     }
 
-	public interface VerifyCodeType {
-		String LOGIN = "login";
-	}
+    static String feignUrl(String path) {
+        return "http://" + FeignClient.SYSTEM + path;
+    }
+
+	/** 管理员角色权限标识 */
+    String SUPER_ROLE = "admin";
 }

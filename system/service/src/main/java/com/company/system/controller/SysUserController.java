@@ -6,7 +6,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.PageDTO;
 import com.company.system.api.request.RemoveReq;
 import com.company.common.response.PageResp;
 import com.company.framework.util.PropertyUtils;
-import com.company.system.api.constant.Constants;
+import com.company.system.constant.Constants;
 import com.company.system.api.feign.SysUserApi;
 import com.company.system.api.request.SysUserAssignRoleReq;
 import com.company.system.api.request.SysUserReq;

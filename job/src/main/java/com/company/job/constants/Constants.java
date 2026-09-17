@@ -1,4 +1,4 @@
-package com.company.app.constants;
+package com.company.job.constants;
 
 public interface Constants {
     /**
@@ -10,8 +10,4 @@ public interface Constants {
         String USER = "template-user";
         String ORDER = "template-order";
     }
-
-	public interface VerifyCodeType {
-		String LOGIN = "login";
-	}
 }

@@ -6,6 +6,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.Collections;
 import java.util.Map;
 
+import com.company.system.constant.Constants;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -39,7 +40,7 @@ import cn.hutool.core.date.LocalDateTimeUtil;
 @RestController
 @RequestMapping("/sysUserPassword")
 public class SysUserPasswordController implements SysUserPasswordApi {
-	private static final String NOTIFY_URL_REMINDPASSWORDEXPIRE = com.company.system.api.constant.Constants
+	private static final String NOTIFY_URL_REMINDPASSWORDEXPIRE = Constants
 			.feignUrl("/sysUserPassword/remindPasswordExpire");
 
 	@Autowired
