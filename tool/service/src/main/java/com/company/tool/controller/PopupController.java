@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.company.framework.util.Utils;
 import com.company.framework.context.HeaderContextUtil;
-import com.company.tool.api.feign.PopupApi;
+import com.company.tool.api.interfaces.PopupApi;
 import com.company.tool.api.request.BestPopupReq;
 import com.company.tool.api.request.CancelUserPopupReq;
 import com.company.tool.api.request.CreateUserPopupReq;

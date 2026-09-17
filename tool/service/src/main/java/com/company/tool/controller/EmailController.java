@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 import com.company.tool.api.enums.EmailEnum;
-import com.company.tool.api.feign.EmailApi;
+import com.company.tool.api.interfaces.EmailApi;
 import com.company.tool.api.request.SendEmailReq;
 import com.company.tool.email.AsyncEmailSender;
 

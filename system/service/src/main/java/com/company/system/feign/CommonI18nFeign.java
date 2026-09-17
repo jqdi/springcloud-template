@@ -1,7 +1,7 @@
 package com.company.system.feign;
 
 import com.company.system.feign.fallback.CommonI18nFeignFallback;
-import com.company.tool.api.feign.CommonI18nApi;
+import com.company.tool.api.interfaces.CommonI18nApi;
 import org.springframework.cloud.openfeign.FeignClient;
 
 @FeignClient(value = FeignConstants.TOOL, path = "/commonI18n", fallbackFactory = CommonI18nFeignFallback.class)

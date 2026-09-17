@@ -1,7 +1,7 @@
 package com.company.app.feign;
 
 import com.company.app.feign.fallback.ThrowExceptionFallback;
-import com.company.user.api.feign.UserOauthApi;
+import com.company.user.api.interfaces.UserOauthApi;
 import org.springframework.cloud.openfeign.FeignClient;
 
 @FeignClient(value = FeignConstants.USER, path = "/useroauth", fallbackFactory = ThrowExceptionFallback.class)

@@ -13,7 +13,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.PageDTO;
 
 import com.company.common.response.PageResp;
 import com.company.framework.util.PropertyUtils;
-import com.company.system.api.feign.SysDeptApi;
+import com.company.system.api.interfaces.SysDeptApi;
 import com.company.system.api.request.SysDeptReq;
 import com.company.system.api.response.SysDeptResp;
 import com.company.system.entity.SysDept;

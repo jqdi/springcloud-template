@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.company.framework.globalresponse.ExceptionUtil;
-import com.company.system.api.feign.SysUserPasswordApi;
+import com.company.system.api.interfaces.SysUserPasswordApi;
 import com.company.system.api.request.RemindPasswordExpireReq;
 import com.company.system.api.request.SaveNewPasswordReq;
 import com.company.system.api.response.SysUserPasswordTipsResp;

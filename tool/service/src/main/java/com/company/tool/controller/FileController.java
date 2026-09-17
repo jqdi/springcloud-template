@@ -1,6 +1,6 @@
 package com.company.tool.controller;
 
-import com.company.tool.api.feign.FileApi;
+import com.company.tool.api.interfaces.FileApi;
 import com.company.tool.api.request.PresignedUploadReq;
 import com.company.tool.api.request.UploadReq;
 import com.company.tool.api.response.PresignedUploadResp;

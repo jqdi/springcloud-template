@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.company.framework.context.HeaderContextUtil;
 import com.company.user.api.enums.WalletEnum;
-import com.company.user.api.feign.WalletRecordApi;
+import com.company.user.api.interfaces.WalletRecordApi;
 import com.company.user.api.response.WalletRecordResp;
 import com.company.user.entity.Wallet;
 import com.company.user.entity.WalletRecord;

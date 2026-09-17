@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.company.framework.util.PropertyUtils;
-import com.company.tool.api.feign.CommonI18nApi;
+import com.company.tool.api.interfaces.CommonI18nApi;
 import com.company.tool.api.request.CommonI18nReq;
 import com.company.tool.api.response.CommonI18nResp;
 import com.company.tool.entity.CommonI18n;

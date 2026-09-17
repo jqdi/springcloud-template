@@ -1,7 +1,7 @@
 package com.company.job.feign;
 
 import com.company.job.feign.fallback.EmailFeignFallback;
-import com.company.tool.api.feign.EmailApi;
+import com.company.tool.api.interfaces.EmailApi;
 import org.springframework.cloud.openfeign.FeignClient;
 
 @FeignClient(value = FeignConstants.TOOL, path = "/email", fallbackFactory = EmailFeignFallback.class)

@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 
-import com.company.tool.api.feign.WebhookApi;
+import com.company.tool.api.interfaces.WebhookApi;
 import com.company.tool.webhook.AsyncWebhookSender;
 
 @RestController

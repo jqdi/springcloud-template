@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.company.framework.context.HeaderContextUtil;
 import com.company.framework.util.JsonUtil;
 import com.company.tool.api.enums.SubscribeEnum;
-import com.company.tool.api.feign.SubscribeApi;
+import com.company.tool.api.interfaces.SubscribeApi;
 import com.company.tool.api.request.SubscribeGrantReq;
 import com.company.tool.api.request.SubscribeSendReq;
 import com.company.tool.entity.SubscribeTemplate;

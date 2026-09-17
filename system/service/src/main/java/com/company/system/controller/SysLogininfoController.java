@@ -14,7 +14,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.PageDTO;
 
 import com.company.common.response.PageResp;
 import com.company.framework.util.PropertyUtils;
-import com.company.system.api.feign.SysLogininfoApi;
+import com.company.system.api.interfaces.SysLogininfoApi;
 import com.company.system.api.request.SysLogininfoReq;
 import com.company.system.api.response.SysLogininfoResp;
 import com.company.system.entity.SysLogininfo;

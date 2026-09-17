@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.company.framework.context.HeaderContextUtil;
 import com.company.framework.globalresponse.ExceptionUtil;
 import com.company.framework.util.JsonUtil;
-import com.company.order.api.feign.FeignTestApi;
+import com.company.order.api.interfaces.FeignTestApi;
 import com.company.order.api.request.RegisterOrderReq;
 import com.company.order.api.response.OrderDetailResp;
 import com.google.common.collect.Lists;

@@ -17,7 +17,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.PageDTO;
 
 import com.company.common.response.PageResp;
 import com.company.framework.util.PropertyUtils;
-import com.company.system.api.feign.SysConfigApi;
+import com.company.system.api.interfaces.SysConfigApi;
 import com.company.system.api.request.SysConfigReq;
 import com.company.system.api.response.SysConfigResp;
 import com.company.system.entity.SysConfig;

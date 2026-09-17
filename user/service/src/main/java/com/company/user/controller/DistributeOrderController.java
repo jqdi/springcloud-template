@@ -17,7 +17,7 @@ import com.company.order.api.request.OrderReq.ProductReq;
 import com.company.order.api.response.PayResp;
 import com.company.tool.api.response.RetryerResp;
 import com.company.user.feign.FeignConstants;
-import com.company.user.api.feign.DistributeOrderApi;
+import com.company.user.api.interfaces.DistributeOrderApi;
 import com.company.user.api.request.DistributeBuyOrderReq;
 import com.company.user.api.request.DistributeBuyOrderReq.UserRemarkReq;
 import com.company.user.api.response.DistributeBuyOrderResp;

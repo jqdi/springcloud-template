@@ -1,7 +1,7 @@
 package com.company.im.controller;
 
 
-import com.company.im.api.feign.WebsocketApi;
+import com.company.im.api.interfaces.WebsocketApi;
 import com.company.im.api.request.AllReq;
 import com.company.im.api.request.GroupReq;
 import com.company.im.api.request.UserReq;

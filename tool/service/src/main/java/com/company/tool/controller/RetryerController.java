@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 
-import com.company.tool.api.feign.RetryerApi;
+import com.company.tool.api.interfaces.RetryerApi;
 import com.company.tool.api.request.RetryerInfoReq;
 import com.company.tool.retry.FeignRetryer;
 import com.company.tool.retry.RetryerInfo;

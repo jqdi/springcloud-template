@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 
-import com.company.user.api.feign.WalletIncomeUseRecordApi;
+import com.company.user.api.interfaces.WalletIncomeUseRecordApi;
 import com.company.user.service.WalletIncomeUseRecordService;
 
 @RestController

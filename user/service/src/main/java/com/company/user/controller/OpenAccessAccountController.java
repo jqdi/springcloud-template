@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 
-import com.company.user.api.feign.OpenAccessAccountApi;
+import com.company.user.api.interfaces.OpenAccessAccountApi;
 import com.company.user.service.OpenAccessAccountService;
 
 import java.util.Collections;

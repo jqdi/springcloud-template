@@ -14,7 +14,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.PageDTO;
 
 import com.company.common.response.PageResp;
 import com.company.framework.util.PropertyUtils;
-import com.company.system.api.feign.SysOperLogApi;
+import com.company.system.api.interfaces.SysOperLogApi;
 import com.company.system.api.request.SysOperLogReq;
 import com.company.system.api.response.SysOperLogResp;
 import com.company.system.entity.SysOperLog;

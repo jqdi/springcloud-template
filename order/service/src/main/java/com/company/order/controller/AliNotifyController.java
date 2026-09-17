@@ -8,7 +8,7 @@ import com.company.framework.messagedriven.MessageSender;
 import com.company.framework.messagedriven.properties.MessagedrivenProperties;
 import com.company.framework.util.JsonUtil;
 import com.company.order.api.enums.OrderPayEnum;
-import com.company.order.api.feign.AliNotifyApi;
+import com.company.order.api.interfaces.AliNotifyApi;
 import com.company.order.entity.AliPay;
 import com.company.order.entity.AliPayRefund;
 import com.company.order.entity.PayNotify;

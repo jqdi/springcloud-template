@@ -2,7 +2,7 @@ package com.company.tool.controller;
 
 import cn.hutool.core.text.CharSequenceUtil;
 
-import com.company.tool.api.feign.AppVersionApi;
+import com.company.tool.api.interfaces.AppVersionApi;
 import com.company.tool.api.response.AppVersionCheckResp;
 import com.company.tool.entity.AppVersion;
 import com.company.tool.service.AppVersionService;

@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.company.tool.api.enums.EmailEnum;
 import com.company.tool.api.enums.SmsEnum;
 import com.company.tool.api.enums.WebhookEnum;
-import com.company.tool.api.feign.AlarmApi;
+import com.company.tool.api.interfaces.AlarmApi;
 import com.company.tool.api.request.AlarmReq;
 import com.company.tool.api.request.WebhookAlarmReq;
 import com.company.tool.email.AsyncEmailSender;

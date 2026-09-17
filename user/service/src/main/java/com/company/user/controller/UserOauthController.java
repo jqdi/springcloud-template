@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.company.framework.util.PropertyUtils;
 import com.company.user.api.enums.UserOauthEnum;
-import com.company.user.api.feign.UserOauthApi;
+import com.company.user.api.interfaces.UserOauthApi;
 import com.company.user.api.request.UserOauthReq;
 import com.company.user.api.response.UserOauthResp;
 import com.company.user.entity.UserOauth;

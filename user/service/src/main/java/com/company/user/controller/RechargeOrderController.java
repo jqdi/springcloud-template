@@ -15,7 +15,7 @@ import com.company.order.api.response.PayResp;
 import com.company.tool.api.response.RetryerResp;
 import com.company.user.feign.FeignConstants;
 import com.company.user.api.enums.WalletEnum.Type;
-import com.company.user.api.feign.RechargeOrderApi;
+import com.company.user.api.interfaces.RechargeOrderApi;
 import com.company.user.api.request.RechargeOrderReq;
 import com.company.user.api.response.RechargeOrderResp;
 import com.company.user.api.response.RechargeSubOrderDetailResp;

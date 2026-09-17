@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 
-import com.company.tool.api.feign.QrcodeApi;
+import com.company.tool.api.interfaces.QrcodeApi;
 import com.company.tool.api.request.WxaCodeReq;
 import com.company.tool.filestorage.UploadService;
 import com.company.tool.qrcode.WxaCodeService;

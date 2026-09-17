@@ -14,7 +14,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.PageDTO;
 
 import com.company.common.response.PageResp;
 import com.company.framework.util.PropertyUtils;
-import com.company.system.api.feign.SysRoleMenuApi;
+import com.company.system.api.interfaces.SysRoleMenuApi;
 import com.company.system.api.request.SysRoleMenuReq;
 import com.company.system.api.response.SysRoleMenuResp;
 import com.company.system.entity.SysRoleMenu;

@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 import com.company.framework.context.HeaderContextUtil;
-import com.company.tool.api.feign.BannerApi;
+import com.company.tool.api.interfaces.BannerApi;
 import com.company.tool.api.request.BannerReq;
 import com.company.tool.api.response.BannerResp;
 import com.company.tool.banner.BannerShowService;

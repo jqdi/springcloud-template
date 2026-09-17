@@ -10,7 +10,7 @@ import com.company.framework.messagedriven.MessageSender;
 import com.company.framework.messagedriven.properties.MessagedrivenProperties;
 import com.company.order.api.enums.OrderPayEnum;
 import com.company.order.api.enums.OrderPayRefundEnum;
-import com.company.order.api.feign.PayApi;
+import com.company.order.api.interfaces.PayApi;
 import com.company.order.api.request.*;
 import com.company.order.api.response.*;
 import com.company.order.entity.OrderPay;

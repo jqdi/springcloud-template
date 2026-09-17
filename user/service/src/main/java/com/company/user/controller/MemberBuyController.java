@@ -17,7 +17,7 @@ import com.company.tool.api.response.RetryerResp;
 import com.company.user.feign.FeignConstants;
 import com.company.user.api.enums.WalletEnum;
 import com.company.user.api.enums.WalletEnum.Type;
-import com.company.user.api.feign.MemberBuyApi;
+import com.company.user.api.interfaces.MemberBuyApi;
 import com.company.user.api.request.MemberBuyOrderReq;
 import com.company.user.api.response.CalcCanRefundAmountResp;
 import com.company.user.api.response.MemberBuyOrderResp;

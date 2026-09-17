@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.company.tool.api.enums.EmailEnum;
 import com.company.tool.api.enums.SmsEnum;
-import com.company.tool.api.feign.VerifyCodeApi;
+import com.company.tool.api.interfaces.VerifyCodeApi;
 import com.company.tool.api.response.CaptchaResp;
 import com.company.tool.email.AsyncEmailSender;
 import com.company.tool.entity.VerifyCode;
