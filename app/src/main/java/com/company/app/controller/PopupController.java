@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 import com.company.framework.util.WebUtil;
-import com.company.tool.api.feign.PopupFeign;
+import com.company.app.feign.PopupFeign;
 import com.company.tool.api.request.BestPopupReq;
 
 /**

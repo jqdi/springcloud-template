@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 
-import com.company.user.api.feign.OpenAccessAccountFeign;
+import com.company.user.api.interfaces.OpenAccessAccountApi;
 import com.company.user.service.OpenAccessAccountService;
 
 import java.util.Collections;
@@ -13,7 +13,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/openAccessAccount")
-public class OpenAccessAccountController implements OpenAccessAccountFeign {
+public class OpenAccessAccountController implements OpenAccessAccountApi {
 
 	@Autowired
 	private OpenAccessAccountService openAccessAccountService;

@@ -1,7 +1,7 @@
 package com.company.app.controller;
 
 
-import com.company.tool.api.feign.AppVersionFeign;
+import com.company.app.feign.AppVersionFeign;
 import com.company.tool.api.response.AppVersionCheckResp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;

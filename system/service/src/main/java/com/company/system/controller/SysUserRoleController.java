@@ -14,8 +14,8 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.PageDTO;
 import com.company.common.response.PageResp;
 import com.company.framework.util.PropertyUtils;
-import com.company.system.api.constant.Constants;
-import com.company.system.api.feign.SysUserRoleFeign;
+import com.company.system.constant.Constants;
+import com.company.system.api.interfaces.SysUserRoleApi;
 import com.company.system.api.request.RemoveReq;
 import com.company.system.api.request.SysUserRoleReq;
 import com.company.system.api.response.SysUserRoleResp;
@@ -28,7 +28,7 @@ import com.company.system.service.SysUserRoleService;
 
 @RestController
 @RequestMapping("/sysUserRole")
-public class SysUserRoleController implements SysUserRoleFeign {
+public class SysUserRoleController implements SysUserRoleApi {
 
 	@Autowired
 	private SysUserRoleService sysUserRoleService;

@@ -4,7 +4,7 @@ import com.company.adminapi.annotation.RequirePermissions;
 import com.company.framework.constant.CommonConstants.InterceptorOrdered;
 import com.company.framework.constant.HeaderConstants;
 import com.company.framework.globalresponse.ExceptionUtil;
-import com.company.system.api.feign.SysUserRoleFeign;
+import com.company.adminapi.feign.SysUserRoleFeign;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;

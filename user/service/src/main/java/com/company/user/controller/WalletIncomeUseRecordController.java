@@ -7,12 +7,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 
-import com.company.user.api.feign.WalletIncomeUseRecordFeign;
+import com.company.user.api.interfaces.WalletIncomeUseRecordApi;
 import com.company.user.service.WalletIncomeUseRecordService;
 
 @RestController
 @RequestMapping("/walletIncomeUseRecord")
-public class WalletIncomeUseRecordController implements WalletIncomeUseRecordFeign {
+public class WalletIncomeUseRecordController implements WalletIncomeUseRecordApi {
 
 	@Autowired
 	private WalletIncomeUseRecordService walletIncomeUseRecordService;

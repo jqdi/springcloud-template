@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.company.user.api.enums.UserOauthEnum;
-import com.company.user.api.feign.UserOauthFeign;
+import com.company.web.feign.UserOauthFeign;
 import com.company.web.util.PassWordUtil;
 import io.github.jqdi.easylogin.core.repository.PasswordRepository;
 

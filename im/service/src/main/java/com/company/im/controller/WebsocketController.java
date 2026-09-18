@@ -1,7 +1,7 @@
 package com.company.im.controller;
 
 
-import com.company.im.api.feign.WebsocketFeign;
+import com.company.im.api.interfaces.WebsocketApi;
 import com.company.im.api.request.AllReq;
 import com.company.im.api.request.GroupReq;
 import com.company.im.api.request.UserReq;
@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/websocket")
-public class WebsocketController implements WebsocketFeign {
+public class WebsocketController implements WebsocketApi {
     @Autowired
     private WebSocketLoadBalanceConcept concept;
 

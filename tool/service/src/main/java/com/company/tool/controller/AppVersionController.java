@@ -2,7 +2,7 @@ package com.company.tool.controller;
 
 import cn.hutool.core.text.CharSequenceUtil;
 
-import com.company.tool.api.feign.AppVersionFeign;
+import com.company.tool.api.interfaces.AppVersionApi;
 import com.company.tool.api.response.AppVersionCheckResp;
 import com.company.tool.entity.AppVersion;
 import com.company.tool.service.AppVersionService;
@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(value = "/appVersion")
-public class AppVersionController implements AppVersionFeign {
+public class AppVersionController implements AppVersionApi {
     @Autowired
     private AppVersionService appVersionService;
 

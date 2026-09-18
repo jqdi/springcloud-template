@@ -9,7 +9,7 @@ import com.company.adminapi.excel.SysRoleExcel;
 import com.company.system.api.request.RemoveReq;
 import com.company.common.response.PageResp;
 import com.company.framework.util.PropertyUtils;
-import com.company.system.api.feign.SysRoleFeign;
+import com.company.adminapi.feign.SysRoleFeign;
 import com.company.system.api.request.SysRoleGrantMenuReq;
 import com.company.system.api.request.SysRoleReq;
 import com.company.system.api.response.SysRoleResp;

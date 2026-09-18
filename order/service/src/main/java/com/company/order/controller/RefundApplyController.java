@@ -4,13 +4,12 @@ package com.company.order.controller;
 import com.company.framework.globalresponse.ExceptionUtil;
 import com.company.framework.messagedriven.MessageSender;
 import com.company.framework.messagedriven.constants.BroadcastConstants;
-import com.company.framework.util.JsonUtil;
 import com.company.framework.util.Utils;
-import com.company.order.api.constant.Constants;
+import com.company.order.feign.FeignConstants;
 import com.company.order.api.enums.OrderPayRefundEnum;
 import com.company.order.api.enums.PayRefundApplyEnum;
-import com.company.order.api.feign.PayFeign;
-import com.company.order.api.feign.RefundApplyFeign;
+import com.company.order.feign.PayFeign;
+import com.company.order.api.interfaces.RefundApplyApi;
 import com.company.order.api.request.PayRefundApplyReq;
 import com.company.order.api.request.PayRefundReq;
 import com.company.order.api.request.RefundNotifyReq;
@@ -31,7 +30,7 @@ import java.util.Map;
 @Slf4j
 @RestController
 @RequestMapping(value = "/refundApply")
-public class RefundApplyController implements RefundApplyFeign {
+public class RefundApplyController implements RefundApplyApi {
 
 	@Autowired
 	private PayRefundApplyMapper payRefundApplyMapper;
@@ -166,7 +165,7 @@ public class RefundApplyController implements RefundApplyFeign {
 		payRefundReq.setRefundOrderCode(payRefundApply.getOldOrderCode());// 原订单号
 		payRefundReq.setOrderCode(payRefundApply.getOrderCode());// 退款订单号
 		payRefundReq.setBusinessType(OrderPayRefundEnum.BusinessType.SYS_AUTO);
-		payRefundReq.setNotifyUrl(Constants.feignUrl("/refundApply/refundNotify"));
+		payRefundReq.setNotifyUrl(FeignConstants.feignUrl("/refundApply/refundNotify"));
 		payRefundReq.setRefundRemark(payRefundApply.getReason());
 		payRefundReq.setAttach(payRefundApply.getAttach());
 		payRefundReq.setRefundAmount(amount);

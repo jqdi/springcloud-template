@@ -17,7 +17,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.PageDTO;
 
 import com.company.common.response.PageResp;
 import com.company.framework.util.PropertyUtils;
-import com.company.system.api.feign.SysDictDataFeign;
+import com.company.system.api.interfaces.SysDictDataApi;
 import com.company.system.api.request.SysDictDataReq;
 import com.company.system.api.response.SysDictDataResp;
 import com.company.system.entity.SysDictData;
@@ -25,7 +25,7 @@ import com.company.system.service.SysDictDataService;
 
 @RestController
 @RequestMapping("/sysDictData")
-public class SysDictDataController implements SysDictDataFeign {
+public class SysDictDataController implements SysDictDataApi {
 
 	@Autowired
 	private SysDictDataService sysDictDataService;

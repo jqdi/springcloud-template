@@ -9,7 +9,7 @@ import com.company.adminapi.excel.SysDictTypeExcel;
 import com.company.system.api.request.RemoveReq;
 import com.company.common.response.PageResp;
 import com.company.framework.util.PropertyUtils;
-import com.company.system.api.feign.SysDictTypeFeign;
+import com.company.adminapi.feign.SysDictTypeFeign;
 import com.company.system.api.request.SysDictTypeReq;
 import com.company.system.api.response.SysDictTypeResp;
 import org.springframework.beans.factory.annotation.Autowired;

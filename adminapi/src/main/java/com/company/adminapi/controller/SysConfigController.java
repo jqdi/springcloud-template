@@ -9,7 +9,7 @@ import com.company.adminapi.excel.SysConfigExcel;
 import com.company.common.response.PageResp;
 import com.company.system.api.request.RemoveReq;
 import com.company.framework.util.PropertyUtils;
-import com.company.system.api.feign.SysConfigFeign;
+import com.company.adminapi.feign.SysConfigFeign;
 import com.company.system.api.request.SysConfigReq;
 import com.company.system.api.response.SysConfigResp;
 import org.springframework.beans.factory.annotation.Autowired;

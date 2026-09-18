@@ -1,6 +1,6 @@
 package com.company.tool.controller;
 
-import com.company.tool.api.feign.FileFeign;
+import com.company.tool.api.interfaces.FileApi;
 import com.company.tool.api.request.PresignedUploadReq;
 import com.company.tool.api.request.UploadReq;
 import com.company.tool.api.response.PresignedUploadResp;
@@ -18,7 +18,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping(value = "/file")
-public class FileController implements FileFeign {
+public class FileController implements FileApi {
 
 	@Autowired
 	private UploadService uploadService;

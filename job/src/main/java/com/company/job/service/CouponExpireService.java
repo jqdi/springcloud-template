@@ -7,9 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.company.tool.api.enums.SubscribeEnum;
-import com.company.tool.api.feign.SubscribeFeign;
+import com.company.job.feign.SubscribeFeign;
 import com.company.tool.api.request.SubscribeSendReq;
-import com.company.user.api.feign.CouponFeign;
+import com.company.job.feign.CouponFeign;
 import com.google.common.collect.Lists;
 import com.xxl.job.core.biz.model.ReturnT;
 import com.xxl.job.core.context.XxlJobHelper;

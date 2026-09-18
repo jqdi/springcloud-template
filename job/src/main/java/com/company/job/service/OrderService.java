@@ -9,7 +9,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.company.order.api.feign.OrderFeign;
+import com.company.job.feign.OrderFeign;
 import com.company.order.api.request.OrderFinishReq;
 import com.company.order.api.request.OrderReceiveReq;
 import com.xxl.job.core.biz.model.ReturnT;

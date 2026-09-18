@@ -13,7 +13,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.PageDTO;
 
 import com.company.common.response.PageResp;
 import com.company.framework.util.PropertyUtils;
-import com.company.system.api.feign.SysDictTypeFeign;
+import com.company.system.api.interfaces.SysDictTypeApi;
 import com.company.system.api.request.SysDictTypeReq;
 import com.company.system.api.response.SysDictTypeResp;
 import com.company.system.entity.SysDictType;
@@ -21,7 +21,7 @@ import com.company.system.service.SysDictTypeService;
 
 @RestController
 @RequestMapping("/sysDictType")
-public class SysDictTypeController implements SysDictTypeFeign {
+public class SysDictTypeController implements SysDictTypeApi {
 
 	@Autowired
 	private SysDictTypeService sysDictTypeService;

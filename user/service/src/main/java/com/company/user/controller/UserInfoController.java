@@ -22,7 +22,7 @@ import com.company.framework.messagedriven.MessageSender;
 import com.company.framework.messagedriven.constants.BroadcastConstants;
 import com.company.framework.util.PropertyUtils;
 import com.company.user.api.enums.UserOauthEnum;
-import com.company.user.api.feign.UserInfoFeign;
+import com.company.user.api.interfaces.UserInfoApi;
 import com.company.user.api.request.UserInfoReq;
 import com.company.user.api.response.UserInfoResp;
 import com.company.user.entity.UserInfo;
@@ -33,7 +33,7 @@ import com.google.common.collect.Maps;
 
 @RestController
 @RequestMapping("/userinfo")
-public class UserInfoController implements UserInfoFeign {
+public class UserInfoController implements UserInfoApi {
 
     @Autowired
     private UserInfoMapper userInfoMapper;

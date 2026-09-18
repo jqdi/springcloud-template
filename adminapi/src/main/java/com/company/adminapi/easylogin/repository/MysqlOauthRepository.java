@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.company.framework.globalresponse.ExceptionUtil;
-import com.company.system.api.feign.SysUserFeign;
+import com.company.adminapi.feign.SysUserFeign;
 import com.company.system.api.response.SysUserResp;
 import io.github.jqdi.easylogin.core.repository.OauthRepository;
 

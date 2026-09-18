@@ -6,17 +6,16 @@ import com.company.framework.globalresponse.ExceptionUtil;
 import com.company.framework.messagedriven.MessageSender;
 import com.company.framework.messagedriven.constants.BroadcastConstants;
 import com.company.framework.sequence.SequenceGenerator;
-import com.company.framework.util.JsonUtil;
 import com.company.order.api.enums.OrderEnum;
 import com.company.order.api.enums.OrderPayEnum;
-import com.company.order.api.feign.OrderFeign;
-import com.company.order.api.feign.PayFeign;
+import com.company.user.feign.OrderFeign;
+import com.company.user.feign.PayFeign;
 import com.company.order.api.request.*;
 import com.company.order.api.response.PayResp;
 import com.company.tool.api.response.RetryerResp;
-import com.company.user.api.constant.Constants;
+import com.company.user.feign.FeignConstants;
 import com.company.user.api.enums.WalletEnum.Type;
-import com.company.user.api.feign.RechargeOrderFeign;
+import com.company.user.api.interfaces.RechargeOrderApi;
 import com.company.user.api.request.RechargeOrderReq;
 import com.company.user.api.response.RechargeOrderResp;
 import com.company.user.api.response.RechargeSubOrderDetailResp;
@@ -51,7 +50,7 @@ import java.util.Objects;
 @Slf4j
 @RestController
 @RequestMapping("/rechargeOrder")
-public class RechargeOrderController implements RechargeOrderFeign {
+public class RechargeOrderController implements RechargeOrderApi {
 
 	@Autowired
 	private SequenceGenerator sequenceGenerator;
@@ -123,7 +122,7 @@ public class RechargeOrderController implements RechargeOrderFeign {
 		registerOrderReq.setOrderAmount(orderAmount);
 		registerOrderReq.setReduceAmount(reduceAmount);
 		registerOrderReq.setNeedPayAmount(needPayAmount);
-		registerOrderReq.setSubOrderUrl(Constants.feignUrl("/rechargeOrder/subOrder"));
+		registerOrderReq.setSubOrderUrl(FeignConstants.feignUrl("/rechargeOrder/subOrder"));
 		// registerOrderReq.setAttach(JsonUtil.toJsonString(rechargeOrderAttach));
 
 		List<RegisterOrderReq.OrderProductReq> orderProductReqList = Lists.newArrayList();
@@ -166,7 +165,7 @@ public class RechargeOrderController implements RechargeOrderFeign {
 		payReq.setSpbillCreateIp(HeaderContextUtil.requestip());
 		// payReq.setProductId(productId);
 		payReq.setOpenid(HeaderContextUtil.deviceid());
-		payReq.setNotifyUrl(Constants.feignUrl("/rechargeOrder/buyNotify"));
+		payReq.setNotifyUrl(FeignConstants.feignUrl("/rechargeOrder/buyNotify"));
 		// payReq.setAttach(attach);
 		// payReq.setTimeoutSeconds(timeoutSeconds);
 		// payReq.setRemark(remark);

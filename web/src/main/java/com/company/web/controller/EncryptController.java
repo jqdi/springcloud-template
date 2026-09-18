@@ -5,7 +5,7 @@ import cn.licoy.encryptbody.enums.EncryptBodyMethod;
 
 import com.company.framework.util.JsonUtil;
 import com.company.framework.util.PropertyUtils;
-import com.company.order.api.feign.OrderFeign;
+import com.company.web.feign.OrderFeign;
 import com.company.order.api.response.Order4Resp;
 import com.company.user.api.response.UserResp;
 import com.company.web.req.DecryptEntityReq;

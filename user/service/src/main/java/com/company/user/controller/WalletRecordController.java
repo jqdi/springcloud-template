@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.company.framework.context.HeaderContextUtil;
 import com.company.user.api.enums.WalletEnum;
-import com.company.user.api.feign.WalletRecordFeign;
+import com.company.user.api.interfaces.WalletRecordApi;
 import com.company.user.api.response.WalletRecordResp;
 import com.company.user.entity.Wallet;
 import com.company.user.entity.WalletRecord;
@@ -23,7 +23,7 @@ import com.company.user.service.WalletService;
 
 @RestController
 @RequestMapping("/walletRecord")
-public class WalletRecordController implements WalletRecordFeign {
+public class WalletRecordController implements WalletRecordApi {
 
 	@Autowired
 	private WalletService walletService;

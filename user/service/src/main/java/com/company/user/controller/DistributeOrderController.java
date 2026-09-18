@@ -6,19 +6,18 @@ import com.company.framework.globalresponse.ExceptionUtil;
 import com.company.framework.messagedriven.MessageSender;
 import com.company.framework.messagedriven.constants.BroadcastConstants;
 import com.company.framework.sequence.SequenceGenerator;
-import com.company.framework.util.JsonUtil;
 import com.company.framework.util.Utils;
 import com.company.order.api.enums.OrderEnum;
 import com.company.order.api.enums.OrderEnum.StatusEnum;
 import com.company.order.api.enums.OrderPayEnum;
-import com.company.order.api.feign.OrderFeign;
-import com.company.order.api.feign.PayFeign;
+import com.company.user.feign.OrderFeign;
+import com.company.user.feign.PayFeign;
 import com.company.order.api.request.*;
 import com.company.order.api.request.OrderReq.ProductReq;
 import com.company.order.api.response.PayResp;
 import com.company.tool.api.response.RetryerResp;
-import com.company.user.api.constant.Constants;
-import com.company.user.api.feign.DistributeOrderFeign;
+import com.company.user.feign.FeignConstants;
+import com.company.user.api.interfaces.DistributeOrderApi;
 import com.company.user.api.request.DistributeBuyOrderReq;
 import com.company.user.api.request.DistributeBuyOrderReq.UserRemarkReq;
 import com.company.user.api.response.DistributeBuyOrderResp;
@@ -56,7 +55,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @RestController
 @RequestMapping("/distributeOrder")
-public class DistributeOrderController implements DistributeOrderFeign {
+public class DistributeOrderController implements DistributeOrderApi {
 
 	@Autowired
 	private SequenceGenerator sequenceGenerator;
@@ -164,7 +163,7 @@ public class DistributeOrderController implements DistributeOrderFeign {
 		registerOrderReq.setOrderAmount(orderAmount);
 		registerOrderReq.setReduceAmount(reduceAmount);
 		registerOrderReq.setNeedPayAmount(needPayAmount);
-		registerOrderReq.setSubOrderUrl(Constants.feignUrl("/distributeOrder/subOrder"));
+		registerOrderReq.setSubOrderUrl(FeignConstants.feignUrl("/distributeOrder/subOrder"));
 
 		List<RegisterOrderReq.OrderProductReq> orderProductReqList = Lists.newArrayList();
 
@@ -226,7 +225,7 @@ public class DistributeOrderController implements DistributeOrderFeign {
 		payReq.setBody("配送下单");
 		payReq.setSpbillCreateIp(HeaderContextUtil.requestip());
 		payReq.setOpenid(HeaderContextUtil.deviceid());
-		payReq.setNotifyUrl(Constants.feignUrl("/distributeOrder/buyNotify"));
+		payReq.setNotifyUrl(FeignConstants.feignUrl("/distributeOrder/buyNotify"));
 		PayResp payResp = payFeign.unifiedorder(payReq);
 		if (!payResp.getSuccess()) {
 			ExceptionUtil.throwException("支付失败，请稍后重试");
