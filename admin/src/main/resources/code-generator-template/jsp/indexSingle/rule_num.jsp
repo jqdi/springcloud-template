@@ -1,3 +1,0 @@
-				{columnName}: {
-					required: true
-				},
