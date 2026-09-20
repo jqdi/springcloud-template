@@ -1,37 +1,34 @@
 package com.company.user.cache;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Component;
 
-import com.company.framework.cache.ICache;
-import com.company.framework.util.JsonUtil;
+import com.company.user.constant.Constants;
 import com.company.user.entity.UserInfo;
 import com.company.user.service.UserInfoService;
 
-import java.util.concurrent.TimeUnit;
-
 @Component
 public class UserInfoCache {
-    private static final String KEY_PATTERN = "user:userinfo:%s";
-
     @Autowired
-    private ICache cache;
+    private CacheManager cacheManager;
     @Autowired
     private UserInfoService userInfoService;
 
     public UserInfo getById(Integer id) {
-        String key = String.format(KEY_PATTERN, id);
-        return cache.get(key, () -> {
-            UserInfo userInfo = userInfoService.getById(id);
-            if (userInfo == null) {
-                userInfo = new UserInfo();
-            }
-            return JsonUtil.toJsonString(userInfo);
-        }, 600, TimeUnit.SECONDS, UserInfo.class);
+        Cache cache = cacheManager.getCache(Constants.CacheName.USER_INFO);
+        if (cache == null) {
+            return userInfoService.getById(id);
+        }
+        return cache.get(id, () -> userInfoService.getById(id));
     }
 
     public void del(Integer id) {
-        String key = String.format(KEY_PATTERN, id);
-        cache.del(key);
+        Cache cache = cacheManager.getCache(Constants.CacheName.USER_INFO);
+        if (cache == null) {
+            return;
+        }
+        cache.evict(id);
     }
 }

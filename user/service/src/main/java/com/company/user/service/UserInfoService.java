@@ -1,5 +1,6 @@
 package com.company.user.service;
 
+import com.company.user.constant.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -25,12 +26,11 @@ public class UserInfoService extends ServiceImpl<UserInfoMapper, UserInfo> imple
 		return userInfo;
 	}
 
-    @Cacheable(value = "user:userinfo", key = "#id")
+    @Cacheable(value = Constants.CacheName.USER_INFO, key = "#id")
     public UserInfo selectByIdCache(Integer id) {
         return this.getById(id);
     }
 
-    @CacheEvict(value = "user:userinfo", key = "#id")
-    public void delByIdCache(Integer id) {
-    }
+    @CacheEvict(value = Constants.CacheName.USER_INFO, key = "#id")
+    public void delByIdCache(Integer id) {}
 }

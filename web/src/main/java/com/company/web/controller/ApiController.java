@@ -1,21 +1,13 @@
 package com.company.web.controller;
 
 
-import com.company.token.accesscontrol.annotation.RequireLogin;
-import com.company.framework.cache.ICache;
-import com.company.framework.constant.HeaderConstants;
-import com.company.framework.context.HeaderContextUtil;
-import com.company.framework.context.SpringContextUtil;
-import com.company.framework.sequence.SequenceGenerator;
-import com.company.framework.threadpool.ThreadPoolProperties;
-import com.company.framework.util.PropertyUtils;
-import com.company.web.feign.OrderFeign;
-import com.company.order.api.response.Order4Resp;
-import com.company.order.api.response.OrderResp;
-import com.company.user.api.response.UserResp;
-import com.company.web.service.TimeService;
-import com.google.common.collect.Maps;
-import lombok.extern.slf4j.Slf4j;
+import java.util.Date;
+import java.util.Map;
+import java.util.Random;
+import java.util.concurrent.Future;
+
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
@@ -24,12 +16,21 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletRequest;
-import java.util.Date;
-import java.util.Map;
-import java.util.Random;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
+import com.company.framework.constant.HeaderConstants;
+import com.company.framework.context.HeaderContextUtil;
+import com.company.framework.context.SpringContextUtil;
+import com.company.framework.sequence.SequenceGenerator;
+import com.company.framework.threadpool.ThreadPoolProperties;
+import com.company.framework.util.PropertyUtils;
+import com.company.order.api.response.Order4Resp;
+import com.company.order.api.response.OrderResp;
+import com.company.token.accesscontrol.annotation.RequireLogin;
+import com.company.user.api.response.UserResp;
+import com.company.web.feign.OrderFeign;
+import com.company.web.service.TimeService;
+import com.google.common.collect.Maps;
+
+import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping("/api")
@@ -52,23 +53,8 @@ public class ApiController {
 		return map;
 	}
 
-	@Autowired
-	private ICache cache;
-
 	@GetMapping(value = "/timestr")
 	public String timestr() {
-		String string1 = cache.get("aaaaaaa", () -> {
-//			int a = 1/0;
-			return ""+System.currentTimeMillis();
-//			return null;
-        }, 600, TimeUnit.SECONDS);
-		System.out.println(string1);
-
-//		String string2 = RedisUtils.get("aaaaaaa", () -> {
-////			int a = 1/0;
-//			return ""+System.currentTimeMillis();
-//		});
-//		System.out.println(string2);
 		return timeService.getTime();
 	}
 

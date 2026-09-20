@@ -12,7 +12,7 @@ spring:
       timeToLive: 10m         # 默认TTL，单位ms
       cacheNullValues: true   # 是否缓存null值
       useKeyPrefix: true      # 使用key前缀
-      keyPrefix:              # 全局key前缀
+      keyPrefix: '${spring.application.name}:'  # 全局key前缀
       enableStatistics: false # 是否统计
     # caffeine配置
     caffeine:
@@ -31,7 +31,7 @@ spring:
       timeToLive: 10m         # 默认TTL，单位ms
       cacheNullValues: true   # 是否缓存null值
       useKeyPrefix: true      # 使用key前缀
-      keyPrefix:              # 全局key前缀
+      keyPrefix: '${spring.application.name}:'  # 全局key前缀
       enableStatistics: false # 是否统计
     # caffeine配置
     caffeine:
@@ -50,7 +50,7 @@ spring:
       timeToLive: 10m         # 默认TTL，单位ms
       cacheNullValues: true   # 是否缓存null值
       useKeyPrefix: true      # 使用key前缀
-      keyPrefix:              # 全局key前缀
+      keyPrefix: '${spring.application.name}:'  # 全局key前缀
       enableStatistics: false # 是否统计
     # caffeine配置
     caffeine:
@@ -69,7 +69,7 @@ spring:
       timeToLive: 10m         # 默认TTL，单位ms
       cacheNullValues: true   # 是否缓存null值
       useKeyPrefix: true      # 使用key前缀
-      keyPrefix:              # 全局key前缀
+      keyPrefix: '${spring.application.name}:'  # 全局key前缀
       enableStatistics: false # 是否统计
     # caffeine配置
     caffeine:

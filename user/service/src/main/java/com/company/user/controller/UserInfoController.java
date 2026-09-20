@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
+import com.company.user.service.UserInfoService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -36,7 +37,7 @@ import com.google.common.collect.Maps;
 public class UserInfoController implements UserInfoApi {
 
     @Autowired
-    private UserInfoMapper userInfoMapper;
+    private UserInfoService userInfoService;
     @Autowired
     private UserOauthMapper userOauthMapper;
     @Autowired
@@ -77,7 +78,7 @@ public class UserInfoController implements UserInfoApi {
             String avatar = Optional.ofNullable(userInfoReq.getNickname()).orElse(defaultAvatar);
 
             UserInfo userInfo = new UserInfo().setNickname(nickname).setAvatar(avatar);
-            userInfoMapper.insert(userInfo);
+            userInfoService.save(userInfo);
 
             // userOauthMapper.bindOauth(userInfo.getId(), identityType, identifier, userInfoReq.getCertificate());
             userOauth = new UserOauth().setUserId(userInfo.getId()).setIdentityType(identityType.getCode())
@@ -110,13 +111,14 @@ public class UserInfoController implements UserInfoApi {
 
     @Override
     public UserInfoResp getById(Integer id) {
-        UserInfo userInfo = userInfoMapper.getById(id);
+//        UserInfo userInfo = userInfoService.getById(id);
+        UserInfo userInfo = userInfoService.selectByIdCache(id);
         return PropertyUtils.copyProperties(userInfo, UserInfoResp.class);
     }
 
     @Override
     public Map<Integer, String> mapNicknameById(@RequestBody Collection<Integer> idList) {
-        List<UserInfo> userInfoList = userInfoMapper.selectBatchIds(idList);
+        List<UserInfo> userInfoList = userInfoService.listByIds(idList);
         Map<Integer, String> idNicknameMap = userInfoList.stream().collect(Collectors.toMap(UserInfo::getId, UserInfo::getNickname));
         return idNicknameMap;
     }
