@@ -1,7 +1,5 @@
 package com.company.framework.cache;
 
-import java.util.List;
-import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
 import com.company.framework.util.JsonUtil;
@@ -22,23 +20,11 @@ public interface ICache {
 
 	String get(String key);
 
-	String get(String key, Callable<String> valueLoader, long timeout, TimeUnit unit);
-
 	boolean del(String key);
 
 	default <T> T get(String key, Class<T> clazz) {
 		String value = get(key);
 		return JsonUtil.toEntity(value, clazz);
-	}
-
-	default <T> T get(String key, Callable<String> valueLoader, long timeout, TimeUnit unit, Class<T> clazz) {
-        String value = get(key, valueLoader, timeout, unit);
-		return JsonUtil.toEntity(value, clazz);
-	}
-
-	default <T> List<T> getList(String key, Callable<String> valueLoader, long timeout, TimeUnit unit, Class<T> clazz) {
-		String value = get(key, valueLoader, timeout, unit);
-		return JsonUtil.toList(value, clazz);
 	}
 
 	long increment(String key, long delta);

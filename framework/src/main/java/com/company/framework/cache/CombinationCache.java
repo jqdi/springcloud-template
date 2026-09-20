@@ -1,6 +1,5 @@
 package com.company.framework.cache;
 
-import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
@@ -56,12 +55,6 @@ public class CombinationCache implements ICache {
 	public String get(String key) {
 		return breakerReturn(() -> primaryCache.get(key), () -> fallbackCache.get(key));
 	}
-
-    @Override
-    public String get(String key, Callable<String> valueLoader, long timeout, TimeUnit unit) {
-        return breakerReturn(() -> primaryCache.get(key, valueLoader, timeout, unit),
-            () -> fallbackCache.get(key, valueLoader, timeout, unit));
-    }
 
 	@Override
 	public boolean del(String key) {

@@ -38,7 +38,8 @@ public class CacheAutoConfiguration {
 
 	@Bean
 	@ConditionalOnProperty(prefix = "template.enable", name = "cache", havingValue = "cachemanager")
-	public ICache cachemanagerCache(CacheManager cacheManager, @Value("${spring.application.name}") String cacheName) {
+	public ICache cachemanagerCache(CacheManager cacheManager) {
+		String cacheName = "icache";
 		ICache cacheManagerCache = new CacheManagerCache(cacheManager, cacheName);
 		return cacheManagerCache;
 	}
