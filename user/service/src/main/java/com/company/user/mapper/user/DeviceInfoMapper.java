@@ -1,13 +1,15 @@
 package com.company.user.mapper.user;
 
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.company.user.entity.DeviceInfo;
-import com.company.user.entity.UserSource;
+import java.time.LocalDateTime;
+
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+import org.springframework.cache.annotation.Cacheable;
 
-import java.time.LocalDateTime;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.company.user.constant.Constants;
+import com.company.user.entity.DeviceInfo;
 
 public interface DeviceInfoMapper extends BaseMapper<DeviceInfo> {
 
@@ -18,6 +20,7 @@ public interface DeviceInfoMapper extends BaseMapper<DeviceInfo> {
 	int saveOrUpdate(@Param("deviceid") String deviceid, @Param("platform") String platform,
 				@Param("operator") String operator, @Param("channel") String channel, @Param("version") String version, @Param("requestip") String requestip, @Param("requestUserAgent") String requestUserAgent, @Param("time") LocalDateTime time);
 
+    @Cacheable(value = Constants.CacheName.DEVICE_INFO, key = "#deviceid")
 	@Select("select * from device_info where deviceid = #{deviceid}")
 	DeviceInfo selectByDeviceid(@Param("deviceid") String deviceid);
 }

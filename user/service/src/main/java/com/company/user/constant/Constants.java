@@ -9,5 +9,7 @@ public interface Constants {
      */
     interface CacheName {
         String USER_INFO = "userinfo";
+        String USER_SOURCE = "userSource";
+        String DEVICE_INFO = "deviceInfo";
     }
 }
