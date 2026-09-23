@@ -78,7 +78,7 @@ springcloud-template
      └── developer -- 环境流量路由到本机，调试神器（分享：https://www.toutiao.com/article/7514716979333268008）
 └── template-framework -- 框架代码(内部微服务)
      └── autoconfigure -- 自动配置
-     └── cache -- 缓存
+     └── cachemanger -- 缓存管理
      └── canal -- 数据变更监听（分享：https://www.toutiao.com/article/7578448808669921838）
      └── config -- 动态刷新配置中心配置（分享：https://www.toutiao.com/article/7258567779102917139）
      └── deploy -- 优雅发版(可做到用户无感发版，完全不报错，分享：https://www.toutiao.com/article/7136601651804127751)
@@ -203,7 +203,6 @@ springcloud-template
 | 注册到eureka注册中心 <br/> 注册到nacos注册中心                    | eureka.client.enabled <br/> spring.cloud.nacos.discovery.enabled                                   | [bootstrap-eureka.yml](framework/src/main/resources/bootstrap-eureka.yml) <br/> [bootstrap-nacos-discovery.yml](framework/src/main/resources/bootstrap-nacos-discovery.yml)                                                                         |
 | 注册到apollo配置中心 <br/> 注册到nacos配置中心 <br/> 注册到config配置中心 | apollo.bootstrap.enabled <br/> spring.cloud.nacos.config.enabled <br/> spring.cloud.config.enabled | [bootstrap-apollo.yml](framework/src/main/resources/bootstrap-apollo.yml) <br/> [bootstrap-nacos-config.yml](framework/src/main/resources/bootstrap-nacos-config.yml) <br/> [bootstrap-config.yml](framework/src/main/resources/bootstrap-config.yml) |
 | 使用resilience4j熔断器 <br/> 使用sentinel熔断器               | spring.cloud.circuitbreaker.resilience4j.enable <br/> spring.cloud.sentinel.enabled                | [application-resilience4j.yml](framework/src/main/resources/application-resilience4j.yml) <br/> [application-sentinel.yml](framework/src/main/resources/application-sentinel.yml)                                                                   |
-| 缓存                                                  | template.enable.cache                                                                              | [application-dev/../prod.yml](user/service/src/main/resources/application-dev.yml) <br/> guava:本地缓存（启动不依赖中间件，建议仅dev使用）<br/> redis:redis缓存（建议使用）<br/> combination:组合缓存（redis挂掉可切换至本地缓存）                                                              |
 | 锁                                                   | template.enable.lock                                                                               | [application-dev/../prod.yml](user/service/src/main/resources/application-dev.yml) <br/> jvm:jvm锁（启动不依赖中间件，建议仅dev使用）<br/> redisson:redisson分布式锁（建议使用）                                                                                               |
 | 消息驱动                                                | template.enable.message-driven                                                                     | [application-dev/../prod.yml](user/service/src/main/resources/application-dev.yml) <br/> springevent:spring事件（启动不依赖中间件，建议仅dev使用）<br/> rabbitmq:RabbitMQ消息队列（建议使用）<br/> rocketmq:RocketMQ消息队列（建议使用）                                                  |
 | 访问控制（仅边缘微服务有）                                       | template.enable.access-control                                                                     | [application-dev/../prod.yml](web/src/main/resources/application-dev.yml)) <br/> true:开启token鉴权 <br/> false:关闭token鉴权 （建议仅dev使用）                                                                                                                    |
