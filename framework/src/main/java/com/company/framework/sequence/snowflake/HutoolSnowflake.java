@@ -1,5 +1,6 @@
 package com.company.framework.sequence.snowflake;
 
+import cn.hutool.core.lang.id.IdConstants;
 import com.company.framework.sequence.SequenceGenerator;
 
 import cn.hutool.core.lang.Snowflake;
@@ -22,7 +23,8 @@ public class HutoolSnowflake implements SequenceGenerator {
 		log.info("snowflake init,ip:{},port:{},datacenterId:{},workerId:{}", ip, serverPort, datacenterId,
 				workerId);
 		snowflake = new Snowflake(workerId, datacenterId);
-	}
+//        snowflake = IdConstants.DEFAULT_SNOWFLAKE;
+    }
 
 	@Override
 	public long nextId() {
