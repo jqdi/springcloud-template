@@ -55,9 +55,10 @@ framework 模块是整个微服务架构的核心基础框架，提供了一系�
 ```
 framework/
 ├── autoconfigure/          # 自动配置类
-├── cache/                  # 缓存相关组件
+├── cachemanger/            # 缓存相关组件
 ├── canal/                  # 数据库变更监听
 ├── check/                  # 健康检查
+├── circuitbreaker/         # 熔断器集成
 ├── config/                 # 配置中心集成
 ├── constant/               # 常量定义
 ├── context/                # 上下文管理
@@ -67,8 +68,8 @@ framework/
 ├── filter/                 # 过滤器
 ├── globalresponse/         # 全局响应处理
 ├── gracefulshutdown/       # 优雅关闭
+├── i18n/                   # 国际化消息处理
 ├── lock/                   # 分布式锁
-├── message/                # 消息处理
 ├── messagedriven/          # 消息驱动
 ├── sequence/               # 序列生成器
 ├── threadpool/             # 线程池管理
@@ -84,11 +85,11 @@ framework/
 ```java
 // 注入缓存实例
 @Autowired
-private ICache cache;
+private CacheManager cacheManager;
 
 // 使用缓存
-cache.set("key", "value", 3600); // 设置缓存，有效期1小时
-String value = cache.get("key"); // 获取缓存
+Cache cache = cacheManager.getCache(Constants.CacheName.USER_INFO);
+String value = cache.get(appCode, () -> appVersionService.selectLastByAppCode(appCode));
 ```
 
 ### 2. 分布式锁
