@@ -35,8 +35,6 @@ spring:
         clients: template-tool, template-system, template-user, template-order
 
 template:
-  sequence:
-    datacenterId: 0
   requestFilter:
     # 忽略日志打印匹配表达式，支持?匹配单个字符，*匹配多个字符
     ignoreLogPatterns: /assets/*,/favicon.ico
