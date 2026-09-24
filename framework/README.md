@@ -156,7 +156,6 @@ public class BusinessService {
 ```yaml
 template:
   enable:
-    cache: redis # 启用Redis缓存
     lock: redisson # 启用Redisson分布式锁
     message-driven: rabbitmq # 启用RabbitMQ消息驱动
 ```
@@ -169,7 +168,7 @@ template:
 public class DemoService {
     
     @Autowired
-    private ICache cache; // 缓存组件
+    private CacheManager cacheManager; // 缓存组件
     
     @Autowired
     private LockClient lockClient; // 锁组件
