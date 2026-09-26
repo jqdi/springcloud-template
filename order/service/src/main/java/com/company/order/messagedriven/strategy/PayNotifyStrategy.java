@@ -19,7 +19,7 @@ import com.company.order.api.request.PayNotifyReq;
 import com.company.order.entity.OrderPay;
 import com.company.order.service.FinancialFlowService;
 import com.company.order.service.OrderPayService;
-import com.company.tool.api.feign.RetryerFeign;
+import com.company.order.feign.RetryerFeign;
 import com.company.tool.api.request.RetryerInfoReq;
 import com.google.common.collect.Lists;
 

@@ -121,6 +121,8 @@ public class CodeGeneratorService {
                 Map<String, Object> customMap = Maps.newHashMap();
                 customMap.put("apiPackage", parentPackage + "." + moduleName + ".api");
                 customMap.put("adminapiPackage", parentPackage + ".adminapi");
+                customMap.put("moduleName", moduleName);
+                customMap.put("_moduleNameUpper", moduleName.toUpperCase());
                 consumer.customMap(customMap);
 
                 // 在每个文件输出前，动态设置首字母小写的 entity 变量
@@ -160,8 +162,16 @@ public class CodeGeneratorService {
                     .enableFileOverride()//
                 );
                 consumer.customFile(builder -> builder//
-                    .templatePath("/templates/feign.java.vm")//
+                    .templatePath("/templates/api.java.vm")//
                     .filePath(apiPath)//
+                    .packageName("interfaces")//
+                    .formatNameFunction(tableInfo -> tableInfo.getEntityName() + "Api")//
+                    .fileName(".java")//
+                    .enableFileOverride()//
+                );
+                consumer.customFile(builder -> builder//
+                    .templatePath("/templates/adminapi-feign.java.vm")//
+                    .filePath(adminapiPath)//
                     .packageName("feign")//
                     .formatNameFunction(tableInfo -> tableInfo.getEntityName() + "Feign")//
                     .fileName(".java")//

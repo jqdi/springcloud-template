@@ -8,14 +8,14 @@ import com.company.framework.lock.LockClient;
 import com.company.framework.lock.annotation.Lock;
 import com.company.framework.messagedriven.MessageSender;
 import com.company.framework.messagedriven.properties.MessagedrivenProperties;
-import com.company.framework.util.JsonUtil;
 import com.company.order.api.enums.OrderPayEnum;
 import com.company.order.api.enums.OrderPayRefundEnum;
-import com.company.order.api.feign.PayFeign;
+import com.company.order.api.interfaces.PayApi;
 import com.company.order.api.request.*;
 import com.company.order.api.response.*;
 import com.company.order.entity.OrderPay;
 import com.company.order.entity.OrderPayRefund;
+import com.company.order.feign.FeignConstants;
 import com.company.order.messagedriven.Constants;
 import com.company.order.messagedriven.strategy.StrategyConstants;
 import com.company.order.pay.PayFactory;
@@ -23,7 +23,7 @@ import com.company.order.pay.core.PayClient;
 import com.company.order.pay.dto.PayParams;
 import com.company.order.service.OrderPayRefundService;
 import com.company.order.service.OrderPayService;
-import com.company.tool.api.feign.RetryerFeign;
+import com.company.order.feign.RetryerFeign;
 import com.company.tool.api.request.RetryerInfoReq;
 import com.company.tool.api.response.RetryerResp;
 import com.google.common.collect.Maps;
@@ -49,7 +49,7 @@ import java.util.Map;
 @Slf4j
 @RestController
 @RequestMapping(value = "/pay")
-public class PayController implements PayFeign {
+public class PayController implements PayApi {
 
 	@Autowired
 	private OrderPayService orderPayService;
@@ -69,10 +69,10 @@ public class PayController implements PayFeign {
 	@Autowired
 	private LockClient lockClient;
 
-	private static final String NOTIFY_URL_REFUND = com.company.order.api.constant.Constants.feignUrl("/pay/refundWithRetry");
-	private static final String NOTIFY_URL_TIMEOUT = com.company.order.api.constant.Constants.feignUrl("/pay/timeoutWithRetry");
-	private static final String NOTIFY_URL_PAYRESULT = com.company.order.api.constant.Constants.feignUrl("/pay/pollingPayResult");
-	private static final String NOTIFY_URL_REFUNDRESULT = com.company.order.api.constant.Constants.feignUrl("/pay/pollingRefundResult");
+	private static final String NOTIFY_URL_REFUND = FeignConstants.feignUrl("/pay/refundWithRetry");
+	private static final String NOTIFY_URL_TIMEOUT = FeignConstants.feignUrl("/pay/timeoutWithRetry");
+	private static final String NOTIFY_URL_PAYRESULT = FeignConstants.feignUrl("/pay/pollingPayResult");
+	private static final String NOTIFY_URL_REFUNDRESULT = FeignConstants.feignUrl("/pay/pollingRefundResult");
 
     @Lock("'lock:orderpay:ordercode:'+#payReq.orderCode")
 	@Override

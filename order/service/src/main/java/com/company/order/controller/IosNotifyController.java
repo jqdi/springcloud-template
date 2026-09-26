@@ -8,7 +8,7 @@ import com.company.framework.messagedriven.MessageSender;
 import com.company.framework.messagedriven.properties.MessagedrivenProperties;
 import com.company.framework.util.JsonUtil;
 import com.company.order.api.enums.OrderPayEnum;
-import com.company.order.api.feign.IosNotifyFeign;
+import com.company.order.api.interfaces.IosNotifyApi;
 import com.company.order.entity.PayNotify;
 import com.company.order.mapper.AliPayMapper;
 import com.company.order.mapper.AliPayRefundMapper;
@@ -33,7 +33,7 @@ import java.util.*;
 @Slf4j
 //@RestController
 @RequestMapping(value = "/iosnotify")
-public class IosNotifyController implements IosNotifyFeign {
+public class IosNotifyController implements IosNotifyApi {
 
     private static final String SERVER_URL = "https://buy.itunes.apple.com/verifyReceipt";
     private static final String SANDBOX_SERVER_URL = "https://sandbox.itunes.apple.com/verifyReceipt";

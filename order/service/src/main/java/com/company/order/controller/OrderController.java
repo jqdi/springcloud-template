@@ -35,7 +35,7 @@ import com.company.framework.util.JsonUtil;
 import com.company.framework.util.PropertyUtils;
 import com.company.order.api.enums.OrderEnum;
 import com.company.order.api.enums.PayRefundApplyEnum;
-import com.company.order.api.feign.OrderFeign;
+import com.company.order.api.interfaces.OrderApi;
 import com.company.order.api.request.OrderCancelReq;
 import com.company.order.api.request.OrderFinishReq;
 import com.company.order.api.request.OrderPaySuccessReq;
@@ -66,7 +66,7 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @Slf4j
 @RequestMapping("/order")
-public class OrderController implements OrderFeign {
+public class OrderController implements OrderApi {
 
 	@Autowired
 	private OrderService orderService;

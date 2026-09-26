@@ -1,37 +1,35 @@
 package com.company.tool.cache;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Component;
 
-import com.company.framework.cache.ICache;
-import com.company.framework.util.JsonUtil;
+import com.company.tool.constant.Constants;
 import com.company.tool.entity.AppVersion;
 import com.company.tool.service.AppVersionService;
 
-import java.util.concurrent.TimeUnit;
-
 @Component
 public class AppVersionCache {
-    private static final String KEY_PATTERN = "tool:appversion:%s";
 
     @Autowired
-    private ICache cache;
+    private CacheManager cacheManager;
     @Autowired
     private AppVersionService appVersionService;
 
     public AppVersion selectLastByAppCode(String appCode) {
-        String key = String.format(KEY_PATTERN, appCode);
-        return cache.get(key, () -> {
-            AppVersion appVersion = appVersionService.selectLastByAppCode(appCode);
-            if (appVersion == null) {
-                appVersion = new AppVersion();
-            }
-            return JsonUtil.toJsonString(appVersion);
-        }, 600, TimeUnit.SECONDS, AppVersion.class);
+        Cache cache = cacheManager.getCache(Constants.CacheName.APP_VERSION);
+        if (cache == null) {
+            return appVersionService.selectLastByAppCode(appCode);
+        }
+        return cache.get(appCode, () -> appVersionService.selectLastByAppCode(appCode));
     }
 
     public void del(String appCode) {
-        String key = String.format(KEY_PATTERN, appCode);
-        cache.del(key);
+        Cache cache = cacheManager.getCache(Constants.CacheName.APP_VERSION);
+        if (cache == null) {
+            return;
+        }
+        cache.evict(appCode);
     }
 }

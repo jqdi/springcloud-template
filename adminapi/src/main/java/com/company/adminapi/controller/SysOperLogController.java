@@ -11,7 +11,7 @@ import com.company.adminapi.excel.SysOperLogExcel;
 import com.company.system.api.request.RemoveReq;
 import com.company.common.response.PageResp;
 import com.company.framework.util.PropertyUtils;
-import com.company.system.api.feign.SysOperLogFeign;
+import com.company.adminapi.feign.SysOperLogFeign;
 import com.company.system.api.request.SysOperLogReq;
 import com.company.system.api.response.SysOperLogResp;
 import org.springframework.beans.factory.annotation.Autowired;

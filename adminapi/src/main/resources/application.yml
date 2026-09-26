@@ -18,7 +18,3 @@ spring:
     loadbalancer:
       eager-load: # spring-cloud-commons-3.1.8 没有eager-load，参考spring cloud高版本实现饥饿加载
         clients: template-tool, template-system, template-user, template-order
-
-template:
-  sequence:
-    datacenterId: 3

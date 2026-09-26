@@ -1,0 +1,15 @@
+package ${adminapiPackage}.feign;
+
+import org.springframework.cloud.openfeign.FeignClient;
+
+import ${adminapiPackage}.feign.fallback.ThrowExceptionFallback;
+import ${apiPackage}.interfaces.${entity}Api;
+
+/**
+ * ${table.comment} Feign 客户端
+ *
+ * @author ${author}
+ */
+@FeignClient(value = FeignConstants.${_moduleNameUpper}, path = "/${_entity}", fallbackFactory = ThrowExceptionFallback.class)
+public interface ${entity}Feign extends ${entity}Api {
+}

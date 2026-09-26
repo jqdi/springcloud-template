@@ -12,11 +12,12 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.core.annotation.AnnotationUtils;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.AsyncHandlerInterceptor;
 
-import com.company.framework.cache.ICache;
 import com.company.framework.filter.request.BodyReaderHttpServletRequestWrapper;
 import com.company.framework.globalresponse.ExceptionUtil;
 import com.company.framework.util.JsonUtil;
@@ -32,7 +33,7 @@ public class SignInterceptor implements AsyncHandlerInterceptor {
 	@Autowired
 	private SignConfiguration signConfiguration;
 	@Autowired
-	private ICache cache;
+	private StringRedisTemplate stringRedisTemplate;
 
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
@@ -104,11 +105,12 @@ public class SignInterceptor implements AsyncHandlerInterceptor {
 
 		if (signConfiguration.nonceValid()) {
 			String key = String.format("nonce:%s:%s", appid, noncestr);
-			String value = cache.get(key);
+            ValueOperations<String, String> opsForValue = stringRedisTemplate.opsForValue();
+			String value = opsForValue.get(key);
 			if (StringUtils.isNotBlank(value)) {
 				ExceptionUtil.throwException("请求重复");
 			}
-			cache.set(key, "1", signConfiguration.getReqValidSeconds(), TimeUnit.SECONDS);
+            opsForValue.set(key, "1", signConfiguration.getReqValidSeconds(), TimeUnit.SECONDS);
 		}
 
 		return true;

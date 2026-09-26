@@ -3,7 +3,7 @@ spring:
   cloud:
     circuitbreaker:
       resilience4j:
-        enabled: false  # 启用resilience4j，建议与application-sentinel.yml二选一使用
+        enabled: true  # 启用resilience4j，建议与application-sentinel.yml二选一使用
 
 # 熔断器 配置
 # 整体执行顺序：Ratelimiter (限流) → TimeLimiter (超时) → Retry (重试) → CircuitBreaker (熔断) → Feign调用

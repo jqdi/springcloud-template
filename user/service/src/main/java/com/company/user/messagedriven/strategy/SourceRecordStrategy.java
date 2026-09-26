@@ -7,31 +7,35 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.collections.MapUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import com.company.framework.cache.ICache;
 import com.company.framework.messagedriven.BaseStrategy;
 import com.company.user.entity.UserSource;
-import com.company.user.mapper.user.UserSourceMapper;
+import com.company.user.service.UserSourceService;
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 
 import cn.hutool.core.date.LocalDateTimeUtil;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 记录来源（使用场景：引流统计、邀请奖励、地推业绩计算等业务场景）
  */
+@Slf4j
 @Component(StrategyConstants.SOURCERECORD_STRATEGY)
 public class SourceRecordStrategy implements BaseStrategy<Map<String, Object>> {
 
 	private static final String EXIST_VALUE = "1";
 
-	@Autowired
-	private ICache cache;
-	@Autowired
-	private UserSourceMapper userSourceMapper;
+    private final Cache<String, String> cache = CacheBuilder.newBuilder()//
+            .maximumSize(1000)//
+            .expireAfterWrite(60, TimeUnit.SECONDS)//
+            .removalListener(listener -> {
+                log.info("key:{},value:{},cause:{}", listener.getKey(), listener.getValue(), listener.getCause());
+            }).build();
 
-	@Value("${template.timeoutSeconds.sourceRecord:1800}")
-	private Long timeoutSeconds;
+	@Autowired
+	private UserSourceService userSourceService;
 
 	@Override
 	public void doStrategy(Map<String, Object> params) {
@@ -40,8 +44,8 @@ public class SourceRecordStrategy implements BaseStrategy<Map<String, Object>> {
 
 		// 数据量可能很大，需要快速过滤重复的数据，加快处理速度
 		String key = String.format("user_source:%s:%s", source, deviceid);
-		String result = cache.get(key);
-		if (EXIST_VALUE.equals(result)) {
+        String result = cache.getIfPresent(key);
+        if (EXIST_VALUE.equals(result)) {
 			return;
 		}
 
@@ -51,18 +55,22 @@ public class SourceRecordStrategy implements BaseStrategy<Map<String, Object>> {
 		save2db(deviceid, source, time);
 
 		// 数据量可能很大，需要快速过滤重复的数据，加快处理速度
-		cache.set(key, EXIST_VALUE, timeoutSeconds, TimeUnit.SECONDS);
+        cache.put(key, EXIST_VALUE);
 	}
 
 	private void save2db(String deviceid, String source, LocalDateTime time) {
 		// 获取deviceid最近1次记录
-		UserSource lastUserSource = userSourceMapper.selectLastByDeviceid(deviceid);
-		if (lastUserSource != null) {
-			if (source.equals(lastUserSource.getSource())) {
-				return;
-			}
-		}
-
-		userSourceMapper.saveOrIgnore(deviceid, source, time);
+		UserSource lastUserSource = userSourceService.selectLastByDeviceid(deviceid);
+        if (lastUserSource == null) {// 新增
+            userSourceService.saveOrIgnore(deviceid, source, time);
+            return;
+        }
+        if (time.isBefore(lastUserSource.getTime())) { // 时间小于原来的时间，说明是旧数据，不需要更新
+            return;
+        }
+        if (source.equals(lastUserSource.getSource())) {
+            return;
+        }
+        userSourceService.saveOrIgnore(deviceid, source, time);
 	}
 }

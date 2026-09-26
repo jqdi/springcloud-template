@@ -6,19 +6,18 @@ import com.company.framework.globalresponse.ExceptionUtil;
 import com.company.framework.messagedriven.MessageSender;
 import com.company.framework.messagedriven.constants.BroadcastConstants;
 import com.company.framework.sequence.SequenceGenerator;
-import com.company.framework.util.JsonUtil;
 import com.company.framework.util.Utils;
 import com.company.order.api.enums.OrderEnum;
 import com.company.order.api.enums.OrderPayEnum;
-import com.company.order.api.feign.OrderFeign;
-import com.company.order.api.feign.PayFeign;
+import com.company.user.feign.OrderFeign;
+import com.company.user.feign.PayFeign;
 import com.company.order.api.request.*;
 import com.company.order.api.response.PayResp;
 import com.company.tool.api.response.RetryerResp;
-import com.company.user.api.constant.Constants;
+import com.company.user.feign.FeignConstants;
 import com.company.user.api.enums.WalletEnum;
 import com.company.user.api.enums.WalletEnum.Type;
-import com.company.user.api.feign.MemberBuyFeign;
+import com.company.user.api.interfaces.MemberBuyApi;
 import com.company.user.api.request.MemberBuyOrderReq;
 import com.company.user.api.response.CalcCanRefundAmountResp;
 import com.company.user.api.response.MemberBuyOrderResp;
@@ -57,7 +56,7 @@ import java.util.Objects;
 @Slf4j
 @RestController
 @RequestMapping("/memberBuy")
-public class MemberBuyController implements MemberBuyFeign {
+public class MemberBuyController implements MemberBuyApi {
 
 	@Autowired
 	private SequenceGenerator sequenceGenerator;
@@ -290,7 +289,7 @@ public class MemberBuyController implements MemberBuyFeign {
 		registerOrderReq.setOrderAmount(orderAmount);
 		registerOrderReq.setReduceAmount(reduceAmount);
 		registerOrderReq.setNeedPayAmount(orderNeedPayAmount);
-		registerOrderReq.setSubOrderUrl(Constants.feignUrl("/memberBuy/subOrder"));
+		registerOrderReq.setSubOrderUrl(FeignConstants.feignUrl("/memberBuy/subOrder"));
 
 		String memberBuyAttach = Utils.append2Json(payAttach, "userRemark", memberBuyOrderReq.getUserRemark());
 		registerOrderReq.setAttach(memberBuyAttach);
@@ -341,7 +340,7 @@ public class MemberBuyController implements MemberBuyFeign {
 		payReq.setSpbillCreateIp(HeaderContextUtil.requestip());
 //		payReq.setProductId(productId);
 		payReq.setOpenid(HeaderContextUtil.deviceid());
-		payReq.setNotifyUrl(Constants.feignUrl("/memberBuy/buyNotify"));
+		payReq.setNotifyUrl(FeignConstants.feignUrl("/memberBuy/buyNotify"));
 		payReq.setAttach(payAttach);
 //		payReq.setTimeoutSeconds(timeoutSeconds);
 //		payReq.setRemark(remark);

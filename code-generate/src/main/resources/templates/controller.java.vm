@@ -15,7 +15,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.PageDTO;
 
 import com.company.common.response.PageResp;
 import com.company.framework.util.PropertyUtils;
-import ${apiPackage}.feign.${entity}Feign;
+import ${apiPackage}.interfaces.${entity}Api;
 import ${apiPackage}.request.${entity}Req;
 import ${apiPackage}.response.${entity}Resp;
 import ${package.Entity}.${entity};
@@ -28,7 +28,7 @@ import ${package.Service}.$!table.serviceName;
  */
 @RestController
 @RequestMapping("/${_entity}")
-public class ${table.controllerName} implements ${entity}Feign {
+public class ${table.controllerName} implements ${entity}Api {
 
     @Autowired
     private $!table.serviceName ${_serviceName};

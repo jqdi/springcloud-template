@@ -3,8 +3,9 @@ spring:
   cloud:
     circuitbreaker:
       sentinel:
-        enabled: true # 启用Sentinel，建议与application-resilience4j.yml二选一使用
+        enabled: false # 启用Sentinel，建议与application-resilience4j.yml二选一使用
     sentinel:
+      enabled: ${spring.cloud.circuitbreaker.sentinel.enabled}
       eager: true # 启动马上初始化，默认false
       transport:
         dashboard: localhost:8080 # Sentinel控制台地址

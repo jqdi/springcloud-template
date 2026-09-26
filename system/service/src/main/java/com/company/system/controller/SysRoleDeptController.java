@@ -12,7 +12,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.PageDTO;
 
 import com.company.common.response.PageResp;
 import com.company.framework.util.PropertyUtils;
-import com.company.system.api.feign.SysRoleDeptFeign;
+import com.company.system.api.interfaces.SysRoleDeptApi;
 import com.company.system.api.request.SysRoleDeptReq;
 import com.company.system.api.response.SysRoleDeptResp;
 import com.company.system.entity.SysRoleDept;
@@ -20,7 +20,7 @@ import com.company.system.service.SysRoleDeptService;
 
 @RestController
 @RequestMapping("/sysRoleDept")
-public class SysRoleDeptController implements SysRoleDeptFeign {
+public class SysRoleDeptController implements SysRoleDeptApi {
 
 	@Autowired
 	private SysRoleDeptService sysRoleDeptService;

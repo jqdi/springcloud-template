@@ -9,7 +9,7 @@ import com.company.adminapi.excel.SysRoleMenuExcel;
 import com.company.system.api.request.RemoveReq;
 import com.company.common.response.PageResp;
 import com.company.framework.util.PropertyUtils;
-import com.company.system.api.feign.SysRoleMenuFeign;
+import com.company.adminapi.feign.SysRoleMenuFeign;
 import com.company.system.api.request.SysRoleMenuReq;
 import com.company.system.api.response.SysRoleMenuResp;
 import org.springframework.beans.factory.annotation.Autowired;

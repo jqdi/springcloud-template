@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.company.framework.messagedriven.MessageSender;
 import com.company.framework.messagedriven.properties.MessagedrivenProperties;
 import com.company.order.api.enums.OrderPayEnum;
-import com.company.order.api.feign.WxNotifyFeign;
+import com.company.order.api.interfaces.WxNotifyApi;
 import com.company.order.entity.PayNotify;
 import com.company.order.entity.WxPay;
 import com.company.order.entity.WxPayRefund;
@@ -42,7 +42,7 @@ import java.util.Objects;
 @Slf4j
 @RestController
 @RequestMapping(value = "/wxnotify")
-public class WxNotifyController implements WxNotifyFeign {
+public class WxNotifyController implements WxNotifyApi {
 
 	@Autowired
 	private WxPayMapper wxPayMapper;

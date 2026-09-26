@@ -29,7 +29,7 @@ import com.company.adminapi.excel.SysMenuExcel;
 import com.company.token.accesscontrol.annotation.RequireLogin;
 import com.company.framework.context.HeaderContextUtil;
 import com.company.framework.util.PropertyUtils;
-import com.company.system.api.feign.SysMenuFeign;
+import com.company.adminapi.feign.SysMenuFeign;
 import com.company.system.api.request.RemoveReq;
 import com.company.system.api.request.SysMenuReq;
 import com.company.common.response.PageResp;

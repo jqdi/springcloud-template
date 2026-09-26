@@ -1,13 +1,6 @@
 # CacheManager 模块
 
-## 与 Cache 模块的区别
-
 CacheManager 模块面向 Spring Cache 规范，适合通过注解为方法增加声明式缓存，常用注解包括 `@Cacheable`、`@CachePut`、`@CacheEvict`。
-
-[Cache 模块](../cache/README.md)面向自定义的 `ICache` 接口，适合在业务代码中主动执行 `set`、`get`、`del`、`increment` 等操作。
-
-- 需要在方法级别自动处理缓存读写时，使用本模块。
-- 需要精细控制缓存操作、过期时间或执行自增时，使用 `ICache`。
 
 ## 概述
 

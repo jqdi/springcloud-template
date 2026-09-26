@@ -16,8 +16,6 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 public class MysqlMessageSource extends AbstractMessageSource {
-    private static final String CACHE_KEY_PREFIX = "i18n";
-
     private final MessageSourceResolver messageSourceResolver;
     private final Cache cache;
 
@@ -28,9 +26,9 @@ public class MysqlMessageSource extends AbstractMessageSource {
 
     @Override
     protected MessageFormat resolveCode(String code, Locale locale) {
-        String key = String.format("%s:%s:%s", CACHE_KEY_PREFIX, code, locale.toLanguageTag());
         // String pattern = messageSourceResolver.resolve(code, locale);
         // 加入缓存提升性能
+        String key = String.format("%s:%s", code, locale.toLanguageTag());
         String pattern = cache.get(key, () -> messageSourceResolver.resolve(code, locale));
         if (StringUtils.isBlank(pattern)) {
             return null;

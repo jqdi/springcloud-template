@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.company.app.constants.Constants;
-import com.company.tool.api.feign.VerifyCodeFeign;
+import com.company.app.feign.VerifyCodeFeign;
 import io.github.jqdi.easylogin.core.repository.VerifycodeRepository;
 
 @Component

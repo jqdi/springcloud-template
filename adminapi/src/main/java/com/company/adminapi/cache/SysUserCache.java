@@ -1,35 +1,31 @@
 package com.company.adminapi.cache;
 
-import com.company.framework.cache.ICache;
-import com.company.framework.util.JsonUtil;
-import com.company.system.api.feign.SysUserFeign;
+import com.company.adminapi.constants.Constants;
+import com.company.adminapi.feign.SysUserFeign;
 import com.company.system.api.response.SysUserResp;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
-
-import java.util.concurrent.TimeUnit;
 
 @Component
 public class SysUserCache {
 
     @Autowired
-    private ICache cache;
+    private CacheManager cacheManager;
     @Autowired
     private SysUserFeign sysUserFeign;
 
     public SysUserResp getById(Integer id) {
-        String key = String.format("admin:sysuser:%s", id);
-        return cache.get(key, () -> {
-            SysUserResp sysUserResp = sysUserFeign.getById(id);
-            if (sysUserResp == null) {
-                sysUserResp = new SysUserResp();
-            }
-            return JsonUtil.toJsonString(sysUserResp);
-        },600, TimeUnit.SECONDS, SysUserResp.class);
+        Cache cache = cacheManager.getCache(Constants.CacheName.SYS_USER);
+        if (cache == null) {
+            return sysUserFeign.getById(id);
+        }
+        return cache.get(id, () -> sysUserFeign.getById(id));
     }
 
-    @Cacheable(value = "admin:sysuser", key = "#id")
+    @Cacheable(value = Constants.CacheName.SYS_USER, key = "#id")
     public SysUserResp getById2(Integer id) {
         return sysUserFeign.getById(id);
     }

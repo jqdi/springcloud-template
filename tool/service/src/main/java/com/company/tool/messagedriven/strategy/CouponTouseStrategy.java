@@ -15,8 +15,8 @@ import com.company.tool.entity.SubscribeTemplateGrant;
 import com.company.tool.service.SubscribeTemplateGrantService;
 import com.company.tool.subscribe.AsyncSubscribeSender;
 import com.company.user.api.enums.UserOauthEnum;
-import com.company.user.api.feign.CouponFeign;
-import com.company.user.api.feign.UserOauthFeign;
+import com.company.tool.feign.CouponFeign;
+import com.company.tool.feign.UserOauthFeign;
 import com.company.user.api.response.UserCouponResp;
 
 import lombok.extern.slf4j.Slf4j;

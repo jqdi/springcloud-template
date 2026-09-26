@@ -8,14 +8,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 
-import com.company.tool.api.feign.RetryerFeign;
+import com.company.tool.api.interfaces.RetryerApi;
 import com.company.tool.api.request.RetryerInfoReq;
 import com.company.tool.retry.FeignRetryer;
 import com.company.tool.retry.RetryerInfo;
 
 @RestController
 @RequestMapping(value = "/retryer")
-public class RetryerController implements RetryerFeign {
+public class RetryerController implements RetryerApi {
 
 	@Autowired
 	private FeignRetryer feignRetryer;
