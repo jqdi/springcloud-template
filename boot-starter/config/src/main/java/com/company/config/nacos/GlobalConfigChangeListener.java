@@ -1,4 +1,8 @@
-package com.company.gateway.config.nacos;
+package com.company.config.nacos;
+
+import java.util.Collection;
+
+import org.springframework.beans.factory.InitializingBean;
 
 import com.alibaba.cloud.nacos.NacosConfigManager;
 import com.alibaba.cloud.nacos.NacosConfigProperties;
@@ -6,21 +10,17 @@ import com.alibaba.nacos.api.config.ConfigChangeEvent;
 import com.alibaba.nacos.api.config.ConfigChangeItem;
 import com.alibaba.nacos.api.config.ConfigService;
 import com.alibaba.nacos.client.config.listener.impl.AbstractConfigChangeListener;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.stereotype.Component;
 
-import java.util.Collection;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@Component
-@ConditionalOnProperty(name = "spring.cloud.nacos.config.enabled", matchIfMissing = true)// 仅nacos启动时装配
 public class GlobalConfigChangeListener extends AbstractConfigChangeListener implements InitializingBean {
 
-    @Autowired
-    private NacosConfigManager nacosConfigManager;
+    private final NacosConfigManager nacosConfigManager;
+
+    public GlobalConfigChangeListener(NacosConfigManager nacosConfigManager) {
+        this.nacosConfigManager = nacosConfigManager;
+    }
 
     @Override
     public void receiveConfigChange(ConfigChangeEvent changeEvent) {

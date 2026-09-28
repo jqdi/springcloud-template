@@ -1,6 +1,14 @@
-package com.company.framework.config.nacos;
+package com.company.config.nacos;
 
-import lombok.extern.slf4j.Slf4j;
+import java.beans.PropertyDescriptor;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.AccessibleObject;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
+
 import org.springframework.beans.BeansException;
 import org.springframework.beans.PropertyValues;
 import org.springframework.beans.factory.BeanFactory;
@@ -16,14 +24,7 @@ import org.springframework.core.annotation.AnnotationAttributes;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.ReflectionUtils;
 
-import java.beans.PropertyDescriptor;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.AccessibleObject;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 实现springcloud应用@Value配置的自动刷新(跟nacos无关，但是apollo无需使用该类，所以只给nacos使用)

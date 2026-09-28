@@ -38,24 +38,13 @@
 		</dependency>
 		<!-- 注册中心，eureka、nacos选其中一个就行 -->
 
-		<!-- 配置中心，config、apollo、nacos选其中一个就行 -->
-		<!-- config客户端 -->
-		<dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-config-client</artifactId>
+		<!-- 配置中心 -->
+        <dependency>
+            <groupId>com.company</groupId>
+            <artifactId>boot-starter-config</artifactId>
+            <version>${boot-starter-config.version}</version>
         </dependency>
-		<!--apollo客户端 -->
-		<dependency>
-			<groupId>com.ctrip.framework.apollo</groupId>
-			<artifactId>apollo-client</artifactId>
-			<version>1.9.2</version>
-		</dependency>
-		<!--nacos客户端 -->
-		<dependency>
-			<groupId>com.alibaba.cloud</groupId>
-			<artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
-    	</dependency>
-		<!-- 配置中心，config、apollo、nacos选其中一个就行 -->
+		<!-- 配置中心 -->
 
 		<!-- 监控，SpringBootAdmin、Prometheus选其中一个就行 -->
 		<!-- actuator端点 -->
