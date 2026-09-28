@@ -11,6 +11,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Role;
 
 import com.alibaba.cloud.nacos.NacosConfigManager;
+import com.alibaba.cloud.nacos.NacosConfigProperties;
+import com.alibaba.nacos.api.config.ConfigService;
+import com.alibaba.nacos.api.exception.NacosException;
 import com.company.config.nacos.EnvironmentChangeListener;
 import com.company.config.nacos.LogValueConfigChangeListener;
 import com.company.config.nacos.SpringValueAutoRefreshProcessor;
@@ -33,6 +36,17 @@ public class NacosAutoConfiguration {
 
     @Bean
     public LogValueConfigChangeListener logValueConfigChangeListener(NacosConfigManager nacosConfigManager) {
-        return new LogValueConfigChangeListener(nacosConfigManager);
+        ConfigService configService = nacosConfigManager.getConfigService();
+        NacosConfigProperties nacosConfigProperties = nacosConfigManager.getNacosConfigProperties();
+
+        LogValueConfigChangeListener logValueConfigChangeListener = new LogValueConfigChangeListener();
+        String dataId = nacosConfigProperties.getName();
+        String group = nacosConfigProperties.getGroup();
+        try {
+            configService.addListener(dataId, group, logValueConfigChangeListener);
+        } catch (NacosException e) {
+            throw new RuntimeException(e);
+        }
+        return logValueConfigChangeListener;
     }
 }
