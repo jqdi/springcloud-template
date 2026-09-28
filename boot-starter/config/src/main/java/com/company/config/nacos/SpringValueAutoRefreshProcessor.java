@@ -76,7 +76,6 @@ public class SpringValueAutoRefreshProcessor extends AutowiredAnnotationBeanPost
         if (keys == null || keys.isEmpty()) {
             return;
         }
-        log.info("changed keys: {}", keys);
         for (String beanName : beanNamesNeedRefresh) {
             super.processInjection(beanFactory.getBean(beanName));
         }

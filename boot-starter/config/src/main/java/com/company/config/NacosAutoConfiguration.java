@@ -23,7 +23,7 @@ public class NacosAutoConfiguration {
     @Role(ROLE_INFRASTRUCTURE)
     @Bean
     @ConditionalOnClass({ContextRefresher.class, RefreshScope.class, EnvironmentChangeEvent.class})
-    public BeanPostProcessor springValueAutoRefreshProcessor() {
+    public SpringValueAutoRefreshProcessor springValueAutoRefreshProcessor() {
         return new SpringValueAutoRefreshProcessor();
     }
 
