@@ -4,24 +4,32 @@
 
 Config Starter 是一个基于 Spring Boot 的自动化配置模块，用于接入配置中心并实现**配置的动态刷新**。模块同时支持 **Nacos**、**Apollo**、**Spring Cloud Config** 三种配置中心，并附带三种配置中心对应的 bootstrap 配置模板。
 
-该模块从 framework 与 gateway 中下沉而来，原先两处各维护一份 config 代码，现在只维护一套，按需在项目中引用。
+**该模块不承载配置本身**，只负责"配置变更后如何让应用感知"。因此**不引入配置中心（连一个都不启用）时也不需要本模块**，`@Value` / `@ConfigurationProperties` 走 Spring 原生行为即可。
 
 ## 功能特性
 
 ### 1. 配置动态刷新
 
-- **Nacos**：`@Value` 与 `@ConfigurationProperties` 均可动态刷新，配置项变更后无需重启应用
-- **Apollo**：`@Value` 由 Apollo 自带的 `AutoUpdateConfigChangeListener` 自动刷新，`@ConfigurationProperties` 通过 `EnvironmentChangeEvent` 刷新
+- **Nacos**：`@Value` 由本模块的 `SpringValueAutoRefreshProcessor` 刷新；`@ConfigurationProperties` 由 Spring Cloud 的 `ContextRefresher` 派生刷新
+- **Apollo**：`@Value` 由 Apollo 自带的 `AutoUpdateConfigChangeListener` 刷新；`@ConfigurationProperties` 通过本模块发布的 `EnvironmentChangeEvent` 刷新
+
+> 刷新粒度说明：`@Value` 的刷新是**按 bean 整体重新注入**，不是按 key 精确更新（详见「动态刷新原理」与「已知限制」）。
 
 ### 2. 配置变更日志
 
 配置中心推送变更时，会打印每个变更项的类型、key 以及变更前后的值，便于排查"配置到底有没有生效"：
 
 ```text
+# LogValueConfigChangeListener：type key oldValue -> newValue
 changed:ADDED template.sqllimit.max null -> 1000
+# EnvironmentChangeListener -> SpringValueAutoRefreshProcessor
+changed keys: [template-app.yaml]
+changed keys refresh finish
 ```
 
-- **Nacos**：由 [GlobalConfigChangeListener](src/main/java/com/company/config/nacos/GlobalConfigChangeListener.java) 打印
+`changed keys:` 里打出来的**是 Nacos 的 Data ID 而不是具体的配置项 key**：在 config-data 技术栈下，Nacos 抛出的 `EnvironmentChangeEvent` 携带的就是 Data ID（如 `template-app.yaml`）。所以"某个 key 是否被刷新"要看上一行的 from -> to 日志，不能只看 `changed keys:`。
+
+- **Nacos**：由 [LogValueConfigChangeListener](src/main/java/com/company/config/nacos/LogValueConfigChangeListener.java) 打印
 - **Apollo**：由 [PropertiesRefresher](src/main/java/com/company/config/apollo/PropertiesRefresher.java) 打印
 
 ### 3. 自动装配、按需生效
@@ -112,9 +120,10 @@ spring:
 | 组件 | 职责 |
 | --- | --- |
 | [EnvironmentChangeListener](src/main/java/com/company/config/nacos/EnvironmentChangeListener.java) | 监听 `EnvironmentChangeEvent`，把变更的 key 交给刷新处理器 |
-| [GlobalConfigChangeListener](src/main/java/com/company/config/nacos/GlobalConfigChangeListener.java) | 监听 Nacos 配置变更，打印变更前后值（无需再发事件，事件由 Spring Cloud 侧抛出） |
-| [SpringValueAutoRefreshConfiguration](src/main/java/com/company/config/nacos/SpringValueAutoRefreshConfiguration.java) | 注册 `SpringValueAutoRefreshProcessor` |
+| [LogValueConfigChangeListener](src/main/java/com/company/config/nacos/LogValueConfigChangeListener.java) | 监听 Nacos 配置变更，打印变更前后值（无需再发事件，事件由 Spring Cloud 侧抛出） |
 | [SpringValueAutoRefreshProcessor](src/main/java/com/company/config/nacos/SpringValueAutoRefreshProcessor.java) | 实现 `@Value` 字段的自动刷新（只给 Nacos 用，Apollo 无需） |
+
+`LogValueConfigChangeListener` 除了打日志，自己还会向 Nacos 注册一个 Data ID 监听器（用的是 `spring.cloud.nacos.config.name` / `group`）。这与阿里自带的 `NacosContextRefresher` 的注册存在重复：**两者 dataId+group 相同时，先注册的那个生效**。本模块的 Data ID 配置与 `spring.config.import` 一致，因此实际生效的是后者，本模块这个监听器退化为空转——保留它是为了在不走 `spring.config.import` 的老写法下也能生效。
 
 ### Apollo 侧
 
@@ -138,6 +147,8 @@ spring:
 | spring.config.import | optional:nacos:${spring.application.name}.yaml | 声明从 Nacos 导入配置，`optional:` 表示配置不存在时不报错 |
 
 > Data ID 不加 `.${file-extension}` 后缀可能会读不到配置，`name` 与 `spring.config.import` 两处必须保持一致。
+
+> 如果保留了 `spring.config.import` 却在 dev 环境把 `spring.cloud.nacos.config.enabled` 置为 `false`，Nacos 客户端仍会做"是否漏配 import"的检查。该检查可用 `spring.cloud.nacos.config.import-check.enabled=false` 关闭；本模块的模板已用 `optional:nacos:` 前缀避免启动失败。
 
 ### 2. Apollo 配置中心
 
@@ -169,16 +180,26 @@ spring:
 ### 1. Nacos
 
 ```text
-配置中心推送变更
-  -> GlobalConfigChangeListener 打印变更前后值
-  -> Spring Cloud 抛出 EnvironmentChangeEvent（changedKeys）
-  -> EnvironmentChangeListener 接收事件
-     -> SpringValueAutoRefreshProcessor.changedKeys(keys)
-        -> 对记录了 @Value 字段的 bean 逐个重新注入
-  -> @ConfigurationProperties 的 bean 由 Spring Cloud 自身基于事件刷新
+Nacos 推送变更
+ ├─ 阿里自带：NacosContextRefresher
+ │    -> 发 RefreshEvent -> RefreshEventListener -> ContextRefresher.refresh()
+ │       -> 发布 EnvironmentChangeEvent（keys = Data ID）
+ │       -> 重新绑定 @ConfigurationProperties          ← @ConfigurationProperties 在此刷新
+ └─ 本模块：LogValueConfigChangeListener
+      -> 打印 type key oldValue -> newValue
+      （不发事件，事件由上面那条链路发出）
+          ↓ EnvironmentChangeEvent 到达
+      EnvironmentChangeListener
+      -> SpringValueAutoRefreshProcessor.changedKeys(keys)
+         -> 对登记过的、含 @Value 的 bean 逐个重新注入      ← @Value 在此刷新
 ```
 
-`SpringValueAutoRefreshProcessor` 继承 `AutowiredAnnotationBeanPostProcessor`，把自动注入类型改为 `@Value`，在 bean 初始化时记录"哪些 bean 含有 `@Value` 字段"，配置变更时只重新注入这些 bean。
+两个关键点：
+
+1. **本项目故意没有在 `LogValueConfigChangeListener` 里发 `EnvironmentChangeEvent`**（源码中该段被注释掉了，注释写的就是"这里无需发送事件"）。因为阿里自带的 `NacosContextRefresher` 已经会发，重复发会导致一轮变更刷两次。
+2. `SpringValueAutoRefreshProcessor` 继承 `AutowiredAnnotationBeanPostProcessor`，把自动注入类型改成 `@Value`，在 **bean 初始化时**记录"哪些 bean 含 `@Value`"，配置变更时对这批 bean 逐个 `processInjection` 重新注入。
+
+> 由于记录动作只发生在 bean 初始化时，**注册时机之后才被创建的 bean 不在名单里**（正常场景下所有单例在启动期就创建完了，不受影响）。
 
 ### 2. Apollo
 
@@ -198,3 +219,9 @@ spring:
 4. **Nacos 的 Data ID 要对齐**：`spring.cloud.nacos.config.name` 与 `spring.config.import` 两处不一致会静默读不到配置。
 5. **`@ConditionalOnProperty` 的 bean 不会刷新**：当 bean 上有 `@ConditionalOnProperty` 时，配置变更不会让该 bean 重新装配（需重启），这是当前实现已知的限制。
 6. **Apollo 多 namespace 需同步监听**：详见上文 Apollo 配置详解中的说明。
+7. **Nacos 下 dev 环境等于"完全不刷新"**：`bootstrap-nacos-config.yml` 的 dev 环境把 `spring.cloud.nacos.config.enabled` 置为 `false`，而 `NacosAutoConfiguration` 的生效条件正是 `spring.cloud.nacos.config.enabled`（`matchIfMissing = true`）——**dev 环境下整个自动配置类都不装配，`SpringValueAutoRefreshProcessor` 根本不进容器，`@Value` 不会刷新**。开发时如需验证刷新，请把该开关打开。
+8. **数据源类配置不要用 `@Value` 接**：`@Value` 的刷新方式是对 bean 整体重新注入，对 `DataSource`、连接池、`RedisTemplate`、线程池这类"改了就期望重建"的配置，重注入不会触发重建，接配置中心只会造成"看着改了其实没生效"的假象。
+9. **`@RefreshScope` 与 `@Value` 自动刷新不要叠加使用**：`@RefreshScope` 的 bean 在容器里是作用域代理对象，而 `changedKeys` 里 `beanFactory.getBean(beanName)` 取到的正是代理，重新注入可能写不到目标实例上；同时 `ContextRefresher.refresh()` 会销毁 `refresh` 作用域，与本模块的重新注入叠加属于重复维护。两者选其一即可。
+10. **`@Value` 写在父类上时当前实现不会刷新（已知缺陷）**：`SpringValueAutoRefreshProcessor` 用一个实例字段 `beanNamesNeedRefresh` 同时充当两个语义——「本类是否含 `@Value`」和「全部待刷新 bean 的名字」。该字段一旦非空（即任何一个含 `@Value` 的 bean 先被初始化过），扫描父类的循环就会被提前跳出，**`@Value` 只写在父类的 bean 不会被登记，配置变更后静默不刷新**（编写本文档时该实现尚未修复）。排查手段：给这类 bean 加一个自有 `@Value` 字段，或在启动日志里确认它是否出现在刷新名单相关日志中；根治需要把「是否找到」判断改为方法内局部变量。
+11. **`@Value("${x}")`（无默认值）遇上配置项被删除会抛异常**：只要该 bean 在刷新名单里，重新注入就会因占位符无法解析而抛 `IllegalStateException`，并中断本轮对后续 bean 的刷新。给 `@Value` 配默认值（`${x:默认值}`）可规避。
+12. **`@PostConstruct` 不会因刷新重跑**：重新注入只触发注入点（字段 / setter），不会重跑 `@PostConstruct` 等初始化回调，所以不必担心副作用方法被重复执行。
