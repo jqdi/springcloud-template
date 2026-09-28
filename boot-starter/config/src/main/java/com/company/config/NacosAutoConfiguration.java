@@ -2,7 +2,6 @@ package com.company.config;
 
 import static org.springframework.beans.factory.config.BeanDefinition.ROLE_INFRASTRUCTURE;
 
-import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.cloud.context.environment.EnvironmentChangeEvent;
@@ -13,7 +12,7 @@ import org.springframework.context.annotation.Role;
 
 import com.alibaba.cloud.nacos.NacosConfigManager;
 import com.company.config.nacos.EnvironmentChangeListener;
-import com.company.config.nacos.GlobalConfigChangeListener;
+import com.company.config.nacos.LogValueConfigChangeListener;
 import com.company.config.nacos.SpringValueAutoRefreshProcessor;
 
 // @Configuration 使用org.springframework.boot.autoconfigure.AutoConfiguration.imports装配bean
@@ -33,7 +32,7 @@ public class NacosAutoConfiguration {
     }
 
     @Bean
-    public GlobalConfigChangeListener globalConfigChangeListener(NacosConfigManager nacosConfigManager) {
-        return new GlobalConfigChangeListener(nacosConfigManager);
+    public LogValueConfigChangeListener logValueConfigChangeListener(NacosConfigManager nacosConfigManager) {
+        return new LogValueConfigChangeListener(nacosConfigManager);
     }
 }
