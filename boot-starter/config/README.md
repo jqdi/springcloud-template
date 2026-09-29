@@ -2,52 +2,62 @@
 
 ## 简介
 
-Config Starter 是一个基于 Spring Boot 的自动化配置模块，用于接入配置中心并实现**配置的动态刷新**。模块同时支持 **Nacos**、**Apollo**、**Spring Cloud Config** 三种配置中心，并附带三种配置中心对应的 bootstrap 配置模板。
+Config Starter 用于接入配置中心并实现**配置的动态刷新**：配置中心改了值，应用无需重启、也无需加 `@RefreshScope`，`@Value` 与 `@ConfigurationProperties` 都能自动拿到新值。模块同时支持 **Nacos**、**Apollo**、**Spring Cloud Config** 三种配置中心，并附带对应的 bootstrap 配置模板。
 
-**该模块不承载配置本身**，只负责"配置变更后如何让应用感知"。因此**不引入配置中心（连一个都不启用）时也不需要本模块**，`@Value` / `@ConfigurationProperties` 走 Spring 原生行为即可。
+该模块从 framework 与 gateway 中下沉而来，原先两处各维护一份 config 代码，现在只维护一套，按需引用。**它不承载配置本身**，只负责"配置变更后如何让应用感知"。
 
 ## 功能特性
 
-### 1. 配置动态刷新
+### 1. `@Value` 动态刷新（**不需要** `@RefreshScope`）
 
-- **Nacos**：`@Value` 由本模块的 `SpringValueAutoRefreshProcessor` 刷新；`@ConfigurationProperties` 由 Spring Cloud 的 `ContextRefresher` 派生刷新
-- **Apollo**：`@Value` 由 Apollo 自带的 `AutoUpdateConfigChangeListener` 刷新；`@ConfigurationProperties` 通过本模块发布的 `EnvironmentChangeEvent` 刷新
+这是本模块与常见做法最大的差别：**普通 bean 上的 `@Value` 就能随配置中心刷新，不必把 bean 改成 `@RefreshScope`**。
 
-> 刷新粒度说明：`@Value` 的刷新是**按 bean 整体重新注入**，不是按 key 精确更新（详见「动态刷新原理」与「已知限制」）。
+```java
+@Component // 普通 bean，不加任何注解
+public class SmsPropertiesHolder {
+    @Value("${sms.daily-limit:1000}")
+    private Integer dailyLimit; // 配置中心改动后，这里会被自动重新注入
+}
+```
 
-### 2. 配置变更日志
+两条链路都绕开了 `refresh` 作用域，无需作用域代理（也就没有"拿到的是代理对象"、懒加载、`@PostConstruct` 时机变化这类额外复杂度）：
 
-配置中心推送变更时，会打印每个变更项的类型、key 以及变更前后的值，便于排查"配置到底有没有生效"：
+- **Nacos**：`SpringValueAutoRefreshProcessor` 收到变更事件后，对登记过的 bean 原地重新注入一遍 `@Value` 字段 / setter；
+- **Apollo**：Apollo 自带的 `AutoUpdateConfigChangeListener` 把新值写回 `@Value` 字段。
+
+> 刷新是**按 bean 整体重新注入**，不是按 key 精确更新；只改注入点，不重建 bean，也不会重跑 `@PostConstruct`。
+
+### 2. `@ConfigurationProperties` 动态刷新
+
+- **Nacos**：由 Spring Cloud 的 `ContextRefresher` 派生刷新（阿里自带的 `NacosContextRefresher` 触发）；
+- **Apollo**：本模块的 `PropertiesRefresher` 发布 `EnvironmentChangeEvent` 驱动刷新。
+
+### 3. 配置变更日志
+
+会打印每个变更项的类型、key 以及变更前后的值，便于排查"配置到底有没有生效"：
 
 ```text
-# LogValueConfigChangeListener：type key oldValue -> newValue
-changed:ADDED template.sqllimit.max null -> 1000
-# EnvironmentChangeListener -> SpringValueAutoRefreshProcessor
-changed keys: [template-app.yaml]
+changed:ADDED sms.daily-limit null -> 2000   # Nacos: LogValueConfigChangeListener / Apollo: PropertiesRefresher
+changed keys: [template-app.yaml]            # Nacos: SpringValueAutoRefreshProcessor
 changed keys refresh finish
 ```
 
-`changed keys:` 里打出来的**是 Nacos 的 Data ID 而不是具体的配置项 key**：在 config-data 技术栈下，Nacos 抛出的 `EnvironmentChangeEvent` 携带的就是 Data ID（如 `template-app.yaml`）。所以"某个 key 是否被刷新"要看上一行的 from -> to 日志，不能只看 `changed keys:`。
+Nacos 侧之所以要自己写监听器，是因为 Spring Cloud 的 `RefreshEventListener` **只打印变更的 key，不打印变更前后的 value**。
 
-- **Nacos**：由 [LogValueConfigChangeListener](src/main/java/com/company/config/nacos/LogValueConfigChangeListener.java) 打印
-- **Apollo**：由 [PropertiesRefresher](src/main/java/com/company/config/apollo/PropertiesRefresher.java) 打印
+### 4. 自动装配、按需生效
 
-### 3. 自动装配、按需生效
+两个自动配置类通过 `META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports` 装配：
 
-两个配置类通过 `META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports` 装配，并按开关自动判断是否生效：
+| 自动配置类 | 生效条件 |
+| --- | --- |
+| [NacosAutoConfiguration](src/main/java/com/company/config/NacosAutoConfiguration.java) | `spring.cloud.nacos.config.enabled` 为 `true` 或未配置（`matchIfMissing = true`） |
+| [ApolloAutoConfiguration](src/main/java/com/company/config/ApolloAutoConfiguration.java) | `apollo.bootstrap.enabled` 为 `true` |
 
-| 自动配置类 | 生效条件 | 说明 |
-| --- | --- | --- |
-| [NacosAutoConfiguration](src/main/java/com/company/config/NacosAutoConfiguration.java) | `spring.cloud.nacos.config.enabled` 为 `true` 或未配置（`matchIfMissing = true`） | 装配 Nacos 相关的监听器 |
-| [ApolloAutoConfiguration](src/main/java/com/company/config/ApolloAutoConfiguration.java) | `apollo.bootstrap.enabled` 为 `true` | 装配 Apollo 的刷新器 |
-
-即：用 Nacos 的项目只会装上 Nacos 的监听器，用 Apollo 的项目只会装上 Apollo 的刷新器，互不干扰。
+用 Nacos 的项目只会装上 Nacos 的监听器，用 Apollo 的项目只会装上 Apollo 的刷新器，互不干扰。
 
 ## 快速开始
 
 ### 1. 添加依赖
-
-在您的项目的 `pom.xml` 中添加以下依赖：
 
 ```xml
 <dependency>
@@ -57,19 +67,19 @@ changed keys refresh finish
 </dependency>
 ```
 
-> 本模块的 [pom.xml](pom.xml) 中同时声明了 `spring-cloud-config-client`、`apollo-client`、`spring-cloud-starter-alibaba-nacos-config` 三个客户端，属于演示性质。**实际项目按需保留其中一个**，避免引入无用的配置中心依赖。
+> 本模块的 [pom.xml](pom.xml) 同时声明了三个配置中心客户端，属于演示性质，**实际项目按需保留其中一个**。
 
 ### 2. 引入 bootstrap 配置模板
 
-本模块提供了三份开箱即用的 bootstrap 配置模板（已按 dev/test/pre/prod 分环境）：
+三份模板均已按 dev/test/pre/prod 分环境：
 
-| 模板文件 | 用途 | `spring.profiles.include` 取值 |
-| --- | --- | --- |
-| [bootstrap-nacos-config.yml](src/main/resources/bootstrap-nacos-config.yml) | Nacos 配置中心 | `nacos-config` |
-| [bootstrap-apollo.yml](src/main/resources/bootstrap-apollo.yml) | Apollo 配置中心 | `apollo` |
-| [bootstrap-config.yml](src/main/resources/bootstrap-config.yml) | Spring Cloud Config 配置中心 | `config` |
+| 模板文件 | 用途 | `spring.profiles.include` | 模板内开关默认值 |
+| --- | --- | --- | --- |
+| [bootstrap-nacos-config.yml](src/main/resources/bootstrap-nacos-config.yml) | Nacos 配置中心 | `nacos-config` | dev 关闭，test/pre/prod 开启 |
+| [bootstrap-apollo.yml](src/main/resources/bootstrap-apollo.yml) | Apollo 配置中心 | `apollo` | 各环境均关闭 |
+| [bootstrap-config.yml](src/main/resources/bootstrap-config.yml) | Spring Cloud Config 配置中心 | `config` | 各环境均关闭 |
 
-复制需要的模板到你的模块的 `resources` 目录下，然后在 `bootstrap.yml` 中引入：
+复制需要的模板到自己的 `resources` 目录，在 `bootstrap.yml` 中引入：
 
 ```yaml
 spring:
@@ -88,140 +98,104 @@ spring:
     import: classpath:bootstrap.yml
 ```
 
-### 3. 选择配置中心
-
-在模板中按环境打开对应开关（Nacos/Apollo 为 dev 关闭、test/pre/prod 开启；Spring Cloud Config 各环境默认关闭）：
+### 3. 打开开关
 
 ```yaml
-# 使用 Nacos 配置中心
-spring:
-  cloud:
-    nacos:
-      config:
-        enabled: true # 开关
-
-# 使用 Apollo 配置中心
-apollo:
-  bootstrap:
-    enabled: true # 开关
-    namespaces: application
-
-# 使用 Spring Cloud Config 配置中心
-spring:
-  cloud:
-    config:
-      enabled: true # 开关
+# Nacos
+spring.cloud.nacos.config.enabled: true
+# Apollo
+apollo.bootstrap.enabled: true
+# Spring Cloud Config
+spring.cloud.config.enabled: true
 ```
 
 ## 核心组件
 
-### Nacos 侧
+### Nacos 侧（均在 [NacosAutoConfiguration](src/main/java/com/company/config/NacosAutoConfiguration.java) 中以 `@Bean` 装配）
 
 | 组件 | 职责 |
 | --- | --- |
+| [SpringValueAutoRefreshProcessor](src/main/java/com/company/config/nacos/SpringValueAutoRefreshProcessor.java) | `@Value` 自动刷新的核心：登记含 `@Value` 的 bean，变更时对它们重新注入（标了 `@Role(ROLE_INFRASTRUCTURE)`） |
 | [EnvironmentChangeListener](src/main/java/com/company/config/nacos/EnvironmentChangeListener.java) | 监听 `EnvironmentChangeEvent`，把变更的 key 交给刷新处理器 |
-| [LogValueConfigChangeListener](src/main/java/com/company/config/nacos/LogValueConfigChangeListener.java) | 监听 Nacos 配置变更，打印变更前后值（无需再发事件，事件由 Spring Cloud 侧抛出） |
-| [SpringValueAutoRefreshProcessor](src/main/java/com/company/config/nacos/SpringValueAutoRefreshProcessor.java) | 实现 `@Value` 字段的自动刷新（只给 Nacos 用，Apollo 无需） |
-
-`LogValueConfigChangeListener` 除了打日志，自己还会向 Nacos 注册一个 Data ID 监听器（用的是 `spring.cloud.nacos.config.name` / `group`）。这与阿里自带的 `NacosContextRefresher` 的注册存在重复：**两者 dataId+group 相同时，先注册的那个生效**。本模块的 Data ID 配置与 `spring.config.import` 一致，因此实际生效的是后者，本模块这个监听器退化为空转——保留它是为了在不走 `spring.config.import` 的老写法下也能生效。
+| [LogValueConfigChangeListener](src/main/java/com/company/config/nacos/LogValueConfigChangeListener.java) | 打印变更前后值；同时在装配时向 Nacos 注册该 Data ID 的监听器 |
 
 ### Apollo 侧
 
 | 组件 | 职责 |
 | --- | --- |
-| [PropertiesRefresher](src/main/java/com/company/config/apollo/PropertiesRefresher.java) | 通过 `@ApolloConfigChangeListener` 监听变更，打印变更前后值并发布 `EnvironmentChangeEvent`，驱动 `@ConfigurationProperties` 刷新 |
+| [PropertiesRefresher](src/main/java/com/company/config/apollo/PropertiesRefresher.java) | `@ApolloConfigChangeListener` 监听变更，打印变更前后值并发布 `EnvironmentChangeEvent` |
 
 ## 配置详解
 
-### 1. Nacos 配置中心
+### Nacos
 
-| 配置项 | 示例值 | 说明 |
+| 配置项 | 模板值 | 说明 |
 | --- | --- | --- |
-| spring.cloud.nacos.config.enabled | false | 配置中心开关，false 表示不接入 |
+| spring.cloud.nacos.config.enabled | false | 开关，false 表示不接入 |
 | spring.cloud.nacos.config.server-addr | 127.0.0.1:8848 | 配置中心地址 |
-| spring.cloud.nacos.config.username / password | | 用户名 / 密码 |
-| spring.cloud.nacos.config.file-extension | yaml | 配置文件格式 |
+| spring.cloud.nacos.config.username / password | nacos / nacos | 用户名 / 密码 |
 | spring.cloud.nacos.config.namespace | ${spring.profiles.active} | 命名空间，一般做环境隔离 |
 | spring.cloud.nacos.config.group | springcloud-template | Group，一般配置为项目名 |
-| spring.cloud.nacos.config.name | ${spring.application.name}.yaml | Data ID，需与 `spring.config.import` 中的值一致 |
-| spring.config.import | optional:nacos:${spring.application.name}.yaml | 声明从 Nacos 导入配置，`optional:` 表示配置不存在时不报错 |
+| spring.cloud.nacos.config.name | ${spring.application.name}.yaml | Data ID，需与 `spring.config.import` 一致 |
+| spring.config.import | optional:nacos:${spring.application.name}.yaml | 声明从 Nacos 导入配置，`optional:` 表示读不到时不报错 |
 
-> Data ID 不加 `.${file-extension}` 后缀可能会读不到配置，`name` 与 `spring.config.import` 两处必须保持一致。
+### Apollo
 
-> 如果保留了 `spring.config.import` 却在 dev 环境把 `spring.cloud.nacos.config.enabled` 置为 `false`，Nacos 客户端仍会做"是否漏配 import"的检查。该检查可用 `spring.cloud.nacos.config.import-check.enabled=false` 关闭；本模块的模板已用 `optional:nacos:` 前缀避免启动失败。
-
-### 2. Apollo 配置中心
-
-| 配置项 | 示例值 | 说明 |
+| 配置项 | 模板值 | 说明 |
 | --- | --- | --- |
-| app.id | ${spring.application.name} | Apollo 的 AppId，建议与 `spring.application.name` 一一对应 |
-| apollo.meta | http://localhost:8080 | Meta Server 地址，多个用英文逗号分隔 |
-| apollo.cluster | default | 集群，一般不需要修改 |
-| apollo.bootstrap.enabled | false | 开关，false 表示不使用 Apollo |
-| apollo.bootstrap.namespaces | application | 命名空间，多个用英文逗号分隔 |
+| app.id | ${spring.application.name} | AppId，建议与 `spring.application.name` 一一对应 |
+| apollo.meta | http://localhost:8080 | Meta Server 地址，多个用逗号分隔 |
+| apollo.bootstrap.enabled | false | 开关 |
+| apollo.bootstrap.namespaces | application | 命名空间，多个用逗号分隔 |
 
-> 若监听了多个 namespace，`@ApolloConfigChangeListener` 的 `value` 需与 `apollo.bootstrap.namespaces` 保持一致，否则部分命名空间的变更不会触发刷新。
+> 若监听多个 namespace，`@ApolloConfigChangeListener` 的 `value` 要与 `apollo.bootstrap.namespaces` 保持一致，否则部分命名空间的变更不会触发刷新。
 
-### 3. Spring Cloud Config 配置中心
+### Spring Cloud Config
 
-| 配置项 | 示例值 | 说明 |
+| 配置项 | 模板值 | 说明 |
 | --- | --- | --- |
-| spring.cloud.config.enabled | false | 配置中心开关，模板中各环境默认关闭 |
-| spring.cloud.config.uri | http://localhost:7030 | config-server 的请求路径 |
-| spring.cloud.config.name | ${spring.application.name} | 指定拉取配置文件的 application，默认取 `spring.application.name` |
-| spring.cloud.config.profile | ${spring.profiles.active} | 拉取的 profile，默认从 `spring.profiles.active` 获取 |
-| spring.cloud.config.label | master | 拉取的分支 |
-| spring.config.import | optional:configserver:http://localhost:7030 | 声明从 config-server 导入配置；Spring Boot 2.7.x 中引用了 config 会有 configserver 检查，`optional:` 表示连不上时不报错 |
+| spring.cloud.config.enabled | false | 开关 |
+| spring.cloud.config.uri | http://localhost:7030 | config-server 请求路径 |
+| spring.cloud.config.name / profile / label | ${spring.application.name} / ${spring.profiles.active} / master | 拉取的 application、profile、分支 |
+| spring.config.import | optional:configserver:http://localhost:7030 | 声明从 config-server 导入配置 |
 
-> 该方式即原 `template-config` 模块（端口 7030）配套的客户端配置。配置动态实时刷新体验不如 Apollo/Nacos，官方建议优先使用 Apollo 或 Nacos 做配置中心。
+> 该方式即原 `template-config` 模块（端口 7030）的客户端配置；动态刷新体验不如 Apollo/Nacos，建议优先用后两者。
 
 ## 动态刷新原理
 
-### 1. Nacos
+### Nacos
 
 ```text
 Nacos 推送变更
- ├─ 阿里自带：NacosContextRefresher
- │    -> 发 RefreshEvent -> RefreshEventListener -> ContextRefresher.refresh()
- │       -> 发布 EnvironmentChangeEvent（keys = Data ID）
- │       -> 重新绑定 @ConfigurationProperties          ← @ConfigurationProperties 在此刷新
- └─ 本模块：LogValueConfigChangeListener
-      -> 打印 type key oldValue -> newValue
-      （不发事件，事件由上面那条链路发出）
-          ↓ EnvironmentChangeEvent 到达
-      EnvironmentChangeListener
-      -> SpringValueAutoRefreshProcessor.changedKeys(keys)
-         -> 对登记过的、含 @Value 的 bean 逐个重新注入      ← @Value 在此刷新
+ |- 阿里自带：NacosContextRefresher -> RefreshEvent -> ContextRefresher.refresh()
+ |    -> 发布 EnvironmentChangeEvent（keys 是 Data ID）-> @ConfigurationProperties 刷新
+ |- 本模块：LogValueConfigChangeListener -> 打印 old -> new（不发事件，上面那条链路已发）
+          | EnvironmentChangeEvent 到达
+      EnvironmentChangeListener -> SpringValueAutoRefreshProcessor.changedKeys()
+         -> 对登记过的含 @Value 的 bean 原地重新注入        -> @Value 刷新
 ```
 
-两个关键点：
+`SpringValueAutoRefreshProcessor` 继承 `AutowiredAnnotationBeanPostProcessor`，把自动注入类型改成 `@Value`：bean 初始化时记录"哪些 bean 含 `@Value`"，变更时对这批 bean 逐个 `processInjection`。
 
-1. **本项目故意没有在 `LogValueConfigChangeListener` 里发 `EnvironmentChangeEvent`**（源码中该段被注释掉了，注释写的就是"这里无需发送事件"）。因为阿里自带的 `NacosContextRefresher` 已经会发，重复发会导致一轮变更刷两次。
-2. `SpringValueAutoRefreshProcessor` 继承 `AutowiredAnnotationBeanPostProcessor`，把自动注入类型改成 `@Value`，在 **bean 初始化时**记录"哪些 bean 含 `@Value`"，配置变更时对这批 bean 逐个 `processInjection` 重新注入。
+**为什么不需要 `@RefreshScope`**：`changedKeys` 是对**已存在的 bean 实例**做原地重新注入，不销毁、不重建 bean，也不重跑 `@PostConstruct`，所以用不上 `refresh` 作用域那套「销毁 + 重建」的机制。代价是只改注入点的值。
 
-> 由于记录动作只发生在 bean 初始化时，**注册时机之后才被创建的 bean 不在名单里**（正常场景下所有单例在启动期就创建完了，不受影响）。
-
-### 2. Apollo
+### Apollo
 
 ```text
-配置中心推送变更
-  -> PropertiesRefresher(@ApolloConfigChangeListener) 打印变更前后值
-  -> publishEvent(EnvironmentChangeEvent)
-  -> @ConfigurationProperties 刷新
-  -> @Value 由 Apollo 自带的 AutoUpdateConfigChangeListener 刷新，无需额外处理
+Apollo 推送变更
+  -> PropertiesRefresher(@ApolloConfigChangeListener) 打印旧值 -> 新值
+  -> publishEvent(EnvironmentChangeEvent)  -> @ConfigurationProperties 刷新
+  -> @Value 由 Apollo 自带的 AutoUpdateConfigChangeListener 刷新
 ```
 
 ## 注意事项
 
-1. **不要直接修改本模块源码**：如需调整配置，复制模板 `bootstrap-*.yml` 到自己的模块 `resources` 目录后修改。
-2. **配置中心三选一**：Nacos、Apollo、Spring Cloud Config 建议只保留一个，同时开启多套会增加排查成本。
-3. **dev 环境默认关闭**：模板中 dev 环境默认关闭配置中心（Nacos/Apollo 的 dev 配置也关闭，Spring Cloud Config 各环境均关闭），本地开发不依赖中间件即可启动；Nacos/Apollo 在 test/pre/prod 默认开启，需要时按环境确认开关。
-4. **Nacos 的 Data ID 要对齐**：`spring.cloud.nacos.config.name` 与 `spring.config.import` 两处不一致会静默读不到配置。
-5. **`@ConditionalOnProperty` 的 bean 不会刷新**：当 bean 上有 `@ConditionalOnProperty` 时，配置变更不会让该 bean 重新装配（需重启），这是当前实现已知的限制。
-6. **Apollo 多 namespace 需同步监听**：详见上文 Apollo 配置详解中的说明。
-7. **Nacos 下 dev 环境等于"完全不刷新"**：`bootstrap-nacos-config.yml` 的 dev 环境把 `spring.cloud.nacos.config.enabled` 置为 `false`，而 `NacosAutoConfiguration` 的生效条件正是 `spring.cloud.nacos.config.enabled`（`matchIfMissing = true`）——**dev 环境下整个自动配置类都不装配，`SpringValueAutoRefreshProcessor` 根本不进容器，`@Value` 不会刷新**。开发时如需验证刷新，请把该开关打开。
-8. **数据源类配置不要用 `@Value` 接**：`@Value` 的刷新方式是对 bean 整体重新注入，对 `DataSource`、连接池、`RedisTemplate`、线程池这类"改了就期望重建"的配置，重注入不会触发重建，接配置中心只会造成"看着改了其实没生效"的假象。
-9. **`@RefreshScope` 与 `@Value` 自动刷新不要叠加使用**：`@RefreshScope` 的 bean 在容器里是作用域代理对象，而 `changedKeys` 里 `beanFactory.getBean(beanName)` 取到的正是代理，重新注入可能写不到目标实例上；同时 `ContextRefresher.refresh()` 会销毁 `refresh` 作用域，与本模块的重新注入叠加属于重复维护。两者选其一即可。
-10. **`@Value` 写在父类上时当前实现不会刷新（已知缺陷）**：`SpringValueAutoRefreshProcessor` 用一个实例字段 `beanNamesNeedRefresh` 同时充当两个语义——「本类是否含 `@Value`」和「全部待刷新 bean 的名字」。该字段一旦非空（即任何一个含 `@Value` 的 bean 先被初始化过），扫描父类的循环就会被提前跳出，**`@Value` 只写在父类的 bean 不会被登记，配置变更后静默不刷新**（编写本文档时该实现尚未修复）。排查手段：给这类 bean 加一个自有 `@Value` 字段，或在启动日志里确认它是否出现在刷新名单相关日志中；根治需要把「是否找到」判断改为方法内局部变量。
-11. **`@Value("${x}")`（无默认值）遇上配置项被删除会抛异常**：只要该 bean 在刷新名单里，重新注入就会因占位符无法解析而抛 `IllegalStateException`，并中断本轮对后续 bean 的刷新。给 `@Value` 配默认值（`${x:默认值}`）可规避。
-12. **`@PostConstruct` 不会因刷新重跑**：重新注入只触发注入点（字段 / setter），不会重跑 `@PostConstruct` 等初始化回调，所以不必担心副作用方法被重复执行。
+1. **配置中心选一个**：Nacos、Apollo、Spring Cloud Config 建议只保留一个，同时开启多套会增加排查成本。
+2. **Nacos 的 Data ID 要对齐**：`spring.cloud.nacos.config.name` 与 `spring.config.import` 不一致会静默读不到配置。
+3. **dev 环境下 Nacos 等于"完全不刷新"**：模板中 `spring.cloud.nacos.config.enabled=false`，而 `NacosAutoConfiguration` 的生效条件正是它，**整个自动配置类都不装配，`@Value` 不会刷新**。本地要验证刷新请把开关打开。
+4. **`@Value` 不要额外加 `@RefreshScope`**：本模块已经能让普通 bean 的 `@Value` 刷新，叠加 `@RefreshScope` 属于两套机制并用（代理对象上的重新注入可能落不到目标实例，`ContextRefresher` 还会销毁 `refresh` 作用域）。只有当 bean 需要"配置变了就整个重建"时才用 `@RefreshScope`。
+5. **`@ConditionalOnProperty` 的 bean 不会刷新**：这类 bean 不会因配置变更重新装配，需要重启。
+6. **数据源类配置不要用 `@Value` 接**：`@Value` 刷新只改注入点的值，不会重建 `DataSource`、连接池、线程池这类组件，接了配置中心只会造成"看着改了其实没生效"。
+7. **`@Value` 写在父类上时当前不刷新（已知缺陷）**：`SpringValueAutoRefreshProcessor` 用实例字段 `beanNamesNeedRefresh` 同时充当"本类是否含 `@Value`"和"全部待刷新 bean"两个语义，该字段一旦非空就会提前跳出父类扫描，导致 `@Value` 只写在父类的 bean 登记不上。修复方式是把"是否找到"改为方法内局部变量。
+8. **`@Value("${x}")`（无默认值）遇上配置项被删除会抛异常**：重新注入时占位符解析失败会抛 `IllegalStateException` 并中断本轮刷新，给 `@Value` 配默认值（`${x:默认值}`）可规避。
+9. **源码里有两处不会被调用的遗留覆写**，改这个类之前先看一眼：`postProcessPropertyValues(...)`（自 Spring 5.3 起被 `postProcessProperties` 取代）与 `setOrder(int)`（无任何调用点、且会把顺序设成比父类默认值更晚）。删掉或修正它们不会影响现有刷新行为。
