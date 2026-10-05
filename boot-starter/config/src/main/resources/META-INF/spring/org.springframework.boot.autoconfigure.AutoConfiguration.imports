@@ -1,0 +1,2 @@
+com.company.config.ApolloAutoConfiguration
+com.company.config.NacosAutoConfiguration

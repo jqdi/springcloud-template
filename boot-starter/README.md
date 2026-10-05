@@ -15,7 +15,9 @@ Boot Starter 模块是一个基于 Spring Boot 的自动化配置框架，旨在
 boot-starter/
 ├── datasource/          # 数据源 Starter 组件
 ├── token/               # Token 管理 Starter 组件
-└── encryptbody/         # 请求体加解密 Starter 组件
+├── encryptbody/         # 请求体加解密 Starter 组件
+├── developer/           # 环境流量路由到本机，调试神器
+└── config/              # 动态刷新配置中心配置（Nacos/Apollo/Config）
 ```
 
 ## 设计理念

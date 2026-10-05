@@ -1,18 +1,15 @@
-package com.company.framework.config.apollo;
+package com.company.config.apollo;
 
 import java.util.Set;
 
 import org.springframework.beans.BeansException;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.cloud.context.environment.EnvironmentChangeEvent;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
-import org.springframework.stereotype.Component;
 
 import com.ctrip.framework.apollo.model.ConfigChange;
 import com.ctrip.framework.apollo.model.ConfigChangeEvent;
 import com.ctrip.framework.apollo.spring.annotation.ApolloConfigChangeListener;
-import com.ctrip.framework.apollo.spring.config.PropertySourcesConstants;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -30,8 +27,6 @@ import lombok.extern.slf4j.Slf4j;
  *
  */
 @Slf4j
-@Component
-@ConditionalOnProperty(PropertySourcesConstants.APOLLO_BOOTSTRAP_ENABLED)
 public class PropertiesRefresher implements ApplicationContextAware {
 
 	private ApplicationContext applicationContext;

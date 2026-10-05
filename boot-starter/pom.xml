@@ -18,6 +18,7 @@
 		<module>token</module>
 		<module>encryptbody</module>
 		<module>developer</module>
+		<module>config</module>
 	</modules>
 
 </project>
