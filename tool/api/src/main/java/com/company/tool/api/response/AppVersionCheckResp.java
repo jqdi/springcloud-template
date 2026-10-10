@@ -32,4 +32,39 @@ public class AppVersionCheckResp {
      * 发布说明
      */
     String releaseNotes;
+
+    /**
+     * 不更新
+     */
+    public static AppVersionCheckResp noUpdate() {
+        AppVersionCheckResp resp = new AppVersionCheckResp();
+        resp.setHasUpdate(false);
+        return resp;
+    }
+
+    /**
+     * 提示更新
+     */
+    public static AppVersionCheckResp tipsUpdate(String latestVersion, String downloadUrl, String releaseNotes) {
+        AppVersionCheckResp resp = new AppVersionCheckResp();
+        resp.setHasUpdate(true);
+        resp.setForceUpdate(false);
+        resp.setLatestVersion(latestVersion);
+        resp.setDownloadUrl(downloadUrl);
+        resp.setReleaseNotes(releaseNotes);
+        return resp;
+    }
+
+    /**
+     * 更新强制
+     */
+    public static AppVersionCheckResp forceUpdate(String latestVersion, String downloadUrl, String releaseNotes) {
+        AppVersionCheckResp resp = new AppVersionCheckResp();
+        resp.setHasUpdate(true);
+        resp.setForceUpdate(true);
+        resp.setLatestVersion(latestVersion);
+        resp.setDownloadUrl(downloadUrl);
+        resp.setReleaseNotes(releaseNotes);
+        return resp;
+    }
 }

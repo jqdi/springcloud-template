@@ -27,6 +27,9 @@ CREATE TABLE `app_version` (
   `release_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '发布时间',
   `download_url` varchar(255) NOT NULL COMMENT '安装包下载地址',
   `release_notes` text COMMENT '发布说明',
+  `gray_percent` decimal(3,2) NOT NULL DEFAULT 1 COMMENT '灰度比例(0.00-1.00)',
+  `total_count` int NOT NULL DEFAULT 0 COMMENT '总量',
+  `update_count` int NOT NULL DEFAULT 0 COMMENT '更新量',
 
   `remark` varchar(255) NOT NULL DEFAULT '' COMMENT '备注',
   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',

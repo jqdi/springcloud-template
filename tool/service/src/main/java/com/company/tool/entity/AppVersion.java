@@ -1,5 +1,6 @@
 package com.company.tool.entity;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -46,6 +47,21 @@ public class AppVersion {
      */
     @I18nField(i18nColumn = "release_notes")
     private String releaseNotes;
+
+    /**
+     * 灰度比例(0.00-1.00)
+     */
+    private BigDecimal grayPercent;
+
+    /**
+     * 更新量
+     */
+    private Integer totalCount;
+
+    /**
+     * 总量
+     */
+    private Integer updateCount;
 
 	private String remark;
 	private LocalDateTime createTime;
