@@ -1,7 +1,6 @@
 package com.company.system.api.interfaces;
 
 
-import com.company.system.api.request.RemoveReq;
 import com.company.system.api.request.SysConfigReq;
 import com.company.common.response.PageResp;
 import com.company.system.api.response.SysConfigResp;
@@ -31,7 +30,7 @@ public interface SysConfigApi {
 	Boolean update(@RequestBody SysConfigReq sysConfigReq);
 
 	@PostMapping("/remove")
-	Boolean remove(@RequestBody RemoveReq<Integer> req);
+	Boolean remove(@RequestBody List<Integer> idList);
 
 	@GetMapping("/getValueByCode")
     Map<String, String> getValueByCode(@RequestParam("code") String code);

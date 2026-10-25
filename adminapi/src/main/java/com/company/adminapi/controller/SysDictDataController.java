@@ -6,14 +6,14 @@ import com.company.adminapi.easyexcel.ExcelUtil;
 import com.company.adminapi.enums.OperationLogEnum.BusinessType;
 import com.company.adminapi.excel.SysDictDataExcel;
 
-import com.company.system.api.request.RemoveReq;
 import com.company.common.response.PageResp;
 import com.company.system.api.response.SelectResp;
 import com.company.framework.util.PropertyUtils;
-import com.company.adminapi.feign.SysDictDataFeign;
+import com.company.adminapi.feign.client.SysDictDataFeign;
 import com.company.system.api.request.SysDictDataReq;
 import com.company.system.api.response.SysDictDataResp;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -60,8 +60,11 @@ public class SysDictDataController {
     @OperationLog(title = "字典数据删除", businessType = BusinessType.DELETE)
 	@RequirePermissions("system:sysDictData:remove")
 	@PostMapping("/remove")
-	public Boolean remove(@RequestBody RemoveReq<Integer> req) {
-		return sysDictDataFeign.remove(req);
+	public Boolean remove(List<Integer> idList) {
+        if (CollectionUtils.isEmpty(idList)) {
+            return true;
+        }
+		return sysDictDataFeign.remove(idList);
 	}
 
 	@OperationLog(title = "字典数据导出", businessType = BusinessType.EXPORT, isSaveResponseData = false)

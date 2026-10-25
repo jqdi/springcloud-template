@@ -17,7 +17,7 @@ import com.company.tool.api.response.UploadResp;
  *
  * <pre>
  * 服务提供方： Controller 实现本接口
- * 调用方：在自身 service 模块的 feign 包下新建 FileFeign extends FileApi 并标注 @FeignClient
+ * 调用方：在自身 service 模块的 feign.client 包下新建 FileFeign extends FileApi 并标注 @FeignClient
  * </pre>
  *
  * @author JQ棣

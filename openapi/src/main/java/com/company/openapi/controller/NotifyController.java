@@ -13,9 +13,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.company.framework.util.WebUtil;
 import com.company.openapi.annotation.NoSign;
-import com.company.openapi.feign.AliActivityNotifyFeign;
-import com.company.openapi.feign.AliNotifyFeign;
-import com.company.openapi.feign.WxNotifyFeign;
+import com.company.openapi.feign.client.AliActivityNotifyFeign;
+import com.company.openapi.feign.client.AliNotifyFeign;
+import com.company.openapi.feign.client.WxNotifyFeign;
 import com.company.order.api.response.SpiOrderSendNotifyResp;
 import com.feiniaojin.gracefulresponse.api.ExcludeFromGracefulResponse;
 

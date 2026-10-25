@@ -1,7 +1,6 @@
 package com.company.system.api.interfaces;
 
 
-import com.company.system.api.request.RemoveReq;
 import com.company.system.api.request.SysDictDataReq;
 import com.company.common.response.PageResp;
 import com.company.system.api.response.SysDictDataResp;
@@ -31,7 +30,7 @@ public interface SysDictDataApi {
 	Boolean update(@RequestBody SysDictDataReq sysDictDataReq);
 
 	@PostMapping("/remove")
-	Boolean remove(@RequestBody RemoveReq<Integer> req);
+	Boolean remove(@RequestBody List<Integer> idList);
 
 	@GetMapping("/getByType")
 	List<SysDictDataResp> getByType(@RequestParam("type") String type);

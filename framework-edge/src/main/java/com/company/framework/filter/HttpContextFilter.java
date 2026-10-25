@@ -77,6 +77,14 @@ public class HttpContextFilter extends OncePerRequestFilter {
 			}
 		}
 
+		String appCode = request.getHeader(HeaderConstants.HEADER_APPCODE);
+		if (StringUtils.isBlank(appCode)) {
+			appCode = request.getParameter(HeaderConstants.HEADER_APPCODE);
+			if (StringUtils.isNotBlank(appCode)) {
+				headerRequest.addHeader(HeaderConstants.HEADER_APPCODE, appCode);
+			}
+		}
+
 		String channel = request.getHeader(HeaderConstants.HEADER_CHANNEL);
 		if (StringUtils.isBlank(channel)) {
 			channel = request.getParameter(HeaderConstants.HEADER_CHANNEL);

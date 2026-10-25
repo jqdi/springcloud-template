@@ -1,9 +1,10 @@
 package com.company.user.entity;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 
 import com.baomidou.mybatisplus.annotation.TableName;
+
+import com.company.datasource.mybatisplus.activerecord.AuditableModel;
 
 import lombok.Data;
 import lombok.experimental.Accessors;
@@ -14,7 +15,7 @@ import lombok.experimental.Accessors;
 @Data
 @Accessors(chain = true)
 @TableName("wallet_use_seq")
-public class WalletUseSeq {
+public class WalletUseSeq extends AuditableModel<WalletUseSeq> {
 	/**
 	 * ID
 	 */
@@ -41,6 +42,4 @@ public class WalletUseSeq {
 	private BigDecimal leftAmount;
 
 	private String remark;
-	private LocalDateTime createTime;
-	private LocalDateTime updateTime;
 }

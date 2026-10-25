@@ -57,11 +57,16 @@ public class DeviceInfoFilter extends OncePerRequestFilter {
 			deviceid = request.getParameter(HeaderConstants.HEADER_DEVICEID);
 		}
 
-		if (StringUtils.isBlank(deviceid)) {
-			// 请求头和参数都找不到deviceid
-			chain.doFilter(request, response);
-			return;
-		}
+        String appCode = request.getHeader(HeaderConstants.HEADER_APPCODE);
+        if (StringUtils.isBlank(appCode)) {
+            appCode = request.getParameter(HeaderConstants.HEADER_APPCODE);
+        }
+
+        if (StringUtils.isAnyBlank(deviceid, appCode)) {
+            // 请求头和参数都找不到deviceid或appCode
+            chain.doFilter(request, response);
+            return;
+        }
 
 		String platform = request.getHeader(HeaderConstants.HEADER_PLATFORM);
 		if (StringUtils.isBlank(platform)) {
@@ -97,6 +102,7 @@ public class DeviceInfoFilter extends OncePerRequestFilter {
 		// 发布设备信息事件
 		Map<String, Object> params = Maps.newHashMap();
 		params.put("deviceid", deviceid);
+		params.put("appCode", appCode);
 		params.put("platform", platform);
 		params.put("operator", operator);
 		params.put("channel", channel);

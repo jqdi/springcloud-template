@@ -1,6 +1,5 @@
 package com.company.tool.canal;
 
-import com.company.framework.util.JsonUtil;
 import com.company.tool.cache.AppVersionCache;
 import com.company.tool.entity.AppVersion;
 import com.company.tool.service.AppVersionService;
@@ -24,7 +23,7 @@ public class AppVersionHandler implements EntryHandler<AppVersion> {
     public void delete(AppVersion t) {
         log.info("删除操作: {}", t);
         appVersionCache.del(t.getAppCode());
-        appVersionService.delLastByAppCodeCache(t.getAppCode());
+        appVersionService.delLastFullByAppCodeCache(t.getAppCode());
     }
 
     @Override
@@ -36,9 +35,9 @@ public class AppVersionHandler implements EntryHandler<AppVersion> {
     public void update(AppVersion before, AppVersion after) {
         log.info("更新操作，更新前: {},更新后: {}", before, after);
         appVersionCache.del(after.getAppCode());
-        appVersionCache.selectLastByAppCode(after.getAppCode());
+        appVersionCache.selectLastFullByAppCode(after.getAppCode());
 
-        appVersionService.delLastByAppCodeCache(after.getAppCode());
-        appVersionService.selectLastByAppCodeCache(after.getAppCode());
+        appVersionService.delLastFullByAppCodeCache(after.getAppCode());
+        appVersionService.selectLastFullByAppCodeCache(after.getAppCode());
     }
 }

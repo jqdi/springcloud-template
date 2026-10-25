@@ -16,7 +16,6 @@ import com.company.common.response.PageResp;
 import com.company.framework.util.PropertyUtils;
 import com.company.system.constant.Constants;
 import com.company.system.api.interfaces.SysUserRoleApi;
-import com.company.system.api.request.RemoveReq;
 import com.company.system.api.request.SysUserRoleReq;
 import com.company.system.api.response.SysUserRoleResp;
 import com.company.system.entity.SysRole;
@@ -114,11 +113,11 @@ public class SysUserRoleController implements SysUserRoleApi {
 	}
 
 	@Override
-	public Boolean remove(@RequestBody RemoveReq<Integer> req) {
-		if (req.getIdList() == null || req.getIdList().isEmpty()) {
-			return true;
-		}
-		boolean success = sysUserRoleService.removeBatchByIds(req.getIdList());
+	public Boolean remove(List<Integer> idList) {
+        if (CollectionUtils.isEmpty(idList)) {
+            return true;
+        }
+		boolean success = sysUserRoleService.removeByIds(idList);
 		return success;
 	}
 

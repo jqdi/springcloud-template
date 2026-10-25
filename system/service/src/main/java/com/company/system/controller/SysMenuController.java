@@ -16,7 +16,6 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.PageDTO;
 import com.company.framework.util.PropertyUtils;
 import com.company.system.constant.Constants;
 import com.company.system.api.interfaces.SysMenuApi;
-import com.company.system.api.request.RemoveReq;
 import com.company.system.api.request.SysMenuReq;
 import com.company.common.response.PageResp;
 import com.company.system.api.response.RouterResp;
@@ -118,11 +117,11 @@ public class SysMenuController implements SysMenuApi {
 	}
 
 	@Override
-	public Boolean remove(@RequestBody RemoveReq<Integer> req) {
-		if (req.getIdList() == null || req.getIdList().isEmpty()) {
-			return true;
-		}
-		boolean success = sysMenuService.removeBatchByIds(req.getIdList());
+	public Boolean remove(List<Integer> idList) {
+        if (CollectionUtils.isEmpty(idList)) {
+            return true;
+        }
+		boolean success = sysMenuService.removeByIds(idList);
 		return success;
 	}
 

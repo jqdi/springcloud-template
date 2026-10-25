@@ -1,7 +1,6 @@
 package com.company.system.api.interfaces;
 
 
-import com.company.system.api.request.RemoveReq;
 import com.company.system.api.request.SysDeptReq;
 import com.company.common.response.PageResp;
 import com.company.system.api.response.SysDeptResp;
@@ -30,6 +29,6 @@ public interface SysDeptApi {
 	Boolean update(@RequestBody SysDeptReq sysDeptReq);
 
 	@PostMapping("/remove")
-	Boolean remove(@RequestBody RemoveReq<Integer> req);
+	Boolean remove(@RequestBody List<Integer> idList);
 
 }

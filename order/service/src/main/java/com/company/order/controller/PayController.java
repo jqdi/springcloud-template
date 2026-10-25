@@ -23,7 +23,7 @@ import com.company.order.pay.core.PayClient;
 import com.company.order.pay.dto.PayParams;
 import com.company.order.service.OrderPayRefundService;
 import com.company.order.service.OrderPayService;
-import com.company.order.feign.RetryerFeign;
+import com.company.order.feign.client.RetryerFeign;
 import com.company.tool.api.request.RetryerInfoReq;
 import com.company.tool.api.response.RetryerResp;
 import com.google.common.collect.Maps;

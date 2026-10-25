@@ -1,8 +1,9 @@
 package com.company.tool.entity;
 
-import java.time.LocalDateTime;
 
 import com.baomidou.mybatisplus.annotation.TableName;
+
+import com.company.datasource.mybatisplus.activerecord.AuditableModel;
 
 import lombok.Data;
 import lombok.experimental.Accessors;
@@ -10,7 +11,7 @@ import lombok.experimental.Accessors;
 @Data
 @Accessors(chain = true)
 @TableName("common_i18n")
-public class CommonI18n {
+public class CommonI18n extends AuditableModel<CommonI18n> {
     private Integer id;
 
     /**
@@ -39,6 +40,4 @@ public class CommonI18n {
     private String i18nText;
 
     private String remark;
-    private LocalDateTime createTime;
-    private LocalDateTime updateTime;
 }

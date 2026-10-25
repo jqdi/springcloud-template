@@ -1,18 +1,19 @@
 package com.company.order.entity;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 
+import com.company.datasource.mybatisplus.activerecord.AuditableModel;
+
 import lombok.Data;
 
 @Data
 @TableName("order_pay_refund")
-public class OrderPayRefund {
+public class OrderPayRefund extends AuditableModel<OrderPayRefund> {
 
 	/**
 	 * ID
@@ -77,14 +78,4 @@ public class OrderPayRefund {
 	@TableField(value = "remark")
 	private String remark;
 
-	/**
-	 * 创建时间
-	 */
-	@TableField(value = "create_time")
-	private LocalDateTime createTime;
-	/**
-	 * 更新时间
-	 */
-	@TableField(value = "update_time")
-	private LocalDateTime updateTime;
 }

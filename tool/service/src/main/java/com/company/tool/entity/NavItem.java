@@ -4,13 +4,15 @@ import java.time.LocalDateTime;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 
+import com.company.datasource.mybatisplus.activerecord.AuditableModel;
+
 import lombok.Data;
 import lombok.experimental.Accessors;
 
 @Data
 @Accessors(chain = true)
 @TableName("nav_item")
-public class NavItem {
+public class NavItem extends AuditableModel<NavItem> {
 	private Integer id;
 
 	/**
@@ -64,6 +66,4 @@ public class NavItem {
 	private String attachJson;
 
 	private String remark;
-	private LocalDateTime createTime;
-	private LocalDateTime updateTime;
 }

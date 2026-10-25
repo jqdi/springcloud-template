@@ -14,13 +14,13 @@ import java.time.LocalDateTime;
 @Component
 public class DeviceInfoService extends ServiceImpl<DeviceInfoMapper, DeviceInfo> implements IService<DeviceInfo> {
 
-    @Cacheable(value = Constants.CacheName.DEVICE_INFO, key = "#deviceid")
-    public DeviceInfo selectByDeviceid(String deviceid) {
-        return baseMapper.selectByDeviceid(deviceid);
+    @Cacheable(value = Constants.CacheName.DEVICE_INFO, key = "#deviceid + ':' + #appCode")
+    public DeviceInfo selectByDeviceidAppCode(String deviceid, String appCode) {
+        return baseMapper.selectByDeviceidAppCode(deviceid, appCode);
     }
 
-    public int saveOrUpdate(String deviceid, String platform, String operator, String channel, String version, String requestip,
+    public int saveOrUpdate(String deviceid, String appCode, String platform, String operator, String channel, String version, String requestip,
         String userAgent, LocalDateTime time) {
-        return baseMapper.saveOrUpdate(deviceid, platform, operator, channel, version, requestip, userAgent, time);
+        return baseMapper.saveOrUpdate(deviceid, appCode, platform, operator, channel, version, requestip, userAgent, time);
     }
 }

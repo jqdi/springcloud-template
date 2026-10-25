@@ -7,7 +7,7 @@ import org.springframework.cloud.openfeign.FallbackFactory;
 import org.springframework.stereotype.Component;
 
 import com.company.common.fallback.FallbackUtil;
-import com.company.system.feign.EmailFeign;
+import com.company.system.feign.client.EmailFeign;
 import com.company.tool.api.request.SendEmailReq;
 
 @Component

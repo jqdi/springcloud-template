@@ -5,13 +5,15 @@ import java.time.LocalDateTime;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 
+import com.company.datasource.mybatisplus.activerecord.AuditableModel;
+
 import lombok.Data;
 import lombok.experimental.Accessors;
 
 @Data
 @Accessors(chain = true)
 @TableName("coupon_template")
-public class CouponTemplate {
+public class CouponTemplate extends AuditableModel<CouponTemplate> {
 	private Integer id;
 
 	/**
@@ -70,6 +72,4 @@ public class CouponTemplate {
 	private String useDescription;
 
 	private String remark;
-	private LocalDateTime createTime;
-	private LocalDateTime updateTime;
 }

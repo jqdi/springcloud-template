@@ -8,13 +8,13 @@ import com.company.adminapi.easyexcel.ExcelUtil;
 import com.company.adminapi.enums.OperationLogEnum.BusinessType;
 import com.company.adminapi.excel.SysOperLogExcel;
 
-import com.company.system.api.request.RemoveReq;
 import com.company.common.response.PageResp;
 import com.company.framework.util.PropertyUtils;
-import com.company.adminapi.feign.SysOperLogFeign;
+import com.company.adminapi.feign.client.SysOperLogFeign;
 import com.company.system.api.request.SysOperLogReq;
 import com.company.system.api.response.SysOperLogResp;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -61,8 +61,11 @@ public class SysOperLogController {
     @OperationLog(title = "操作日志记录删除", businessType = BusinessType.DELETE)
 	@RequirePermissions("system:sysOperLog:remove")
 	@PostMapping("/remove")
-	public Boolean remove(@RequestBody RemoveReq<Integer> req) {
-		return sysOperLogFeign.remove(req);
+	public Boolean remove(List<Integer> idList) {
+        if (CollectionUtils.isEmpty(idList)) {
+            return true;
+        }
+		return sysOperLogFeign.remove(idList);
 	}
 
 	@OperationLog(title = "操作日志记录导出", businessType = BusinessType.EXPORT, isSaveResponseData = false)

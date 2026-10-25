@@ -3,7 +3,7 @@ package com.company.system.feign.fallback;
 import java.util.Collections;
 import java.util.List;
 
-import com.company.system.feign.CommonI18nFeign;
+import com.company.system.feign.client.CommonI18nFeign;
 import com.company.tool.api.request.CommonI18nReq;
 import com.company.tool.api.response.CommonI18nResp;
 import org.springframework.cloud.openfeign.FallbackFactory;

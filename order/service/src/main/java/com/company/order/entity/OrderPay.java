@@ -8,11 +8,13 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 
+import com.company.datasource.mybatisplus.activerecord.AuditableModel;
+
 import lombok.Data;
 
 @Data
 @TableName("order_pay")
-public class OrderPay {
+public class OrderPay extends AuditableModel<OrderPay> {
 
 	/**
 	 * ID
@@ -84,14 +86,4 @@ public class OrderPay {
 	@TableField(value = "remark")
 	private String remark;
 
-	/**
-	 * 创建时间
-	 */
-	@TableField(value = "create_time")
-	private LocalDateTime createTime;
-	/**
-	 * 更新时间
-	 */
-	@TableField(value = "update_time")
-	private LocalDateTime updateTime;
 }

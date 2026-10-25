@@ -1,7 +1,8 @@
-package ${adminapiPackage}.feign;
+package ${adminapiPackage}.feign.client;
 
 import org.springframework.cloud.openfeign.FeignClient;
 
+import ${adminapiPackage}.feign.FeignConstants;
 import ${adminapiPackage}.feign.fallback.ThrowExceptionFallback;
 import ${apiPackage}.interfaces.${entity}Api;
 

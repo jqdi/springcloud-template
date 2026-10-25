@@ -3,6 +3,8 @@ package com.company.tool.entity;
 import java.time.LocalDateTime;
 
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.company.datasource.mybatisplus.activerecord.AuditableModel;
+
 import com.company.tool.i18n.CommonI18nDataProvider;
 
 import io.github.jqdi.i18n.core.annotation.I18nField;
@@ -15,7 +17,7 @@ import lombok.experimental.Accessors;
 @TableName("banner")
 @I18nTable(i18nTable = "banner_i18n", i18nRelatedColumn = "banner_id", relatedValueFromField = "id") // 独立国际化表方式
 //@I18nTable(i18nTable = "banner_i18n", i18nRelatedColumn = "banner_id", relatedValueFromField = "id", i18nDataProvider = CommonI18nDataProvider.class) // 统一国际化表方式
-public class Banner {
+public class Banner extends AuditableModel<Banner> {
 	private Integer id;
 
 	/**
@@ -60,6 +62,4 @@ public class Banner {
 	private String value;
 
 	private String remark;
-	private LocalDateTime createTime;
-	private LocalDateTime updateTime;
 }

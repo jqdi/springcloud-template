@@ -4,9 +4,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import com.company.system.api.request.RemoveReq;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -102,11 +102,11 @@ public class SysDictDataController implements SysDictDataApi {
 	}
 
 	@Override
-	public Boolean remove(RemoveReq<Integer> req) {
-		if (req.getIdList() == null || req.getIdList().isEmpty()) {
-			return true;
-		}
-		boolean success = sysDictDataService.removeBatchByIds(req.getIdList());
+	public Boolean remove(List<Integer> idList) {
+        if (CollectionUtils.isEmpty(idList)) {
+            return true;
+        }
+		boolean success = sysDictDataService.removeByIds(idList);
 		return success;
 	}
 

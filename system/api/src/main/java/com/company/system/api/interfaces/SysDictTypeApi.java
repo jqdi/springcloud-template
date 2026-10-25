@@ -1,7 +1,6 @@
 package com.company.system.api.interfaces;
 
 
-import com.company.system.api.request.RemoveReq;
 import com.company.system.api.request.SysDictTypeReq;
 import com.company.common.response.PageResp;
 import com.company.system.api.response.SysDictTypeResp;
@@ -30,6 +29,6 @@ public interface SysDictTypeApi {
 	Boolean update(@RequestBody SysDictTypeReq sysDictTypeReq);
 
 	@PostMapping("/remove")
-	Boolean remove(@RequestBody RemoveReq<Integer> req);
+	Boolean remove(@RequestBody List<Integer> idList);
 
 }

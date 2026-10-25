@@ -7,7 +7,7 @@ import org.springframework.cloud.openfeign.FallbackFactory;
 import org.springframework.stereotype.Component;
 
 import com.company.common.fallback.FallbackUtil;
-import com.company.job.feign.SubscribeFeign;
+import com.company.job.feign.client.SubscribeFeign;
 import com.company.tool.api.request.SubscribeGrantReq;
 import com.company.tool.api.request.SubscribeSendReq;
 

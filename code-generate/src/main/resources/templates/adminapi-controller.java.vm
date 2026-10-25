@@ -16,7 +16,7 @@ import ${adminapiPackage}.annotation.RequirePermissions;
 import ${adminapiPackage}.easyexcel.ExcelUtil;
 import ${adminapiPackage}.enums.OperationLogEnum.BusinessType;
 import ${adminapiPackage}.excel.${entity}Excel;
-import ${adminapiPackage}.feign.${entity}Feign;
+import ${adminapiPackage}.feign.client.${entity}Feign;
 import com.company.common.response.PageResp;
 import com.company.framework.util.PropertyUtils;
 import ${apiPackage}.request.${entity}Req;

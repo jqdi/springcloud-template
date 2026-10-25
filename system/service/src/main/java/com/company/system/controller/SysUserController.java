@@ -3,7 +3,6 @@ package com.company.system.controller;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.PageDTO;
 
-import com.company.system.api.request.RemoveReq;
 import com.company.common.response.PageResp;
 import com.company.framework.util.PropertyUtils;
 import com.company.system.constant.Constants;
@@ -20,6 +19,7 @@ import com.company.system.service.SysUserRoleService;
 import com.company.system.service.SysUserService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -130,11 +130,11 @@ public class SysUserController implements SysUserApi {
 	}
 
 	@Override
-	public Boolean remove(@RequestBody RemoveReq<Integer> req) {
-		if (req.getIdList() == null || req.getIdList().isEmpty()) {
-			return true;
-		}
-		boolean success = sysUserService.removeByIds(req.getIdList());
+	public Boolean remove(List<Integer> idList) {
+        if (CollectionUtils.isEmpty(idList)) {
+            return true;
+        }
+		boolean success = sysUserService.removeByIds(idList);
 		return success;
 	}
 

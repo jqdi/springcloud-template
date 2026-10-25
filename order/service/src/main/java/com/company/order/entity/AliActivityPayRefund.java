@@ -1,10 +1,11 @@
 package com.company.order.entity;
 
-import java.time.LocalDateTime;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+
+import com.company.datasource.mybatisplus.activerecord.AuditableModel;
 
 import lombok.Data;
 import lombok.experimental.Accessors;
@@ -12,7 +13,7 @@ import lombok.experimental.Accessors;
 @TableName("ali_activity_pay_refund")
 @Data
 @Accessors(chain = true)
-public class AliActivityPayRefund {
+public class AliActivityPayRefund extends AuditableModel<AliActivityPayRefund> {
 	/**
 	 * ID
 	 */
@@ -76,13 +77,5 @@ public class AliActivityPayRefund {
 	 */
 	private String remark;
 
-	/**
-	 * 创建时间
-	 */
-	private LocalDateTime createTime;
 
-	/**
-	 * 更新时间
-	 */
-	private LocalDateTime updateTime;
 }

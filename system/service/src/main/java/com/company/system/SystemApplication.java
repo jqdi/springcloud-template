@@ -9,7 +9,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 import com.company.framework.constant.CommonConstants;
 import com.company.framework.context.SpringContextUtil;
 
-@EnableFeignClients // @FeignClient扫描，默认扫描‘当前启动类所在包 + 子包’的`@FeignClient`接口
+@EnableFeignClients(basePackages = "com.company.system.feign.client") // @FeignClient扫描，指定扫描 feign.client 包
 @SpringBootApplication(scanBasePackages = CommonConstants.BASE_PACKAGE, exclude = { RabbitAutoConfiguration.class, RocketMQAutoConfiguration.class }) // bean扫描路径
 public class SystemApplication {
 	public static void main(String[] args) {

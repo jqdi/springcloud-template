@@ -1,10 +1,9 @@
 package com.company.system.entity;
 
-import java.time.LocalDateTime;
 
-import com.baomidou.mybatisplus.annotation.FieldFill;
-import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
+
+import com.company.datasource.mybatisplus.activerecord.AuditableModel;
 
 import lombok.Data;
 
@@ -16,7 +15,7 @@ import lombok.Data;
  */
 @Data
 @TableName("sys_role")
-public class SysRole {
+public class SysRole extends AuditableModel<SysRole> {
 
 	/**
 	 * id
@@ -57,29 +56,4 @@ public class SysRole {
 	 * 备注
 	 */
 	private String remark;
-
-	/**
-	 * 创建时间
-	 */
-	@TableField(fill = FieldFill.INSERT)
-	private LocalDateTime createTime;
-
-	/**
-	 * 创建人
-	 */
-	@TableField(fill = FieldFill.INSERT)
-	private Integer createBy;
-
-	/**
-	 * 更新时间
-	 */
-	@TableField(fill = FieldFill.INSERT_UPDATE)
-	private LocalDateTime updateTime;
-
-	/**
-	 * 更新人
-	 */
-	@TableField(fill = FieldFill.INSERT_UPDATE)
-	private Integer updateBy;
-
 }

@@ -8,7 +8,7 @@ import org.springframework.cloud.openfeign.FallbackFactory;
 import org.springframework.stereotype.Component;
 
 import com.company.common.fallback.FallbackUtil;
-import com.company.job.feign.WalletIncomeUseRecordFeign;
+import com.company.job.feign.client.WalletIncomeUseRecordFeign;
 
 import lombok.extern.slf4j.Slf4j;
 

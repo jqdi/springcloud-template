@@ -13,7 +13,6 @@ import org.springframework.stereotype.Component;
 
 import com.company.framework.messagedriven.BaseStrategy;
 import com.company.user.entity.DeviceInfo;
-import com.company.user.mapper.user.DeviceInfoMapper;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 
@@ -42,8 +41,9 @@ public class DeviceInfoRecordStrategy implements BaseStrategy<Map<String, Object
     @Override
     public void doStrategy(Map<String, Object> params) {
         String deviceid = MapUtils.getString(params, "deviceid");
-        if (StringUtils.isBlank(deviceid)) {
-            // 没有deviceid，不处理
+        String appCode = MapUtils.getString(params, "appCode");
+        if (StringUtils.isAnyBlank(deviceid, appCode)) {
+            // deviceid和appCode不完整，不处理
             return;
         }
         String platform = MapUtils.getString(params, "platform");
@@ -54,7 +54,7 @@ public class DeviceInfoRecordStrategy implements BaseStrategy<Map<String, Object
         String userAgent = MapUtils.getString(params, "userAgent");
 
         // 数据量可能很大，需要快速过滤重复的数据，加快处理速度
-        String key = String.format("device_info:%s", deviceid);
+        String key = String.format("device_info:%s:%s", deviceid, appCode);
         String result = cache.getIfPresent(key);
         if (EXIST_VALUE.equals(result)) {
             return;
@@ -63,17 +63,17 @@ public class DeviceInfoRecordStrategy implements BaseStrategy<Map<String, Object
         // 保存deviceid、platform、operator、channel、version、requestip、userAgent关联关系到DB
         String timeStr = MapUtils.getString(params, "time");
         LocalDateTime time = LocalDateTimeUtil.parse(timeStr, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-        save2db(deviceid, platform, operator, channel, version, requestip, userAgent, time);
+        save2db(deviceid, appCode, platform, operator, channel, version, requestip, userAgent, time);
 
         // 数据量可能很大，需要快速过滤重复的数据，加快处理速度
         cache.put(key, EXIST_VALUE);
     }
 
-    private void save2db(String deviceid, String platform, String operator, String channel, String version, String requestip, String userAgent, LocalDateTime time) {
+    private void save2db(String deviceid, String appCode, String platform, String operator, String channel, String version, String requestip, String userAgent, LocalDateTime time) {
         // 获取记录
-        DeviceInfo deviceInfo = deviceInfoService.selectByDeviceid(deviceid);
+        DeviceInfo deviceInfo = deviceInfoService.selectByDeviceidAppCode(deviceid, appCode);
         if (deviceInfo == null) {// 新增
-            deviceInfoService.saveOrUpdate(deviceid, platform, operator, channel, version, requestip, userAgent, time);
+            deviceInfoService.saveOrUpdate(deviceid, appCode, platform, operator, channel, version, requestip, userAgent, time);
             return;
         }
         if (time.isBefore(deviceInfo.getTime())) { // 时间小于原来的时间，说明是旧数据，不需要更新

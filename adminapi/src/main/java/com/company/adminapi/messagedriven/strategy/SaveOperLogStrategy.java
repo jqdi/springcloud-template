@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 
 import com.company.adminapi.messagedriven.strategy.dto.SysOperLogDto;
 import com.company.framework.messagedriven.BaseStrategy;
-import com.company.adminapi.feign.SysOperLogFeign;
+import com.company.adminapi.feign.client.SysOperLogFeign;
 import com.company.system.api.request.SysOperLogReq;
 
 @Component(StrategyConstants.SAVE_OPERLOG_STRATEGY)
@@ -31,6 +31,7 @@ public class SaveOperLogStrategy implements BaseStrategy<SysOperLogDto> {
 		sysOperLogReq.setStatus(params.getStatus());
 		sysOperLogReq.setErrorMsg(params.getErrorMsg());
 		sysOperLogReq.setCostTime(params.getCostTime());
+        sysOperLogReq.setOperTime(params.getOperTime());
 		sysOperLogFeign.save(sysOperLogReq);
 	}
 }

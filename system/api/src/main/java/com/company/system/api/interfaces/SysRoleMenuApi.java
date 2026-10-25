@@ -1,7 +1,6 @@
 package com.company.system.api.interfaces;
 
 
-import com.company.system.api.request.RemoveReq;
 import com.company.system.api.request.SysRoleMenuReq;
 import com.company.common.response.PageResp;
 import com.company.system.api.response.SysRoleMenuResp;
@@ -30,6 +29,6 @@ public interface SysRoleMenuApi {
 	Boolean update(@RequestBody SysRoleMenuReq sysRoleMenuReq);
 
 	@PostMapping("/remove")
-	Boolean remove(@RequestBody RemoveReq<Integer> req);
+	Boolean remove(@RequestBody List<Integer> idList);
 
 }

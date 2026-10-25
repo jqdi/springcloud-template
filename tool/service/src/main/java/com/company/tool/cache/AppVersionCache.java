@@ -17,12 +17,12 @@ public class AppVersionCache {
     @Autowired
     private AppVersionService appVersionService;
 
-    public AppVersion selectLastByAppCode(String appCode) {
+    public AppVersion selectLastFullByAppCode(String appCode) {
         Cache cache = cacheManager.getCache(Constants.CacheName.APP_VERSION);
         if (cache == null) {
-            return appVersionService.selectLastByAppCode(appCode);
+            return appVersionService.selectLastFullByAppCode(appCode);
         }
-        return cache.get(appCode, () -> appVersionService.selectLastByAppCode(appCode));
+        return cache.get(appCode, () -> appVersionService.selectLastFullByAppCode(appCode));
     }
 
     public void del(String appCode) {

@@ -172,7 +172,7 @@ public class CodeGeneratorService {
                 consumer.customFile(builder -> builder//
                     .templatePath("/templates/adminapi-feign.java.vm")//
                     .filePath(adminapiPath)//
-                    .packageName("feign")//
+                    .packageName("feign.client")//
                     .formatNameFunction(tableInfo -> tableInfo.getEntityName() + "Feign")//
                     .fileName(".java")//
                     .enableFileOverride()//

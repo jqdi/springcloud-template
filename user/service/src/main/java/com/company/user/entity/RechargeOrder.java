@@ -1,12 +1,13 @@
 package com.company.user.entity;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+
+import com.company.datasource.mybatisplus.activerecord.AuditableModel;
 
 import lombok.Data;
 
@@ -15,7 +16,7 @@ import lombok.Data;
  */
 @Data
 @TableName(value ="recharge_order")
-public class RechargeOrder {
+public class RechargeOrder extends AuditableModel<RechargeOrder> {
     /**
      * ID
      */
@@ -58,15 +59,5 @@ public class RechargeOrder {
     @TableField(value = "remark")
     private String remark;
 
-    /**
-     * 创建时间
-     */
-    @TableField(value = "create_time")
-    private LocalDateTime createTime;
 
-    /**
-     * 更新时间
-     */
-    @TableField(value = "update_time")
-    private LocalDateTime updateTime;
 }

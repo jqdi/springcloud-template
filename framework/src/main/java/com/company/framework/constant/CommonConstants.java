@@ -11,11 +11,11 @@ public interface CommonConstants {
 		int TRACE = -10;
 		int SUMMARY_API = -5;
 		int HTTP_CONTEXT = 5;
-		int DEVICE = 6;
-		int SOURCE = 7;
-		int REQUEST = 10;
-		int TOKEN = 30;
-		int HEADER_CONTEXT = 40;// 优先级必须最低，才能将所有的请求头放到上下文
+		int DEVICE = 60;
+		int SOURCE = 70;
+		int REQUEST = 80;
+		int TOKEN = 90;
+		int HEADER_CONTEXT = 100;// 优先级必须最低，才能将所有的请求头放到上下文
 	}
 
 	/**

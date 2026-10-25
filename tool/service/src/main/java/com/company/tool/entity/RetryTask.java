@@ -6,13 +6,15 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 
+import com.company.datasource.mybatisplus.activerecord.AuditableModel;
+
 import lombok.Data;
 import lombok.experimental.Accessors;
 
 @Data
 @Accessors(chain = true)
 @TableName("retry_task")
-public class RetryTask {
+public class RetryTask extends AuditableModel<RetryTask> {
 	/**
 	 * ID
 	 */
@@ -65,13 +67,5 @@ public class RetryTask {
 	 * 备注信息
 	 */
 	private String remark;
-	/**
-	 * 创建时间
-	 */
-	private LocalDateTime createTime;
 
-	/**
-	 * 更新时间
-	 */
-	private LocalDateTime updateTime;
 }

@@ -5,13 +5,15 @@ import java.time.LocalDateTime;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 
+import com.company.datasource.mybatisplus.activerecord.AuditableModel;
+
 import lombok.Data;
 import lombok.experimental.Accessors;
 
 @Data
 @Accessors(chain = true)
 @TableName("user_coupon")
-public class UserCoupon {
+public class UserCoupon extends AuditableModel<UserCoupon> {
 	private Integer id;
 
 	/**
@@ -65,6 +67,4 @@ public class UserCoupon {
 	private Integer maxNum;
 
 	private String remark;
-	private LocalDateTime createTime;
-	private LocalDateTime updateTime;
 }

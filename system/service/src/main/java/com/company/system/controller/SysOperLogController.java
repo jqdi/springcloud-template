@@ -2,9 +2,9 @@ package com.company.system.controller;
 
 import java.util.List;
 
-import com.company.system.api.request.RemoveReq;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -123,9 +123,6 @@ public class SysOperLogController implements SysOperLogApi {
 	@Override
 	public Boolean save(SysOperLogReq sysOperLogReq) {
 		SysOperLog sysOperLog = PropertyUtils.copyProperties(sysOperLogReq, SysOperLog.class);
-		Integer sysUserId = sysOperLogReq.getSysUserId();
-		sysOperLog.setCreateBy(sysUserId);
-		sysOperLog.setUpdateBy(sysUserId);
 		boolean success = sysOperLogService.save(sysOperLog);
 		return success;
 	}
@@ -138,11 +135,11 @@ public class SysOperLogController implements SysOperLogApi {
 	}
 
 	@Override
-	public Boolean remove(@RequestBody RemoveReq<Integer> req) {
-		if (req.getIdList() == null || req.getIdList().isEmpty()) {
-			return true;
-		}
-		boolean success = sysOperLogService.removeBatchByIds(req.getIdList());
+	public Boolean remove(List<Integer> idList) {
+        if (CollectionUtils.isEmpty(idList)) {
+            return true;
+        }
+		boolean success = sysOperLogService.removeByIds(idList);
 		return success;
 	}
 }

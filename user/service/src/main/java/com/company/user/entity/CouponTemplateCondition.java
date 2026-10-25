@@ -1,8 +1,9 @@
 package com.company.user.entity;
 
-import java.time.LocalDateTime;
 
 import com.baomidou.mybatisplus.annotation.TableName;
+
+import com.company.datasource.mybatisplus.activerecord.AuditableModel;
 
 import lombok.Data;
 import lombok.experimental.Accessors;
@@ -10,7 +11,7 @@ import lombok.experimental.Accessors;
 @Data
 @Accessors(chain = true)
 @TableName("coupon_template_condition")
-public class CouponTemplateCondition {
+public class CouponTemplateCondition extends AuditableModel<CouponTemplateCondition> {
 	private Integer id;
 
 	/**
@@ -28,6 +29,4 @@ public class CouponTemplateCondition {
 	private String useConditionValue;
 
 	private String remark;
-	private LocalDateTime createTime;
-	private LocalDateTime updateTime;
 }

@@ -6,13 +6,13 @@ import com.company.adminapi.easyexcel.ExcelUtil;
 import com.company.adminapi.enums.OperationLogEnum.BusinessType;
 import com.company.adminapi.excel.SysRoleMenuExcel;
 
-import com.company.system.api.request.RemoveReq;
 import com.company.common.response.PageResp;
 import com.company.framework.util.PropertyUtils;
-import com.company.adminapi.feign.SysRoleMenuFeign;
+import com.company.adminapi.feign.client.SysRoleMenuFeign;
 import com.company.system.api.request.SysRoleMenuReq;
 import com.company.system.api.response.SysRoleMenuResp;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -58,8 +58,11 @@ public class SysRoleMenuController {
     @OperationLog(title = "角色和菜单关联删除", businessType = BusinessType.DELETE)
 	@RequirePermissions("system:sysRoleMenu:remove")
 	@PostMapping("/remove")
-	public Boolean remove(@RequestBody RemoveReq<Integer> req) {
-		return sysRoleMenuFeign.remove(req);
+	public Boolean remove(List<Integer> idList) {
+        if (CollectionUtils.isEmpty(idList)) {
+            return true;
+        }
+		return sysRoleMenuFeign.remove(idList);
 	}
 
 	@OperationLog(title = "角色和菜单关联导出", businessType = BusinessType.EXPORT, isSaveResponseData = false)

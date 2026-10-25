@@ -1,8 +1,9 @@
 package com.company.tool.entity;
 
-import java.time.LocalDateTime;
 
 import com.baomidou.mybatisplus.annotation.TableName;
+
+import com.company.datasource.mybatisplus.activerecord.AuditableModel;
 
 import lombok.Data;
 import lombok.experimental.Accessors;
@@ -10,7 +11,7 @@ import lombok.experimental.Accessors;
 @Data
 @Accessors(chain = true)
 @TableName("popup_log")
-public class PopupLog {
+public class PopupLog extends AuditableModel<PopupLog> {
 	private Integer id;
 
 	/**
@@ -34,6 +35,4 @@ public class PopupLog {
 	private String deviceid;
 
 	private String remark;
-	private LocalDateTime createTime;
-	private LocalDateTime updateTime;
 }

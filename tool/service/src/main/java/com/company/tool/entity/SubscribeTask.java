@@ -4,13 +4,15 @@ import java.time.LocalDateTime;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 
+import com.company.datasource.mybatisplus.activerecord.AuditableModel;
+
 import lombok.Data;
 import lombok.experimental.Accessors;
 
 @TableName("subscribe_task")
 @Data
 @Accessors(chain = true)
-public class SubscribeTask {
+public class SubscribeTask extends AuditableModel<SubscribeTask> {
 	/**
 	 * ID
 	 */
@@ -32,12 +34,4 @@ public class SubscribeTask {
 	 * 备注信息
 	 */
 	private String remark;
-	/**
-	 * 创建时间
-	 */
-	private LocalDateTime createTime;
-	/**
-	 * 更新时间
-	 */
-	private LocalDateTime updateTime;
 }

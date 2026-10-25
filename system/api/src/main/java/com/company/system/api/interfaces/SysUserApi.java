@@ -1,7 +1,6 @@
 package com.company.system.api.interfaces;
 
 
-import com.company.system.api.request.RemoveReq;
 import com.company.system.api.request.SysUserAssignRoleReq;
 import com.company.system.api.request.SysUserReq;
 import com.company.common.response.PageResp;
@@ -31,7 +30,7 @@ public interface SysUserApi {
 	Boolean update(@RequestBody SysUserReq sysUserReq);
 
 	@PostMapping("/remove")
-	Boolean remove(@RequestBody RemoveReq<Integer> req);
+	Boolean remove(@RequestBody List<Integer> idList);
 
 	@GetMapping("/getByAccount")
 	SysUserResp getByAccount(@RequestParam("account") String account);

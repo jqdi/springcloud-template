@@ -1,6 +1,8 @@
 package com.company.user.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.company.datasource.mybatisplus.activerecord.AuditableModel;
+
 import lombok.Data;
 import lombok.experimental.Accessors;
 
@@ -9,14 +11,19 @@ import java.time.LocalDateTime;
 @Data
 @Accessors(chain = true)
 @TableName("device_info")
-public class DeviceInfo {
+public class DeviceInfo extends AuditableModel<DeviceInfo> {
 	private Integer id;
 
 	/**
 	 * 设备ID
 	 */
 	private String deviceid;
-	
+
+	/**
+	 * 应用编码(写死到客户端)
+	 */
+	private String appCode;
+
 	/**
 	 * 平台：app(APP)、mini(微信小程序)、h5(H5页面)、alimini(支付宝小程序)、alipaymini(支付宝小程序内H5)
 	 */
@@ -53,6 +60,4 @@ public class DeviceInfo {
 	private LocalDateTime time;
 
 	private String remark;
-	private LocalDateTime createTime;
-	private LocalDateTime updateTime;
 }

@@ -1,7 +1,6 @@
 package com.company.system.api.interfaces;
 
 
-import com.company.system.api.request.RemoveReq;
 import com.company.system.api.request.SysLogininfoReq;
 import com.company.common.response.PageResp;
 import com.company.system.api.response.SysLogininfoResp;
@@ -30,6 +29,6 @@ public interface SysLogininfoApi {
 	Boolean update(@RequestBody SysLogininfoReq sysLogininfoReq);
 
 	@PostMapping("/remove")
-	Boolean remove(@RequestBody RemoveReq<Integer> req);
+	Boolean remove(@RequestBody List<Integer> idList);
 
 }

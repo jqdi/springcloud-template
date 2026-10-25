@@ -2,8 +2,8 @@ package com.company.system.controller;
 
 import java.util.List;
 
-import com.company.system.api.request.RemoveReq;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -82,11 +82,11 @@ public class SysRoleDeptController implements SysRoleDeptApi {
 	}
 
 	@Override
-	public Boolean remove(RemoveReq<Integer> req) {
-		if (req.getIdList() == null || req.getIdList().isEmpty()) {
-			return true;
-		}
-		boolean success = sysRoleDeptService.removeBatchByIds(req.getIdList());
+	public Boolean remove(List<Integer> idList) {
+        if (CollectionUtils.isEmpty(idList)) {
+            return true;
+        }
+		boolean success = sysRoleDeptService.removeByIds(idList);
 		return success;
 	}
 }

@@ -1,15 +1,16 @@
 package com.company.tool.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.company.datasource.mybatisplus.activerecord.AuditableModel;
+
 import lombok.Data;
 import lombok.experimental.Accessors;
 
-import java.time.LocalDateTime;
 
 @Data
 @Accessors(chain = true)
 @TableName("app_info")
-public class AppInfo {
+public class AppInfo extends AuditableModel<AppInfo> {
 	private Integer id;
 
 	/**
@@ -33,8 +34,4 @@ public class AppInfo {
 	private String logo;
 
 	private String remark;
-	private LocalDateTime createTime;
-	private LocalDateTime updateTime;
-	private String createBy;
-	private String updateBy;
 }

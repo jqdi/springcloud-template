@@ -1,7 +1,6 @@
 package com.company.system.api.interfaces;
 
 
-import com.company.system.api.request.RemoveReq;
 import com.company.system.api.request.SysRoleGrantMenuReq;
 import com.company.system.api.request.SysRoleReq;
 import com.company.common.response.PageResp;
@@ -31,7 +30,7 @@ public interface SysRoleApi {
 	Boolean update(@RequestBody SysRoleReq sysRoleReq);
 
 	@PostMapping("/remove")
-	Boolean remove(@RequestBody RemoveReq<Integer> req);
+	Boolean remove(@RequestBody List<Integer> idList);
 
 	@PostMapping("/grantMenu")
 	Boolean grantMenu(@RequestBody SysRoleGrantMenuReq req);

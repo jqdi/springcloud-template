@@ -1,7 +1,6 @@
 package com.company.system.api.interfaces;
 
 
-import com.company.system.api.request.RemoveReq;
 import com.company.system.api.request.SysUserRoleReq;
 import com.company.common.response.PageResp;
 import com.company.system.api.response.SysUserRoleResp;
@@ -34,7 +33,7 @@ public interface SysUserRoleApi {
 	Boolean update(@RequestBody SysUserRoleReq sysUserRoleReq);
 
 	@PostMapping("/remove")
-	Boolean remove(@RequestBody RemoveReq<Integer> req);
+	Boolean remove(@RequestBody List<Integer> idList);
 
 	@GetMapping("/hasPermission")
 	Boolean hasPermission(@RequestParam("userId") Integer userId,

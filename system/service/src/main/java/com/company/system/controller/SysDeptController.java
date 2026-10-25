@@ -2,9 +2,9 @@ package com.company.system.controller;
 
 import java.util.List;
 
-import com.company.system.api.request.RemoveReq;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -92,11 +92,11 @@ public class SysDeptController implements SysDeptApi {
 	}
 
 	@Override
-	public Boolean remove(RemoveReq<Integer> req) {
-		if (req.getIdList() == null || req.getIdList().isEmpty()) {
-			return true;
-		}
-		boolean success = sysDeptService.removeBatchByIds(req.getIdList());
+	public Boolean remove(List<Integer> idList) {
+        if (CollectionUtils.isEmpty(idList)) {
+            return true;
+        }
+		boolean success = sysDeptService.removeByIds(idList);
 		return success;
 	}
 }

@@ -17,7 +17,7 @@ import ${apiPackage}.response.${entity}Resp;
  *
  * <pre>
  * 服务提供方： Controller 实现本接口
- * 服务调用方：在自身 service 模块的 feign 包下新建 ${entity}Feign extends ${entity}Api 并标注 @FeignClient
+ * 服务调用方：在自身 service 模块的 feign.client 包下新建 ${entity}Feign extends ${entity}Api 并标注 @FeignClient
  * </pre>
  *
  * @author ${author}

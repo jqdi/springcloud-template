@@ -1,13 +1,12 @@
 package com.company.system.entity;
 
-import com.baomidou.mybatisplus.annotation.FieldFill;
-import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.company.datasource.mybatisplus.activerecord.AuditableModel;
+
 import io.github.encrypt.annotation.FieldEncrypt;
 import io.github.encrypt.bean.Encrypted;
 import lombok.Data;
 
-import java.time.LocalDateTime;
 
 /**
  * 用户信息
@@ -17,7 +16,7 @@ import java.time.LocalDateTime;
  */
 @Data
 @TableName("sys_user")
-public class SysUser implements Encrypted {
+public class SysUser extends AuditableModel<SysUser> implements Encrypted {
 
 	/**
 	 * id
@@ -74,29 +73,4 @@ public class SysUser implements Encrypted {
 	/**
 	 * 备注
 	 */
-	private String remark;
-
-	/**
-	 * 创建时间
-	 */
-	@TableField(fill = FieldFill.INSERT)
-	private LocalDateTime createTime;
-
-	/**
-	 * 创建人
-	 */
-	@TableField(fill = FieldFill.INSERT)
-	private Integer createBy;
-
-	/**
-	 * 更新时间
-	 */
-	@TableField(fill = FieldFill.INSERT_UPDATE)
-	private LocalDateTime updateTime;
-
-	/**
-	 * 更新人
-	 */
-	@TableField(fill = FieldFill.INSERT_UPDATE)
-	private Integer updateBy;
-}
+	private String remark;}

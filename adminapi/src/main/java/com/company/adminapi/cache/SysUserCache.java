@@ -1,7 +1,7 @@
 package com.company.adminapi.cache;
 
 import com.company.adminapi.constants.Constants;
-import com.company.adminapi.feign.SysUserFeign;
+import com.company.adminapi.feign.client.SysUserFeign;
 import com.company.system.api.response.SysUserResp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.Cache;

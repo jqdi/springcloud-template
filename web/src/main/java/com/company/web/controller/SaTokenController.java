@@ -5,13 +5,13 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.company.framework.context.SpringContextUtil;
-import com.company.token.TokenParams;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
+import com.company.framework.context.HeaderContextUtil;
+import com.company.token.TokenParams;
 import com.company.token.TokenService;
 import com.company.token.accesscontrol.annotation.RequireLogin;
 
@@ -37,7 +37,7 @@ public class SaTokenController {
 
     @GetMapping(value = "/generate")
     public Map<String, String> generate() {
-		TokenParams tokenParams = new TokenParams("1", SpringContextUtil.getProperty("spring.application.name"));
+		TokenParams tokenParams = new TokenParams("1", HeaderContextUtil.appCode());
 		String token = tokenService.generate(tokenParams);
         return Collections.singletonMap("value", token);
     }

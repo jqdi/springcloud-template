@@ -8,7 +8,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.amqp.RabbitAutoConfiguration;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 
-@EnableFeignClients // @FeignClient扫描，默认扫描‘当前启动类所在包 + 子包’的`@FeignClient`接口
+@EnableFeignClients(basePackages = "com.company.user.feign.client") // @FeignClient扫描，指定扫描 feign.client 包
 @SpringBootApplication(scanBasePackages = CommonConstants.BASE_PACKAGE, exclude = { BBossESAutoConfiguration.class, RabbitAutoConfiguration.class }) // bean扫描路径
 public class UserApplication {
 	public static void main(String[] args) {

@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 
+import com.company.datasource.mybatisplus.activerecord.AuditableModel;
+
 import io.github.encrypt.annotation.FieldEncrypt;
 import io.github.encrypt.bean.Encrypted;
 import lombok.Data;
@@ -12,7 +14,7 @@ import lombok.experimental.Accessors;
 @TableName("sms_task_detail")
 @Data
 @Accessors(chain = true)
-public class SmsTaskDetail implements Encrypted {
+public class SmsTaskDetail extends AuditableModel<SmsTaskDetail> implements Encrypted {
 	/**
 	 * ID
 	 */
@@ -51,12 +53,4 @@ public class SmsTaskDetail implements Encrypted {
 	 * 备注信息
 	 */
 	private String remark;
-	/**
-	 * 创建时间
-	 */
-	private LocalDateTime createTime;
-	/**
-	 * 更新时间
-	 */
-	private LocalDateTime updateTime;
 }

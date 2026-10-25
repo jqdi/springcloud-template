@@ -7,6 +7,7 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -24,9 +25,8 @@ import com.company.adminapi.excel.SysUserExcel;
 import com.company.token.accesscontrol.annotation.RequireLogin;
 import com.company.framework.context.HeaderContextUtil;
 import com.company.framework.util.PropertyUtils;
-import com.company.adminapi.feign.SysUserFeign;
-import com.company.adminapi.feign.SysUserPasswordFeign;
-import com.company.system.api.request.RemoveReq;
+import com.company.adminapi.feign.client.SysUserFeign;
+import com.company.adminapi.feign.client.SysUserPasswordFeign;
 import com.company.system.api.request.SaveNewPasswordReq;
 import com.company.system.api.request.SysUserReq;
 import com.company.common.response.PageResp;
@@ -89,8 +89,11 @@ public class SysUserController {
 	@OperationLog(title = "用户信息删除", businessType = BusinessType.DELETE)
 	@RequirePermissions("system:sysUser:remove")
 	@PostMapping("/remove")
-	public Boolean remove(@RequestBody RemoveReq<Integer> req) {
-		return sysUserFeign.remove(req);
+	public Boolean remove(List<Integer> idList) {
+        if (CollectionUtils.isEmpty(idList)) {
+            return true;
+        }
+		return sysUserFeign.remove(idList);
 	}
 
 	@OperationLog(title = "用户信息导出", businessType = BusinessType.EXPORT, isSaveResponseData = false)

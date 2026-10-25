@@ -32,7 +32,7 @@ import com.company.tool.subscribe.dto.SubscribeSendDto;
 import com.company.tool.subscribe.dto.SubscribeTemplateInfo;
 import com.company.tool.subscribe.tool.IMaTool;
 import com.company.user.api.enums.UserOauthEnum;
-import com.company.tool.feign.UserOauthFeign;
+import com.company.tool.feign.client.UserOauthFeign;
 import com.company.user.api.response.UserOauthResp;
 
 import lombok.extern.slf4j.Slf4j;

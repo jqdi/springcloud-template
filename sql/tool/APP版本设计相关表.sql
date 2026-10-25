@@ -20,13 +20,16 @@ INSERT INTO `app_info` (`id`, `app_code`, `app_name`, `platform`, `logo`, `remar
 INSERT INTO `app_info` (`id`, `app_code`, `app_name`, `platform`, `logo`, `remark`, `create_time`, `create_by`, `update_time`, `update_by`) VALUES (4, 'taobao_ios', '淘宝', 'iOS', 'http://image.aa.com/taobao_logo.jpg', '', '2025-06-11 20:58:17', '', '2025-06-11 21:02:29', '');
 
 CREATE TABLE `app_version` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT COMMENT 'ID',
+  `id` int unsigned NOT NULL AUTO_INCREMENT COMMENT 'ID',
   `app_code` varchar(32) NOT NULL COMMENT 'app_info.app_code',
   `version` varchar(32) NOT NULL COMMENT '版本号',
   `min_supported_version` varchar(32) DEFAULT NULL COMMENT '最低支持版本（低于此版本必须升级）',
   `release_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '发布时间',
   `download_url` varchar(255) NOT NULL COMMENT '安装包下载地址',
   `release_notes` text COMMENT '发布说明',
+  `gray_percent` decimal(3,2) NOT NULL DEFAULT 1 COMMENT '灰度比例(0.00-1.00)',
+  `total_count` bigint(20) NOT NULL DEFAULT 0 COMMENT '总设备量（创建/发布时统计 device_info 设备数）',
+  `update_count` bigint(20) NOT NULL DEFAULT 0 COMMENT '已升级设备数（device_info.version = 本记录 version 的设备数）',
 
   `remark` varchar(255) NOT NULL DEFAULT '' COMMENT '备注',
   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',

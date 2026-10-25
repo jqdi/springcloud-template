@@ -9,8 +9,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.amqp.RabbitAutoConfiguration;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 
-@EnableFeignClients // @FeignClient扫描，默认扫描‘当前启动类所在包 + 子包’的`@FeignClient`接口
-@SpringBootApplication(scanBasePackages = CommonConstants.BASE_PACKAGE, exclude = { BBossESAutoConfiguration.class, RabbitAutoConfiguration.class, RocketMQAutoConfiguration.class }) // bean扫描路径，需要注意com.company.**.api.feign.fallback也需要扫描，所以配置大点
+@EnableFeignClients(basePackages = "com.company.codegenerate.feign.client") // @FeignClient扫描，指定扫描 feign.client 包
+@SpringBootApplication(scanBasePackages = CommonConstants.BASE_PACKAGE, exclude = { BBossESAutoConfiguration.class, RabbitAutoConfiguration.class, RocketMQAutoConfiguration.class }) // bean扫描路径
 public class CodeGenerateApplication {
     public static void main(String[] args) {
         // SpringApplication.run(CodeGenerateApplication.class, args);

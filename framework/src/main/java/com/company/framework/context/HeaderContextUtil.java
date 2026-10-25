@@ -68,6 +68,10 @@ public class HeaderContextUtil {
         return head(HeaderConstants.HEADER_DEVICEID);
     }
 
+    public static String appCode() {
+        return head(HeaderConstants.HEADER_APPCODE);
+    }
+
     public static String channel() {
         return head(HeaderConstants.HEADER_CHANNEL);
     }

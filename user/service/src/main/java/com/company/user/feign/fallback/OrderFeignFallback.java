@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 
 import com.company.common.fallback.FallbackUtil;
 import com.company.order.api.enums.OrderEnum.StatusEnum;
-import com.company.user.feign.OrderFeign;
+import com.company.user.feign.client.OrderFeign;
 import com.company.order.api.request.*;
 import com.company.order.api.response.Order4Resp;
 import com.company.order.api.response.OrderDetailResp;

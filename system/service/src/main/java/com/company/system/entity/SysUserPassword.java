@@ -2,9 +2,9 @@ package com.company.system.entity;
 
 import java.time.LocalDateTime;
 
-import com.baomidou.mybatisplus.annotation.FieldFill;
-import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
+
+import com.company.datasource.mybatisplus.activerecord.AuditableModel;
 
 import lombok.Data;
 
@@ -16,7 +16,7 @@ import lombok.Data;
  */
 @Data
 @TableName("sys_user_password")
-public class SysUserPassword {
+public class SysUserPassword extends AuditableModel<SysUserPassword> {
 
 	/**
 	 * id
@@ -48,16 +48,6 @@ public class SysUserPassword {
 	 */
 	private String remark;
 
-	/**
-	 * 创建时间
-	 */
-	@TableField(fill = FieldFill.INSERT)
-	private LocalDateTime createTime;
 
-	/**
-	 * 更新时间
-	 */
-	@TableField(fill = FieldFill.INSERT_UPDATE)
-	private LocalDateTime updateTime;
 
 }

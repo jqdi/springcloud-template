@@ -74,6 +74,10 @@ public class HttpContextUtil {
 		return head(HeaderConstants.HEADER_DEVICEID);
 	}
 
+	public static String appCode() {
+		return head(HeaderConstants.HEADER_APPCODE);
+	}
+
 	public static String channel() {
 		return head(HeaderConstants.HEADER_CHANNEL);
 	}
@@ -102,6 +106,7 @@ public class HttpContextUtil {
 		headers.put(HeaderConstants.HEADER_OPERATOR, request.getHeader(HeaderConstants.HEADER_OPERATOR));
 		headers.put(HeaderConstants.HEADER_VERSION, request.getHeader(HeaderConstants.HEADER_VERSION));
 		headers.put(HeaderConstants.HEADER_DEVICEID, request.getHeader(HeaderConstants.HEADER_DEVICEID));
+		headers.put(HeaderConstants.HEADER_APPCODE, request.getHeader(HeaderConstants.HEADER_APPCODE));
 		headers.put(HeaderConstants.HEADER_CHANNEL, request.getHeader(HeaderConstants.HEADER_CHANNEL));
 		headers.put(HeaderConstants.HEADER_REQUESTIP, request.getHeader(HeaderConstants.HEADER_REQUESTIP));
 		headers.put(HeaderConstants.HEADER_SOURCE, request.getHeader(HeaderConstants.HEADER_SOURCE));

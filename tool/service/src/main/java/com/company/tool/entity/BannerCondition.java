@@ -1,8 +1,9 @@
 package com.company.tool.entity;
 
-import java.time.LocalDateTime;
 
 import com.baomidou.mybatisplus.annotation.TableName;
+
+import com.company.datasource.mybatisplus.activerecord.AuditableModel;
 
 import lombok.Data;
 import lombok.experimental.Accessors;
@@ -10,7 +11,7 @@ import lombok.experimental.Accessors;
 @Data
 @Accessors(chain = true)
 @TableName("banner_condition")
-public class BannerCondition {
+public class BannerCondition extends AuditableModel<BannerCondition> {
 	private Integer id;
 
 	/**
@@ -28,6 +29,4 @@ public class BannerCondition {
 	private String showConditionValue;
 
 	private String remark;
-	private LocalDateTime createTime;
-	private LocalDateTime updateTime;
 }

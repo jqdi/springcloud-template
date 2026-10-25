@@ -26,7 +26,7 @@ import com.company.order.api.response.Order4Resp;
 import com.company.order.api.response.OrderResp;
 import com.company.token.accesscontrol.annotation.RequireLogin;
 import com.company.user.api.response.UserResp;
-import com.company.web.feign.OrderFeign;
+import com.company.web.feign.client.OrderFeign;
 import com.company.web.service.TimeService;
 import com.google.common.collect.Maps;
 

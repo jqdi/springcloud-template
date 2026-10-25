@@ -1,9 +1,10 @@
 package com.company.user.entity;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 
 import com.baomidou.mybatisplus.annotation.TableName;
+
+import com.company.datasource.mybatisplus.activerecord.AuditableModel;
 
 import lombok.Data;
 import lombok.experimental.Accessors;
@@ -14,7 +15,7 @@ import lombok.experimental.Accessors;
 @Data
 @Accessors(chain = true)
 @TableName("wallet_preincome")
-public class WalletPreincome {
+public class WalletPreincome extends AuditableModel<WalletPreincome> {
 	/**
 	 * ID
 	 */
@@ -45,6 +46,4 @@ public class WalletPreincome {
 	private String attach;
 
 	private String remark;
-	private LocalDateTime createTime;
-	private LocalDateTime updateTime;
 }

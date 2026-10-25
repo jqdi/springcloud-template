@@ -6,7 +6,7 @@ import java.util.List;
 import org.springframework.cloud.openfeign.FallbackFactory;
 import org.springframework.stereotype.Component;
 
-import com.company.app.feign.NavFeign;
+import com.company.app.feign.client.NavFeign;
 import com.company.tool.api.request.NavReq;
 import com.company.tool.api.response.NavResp;
 

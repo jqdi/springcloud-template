@@ -6,7 +6,7 @@ import java.util.List;
 import org.springframework.cloud.openfeign.FallbackFactory;
 import org.springframework.stereotype.Component;
 
-import com.company.app.feign.BannerFeign;
+import com.company.app.feign.client.BannerFeign;
 import com.company.tool.api.request.BannerReq;
 import com.company.tool.api.response.BannerResp;
 

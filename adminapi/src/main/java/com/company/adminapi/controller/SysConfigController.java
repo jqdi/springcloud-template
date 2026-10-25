@@ -7,12 +7,12 @@ import com.company.adminapi.enums.OperationLogEnum.BusinessType;
 import com.company.adminapi.excel.SysConfigExcel;
 
 import com.company.common.response.PageResp;
-import com.company.system.api.request.RemoveReq;
 import com.company.framework.util.PropertyUtils;
-import com.company.adminapi.feign.SysConfigFeign;
+import com.company.adminapi.feign.client.SysConfigFeign;
 import com.company.system.api.request.SysConfigReq;
 import com.company.system.api.response.SysConfigResp;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -58,8 +58,11 @@ public class SysConfigController {
     @OperationLog(title = "参数配置删除", businessType = BusinessType.DELETE)
 	@RequirePermissions("system:sysConfig:remove")
 	@PostMapping("/remove")
-	public Boolean remove(@RequestBody RemoveReq<Integer> req) {
-		return sysConfigFeign.remove(req);
+	public Boolean remove(List<Integer> idList) {
+        if (CollectionUtils.isEmpty(idList)) {
+            return true;
+        }
+		return sysConfigFeign.remove(idList);
 	}
 
 	@OperationLog(title = "参数配置导出", businessType = BusinessType.EXPORT, isSaveResponseData = false)

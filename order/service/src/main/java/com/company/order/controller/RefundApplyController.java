@@ -8,7 +8,7 @@ import com.company.framework.util.Utils;
 import com.company.order.feign.FeignConstants;
 import com.company.order.api.enums.OrderPayRefundEnum;
 import com.company.order.api.enums.PayRefundApplyEnum;
-import com.company.order.feign.PayFeign;
+import com.company.order.feign.client.PayFeign;
 import com.company.order.api.interfaces.RefundApplyApi;
 import com.company.order.api.request.PayRefundApplyReq;
 import com.company.order.api.request.PayRefundReq;

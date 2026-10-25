@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 /**
  * websocket 契约接口（纯契约，不带 @FeignClient）
  * <p>
- * 调用方在自身 service 模块的 feign 包下新建 WebsocketFeign extends WebsocketApi 并标注 @FeignClient
+ * 调用方在自身 service 模块的 feign.client 包下新建 WebsocketFeign extends WebsocketApi 并标注 @FeignClient
  */
 public interface WebsocketApi {
 

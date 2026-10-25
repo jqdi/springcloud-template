@@ -5,6 +5,8 @@ import java.time.LocalDateTime;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 
+import com.company.datasource.mybatisplus.activerecord.AuditableModel;
+
 import lombok.Data;
 import lombok.experimental.Accessors;
 
@@ -14,7 +16,7 @@ import lombok.experimental.Accessors;
 @Data
 @Accessors(chain = true)
 @TableName(value = "wallet_income_use_record")
-public class WalletIncomeUseRecord {
+public class WalletIncomeUseRecord extends AuditableModel<WalletIncomeUseRecord> {
 	/**
 	 * ID
 	 */
@@ -53,6 +55,4 @@ public class WalletIncomeUseRecord {
 	private String beanName;
 
 	private String remark;
-	private LocalDateTime createTime;
-	private LocalDateTime updateTime;
 }
