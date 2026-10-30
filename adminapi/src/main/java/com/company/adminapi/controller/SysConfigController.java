@@ -20,6 +20,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.util.List;
+import java.util.Map;
 
 @Validated
 @RestController
@@ -74,4 +75,8 @@ public class SysConfigController {
 		ExcelUtil.write2httpResponse(response, "参数配置", SysConfigExcel.class, excelList);
 	}
 
+    @GetMapping("/getValueByCode")
+    public Map<String, String> getValueByCode(@NotNull String code) {
+        return sysConfigFeign.getValueByCode(code);
+    }
 }

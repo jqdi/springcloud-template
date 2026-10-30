@@ -36,13 +36,13 @@
         <dependency>
             <groupId>cn.dev33</groupId>
             <artifactId>sa-token-spring-boot-starter</artifactId>
-            <version>1.44.0</version>
+            <version>1.46.0</version>
         </dependency>
         <!-- Sa-Token 整合 jwt -->
         <dependency>
             <groupId>cn.dev33</groupId>
             <artifactId>sa-token-jwt</artifactId>
-            <version>1.44.0</version>
+            <version>1.46.0</version>
             <exclusions>
                 <exclusion>
                     <!-- 注：hutool-jwt的版本号跟项目的hutool版本号不一致，可能导致打包后执行代码报错 -->
@@ -62,7 +62,7 @@
         <!-- <dependency>
             <groupId>cn.dev33</groupId>
              <artifactId>sa-token-redis-jackson</artifactId>
-            <version>1.44.0</version>
+            <version>1.46.0</version>
         </dependency> -->
         <!-- Sa-Token -->
         <!-- token -->
