@@ -3,6 +3,7 @@ package ${adminapiPackage}.excel;
 import java.time.LocalDateTime;
 
 import com.alibaba.excel.annotation.ExcelProperty;
+import ${adminapiPackage}.easyexcel.converter.SysUserAuditConverter;
 import ${adminapiPackage}.easyexcel.converter.SysUserConverter;
 
 import lombok.Data;
@@ -19,8 +20,10 @@ public class ${entity}Excel {
     /**
      * ${field.comment}
      */
-## 字段createBy、updateBy转换
-#if($field.propertyName == "createBy" && $field.propertyName == "updateBy")
+## 审计字段createBy、updateBy格式为device:userId，需转换为用户昵称
+#if($field.propertyName == "createBy" || $field.propertyName == "updateBy")
+	@ExcelProperty(value = "${field.comment}", converter = SysUserAuditConverter.class)
+#elseif($field.propertyName == "sysUserId")
 	@ExcelProperty(value = "${field.comment}", converter = SysUserConverter.class)
 #else
 	@ExcelProperty(value = "${field.comment}")

@@ -132,6 +132,7 @@ public class UserInfo extends AuditableModel<UserInfo> {
     private Integer id;
     private String username;
     // 继承的审计字段：createTime, createBy, updateTime, updateBy
+    // createBy/updateBy 为 String，格式为 device:userId（登录设备:用户ID）
 }
 ```
 
@@ -144,10 +145,11 @@ public class UserAuditableModelProvider implements AuditableModelProvider {
     @Override
     public AuditableModel<?> getAuditableModel() {
         AuditableModel<Model<?>> model = new AuditableModel<>();
-        // 从当前登录用户获取信息
-        model.setCreateBy(getCurrentUserId());
+        // 从当前登录用户获取信息，createBy/updateBy 格式为 device:userId
+        String auditBy = getCurrentDevice() + ":" + getCurrentUserId();
+        model.setCreateBy(auditBy);
         model.setCreateTime(LocalDateTime.now());
-        model.setUpdateBy(getCurrentUserId());
+        model.setUpdateBy(auditBy);
         model.setUpdateTime(LocalDateTime.now());
         return model;
     }

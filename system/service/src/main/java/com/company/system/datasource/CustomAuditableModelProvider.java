@@ -19,7 +19,7 @@ public class CustomAuditableModelProvider implements AuditableModelProvider {
         if (StringUtils.isBlank(userId)) {
             userId = SpringContextUtil.getProperty("spring.application.name");
         }
-        String device = HeaderContextUtil.currentDevice();
+        String device = HeaderContextUtil.appCode();
         if (StringUtils.isBlank(device)) {
             device = "none";
         }
