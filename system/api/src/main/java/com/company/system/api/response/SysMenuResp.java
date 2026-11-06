@@ -87,7 +87,7 @@ public class SysMenuResp {
 	/**
 	 * 创建人
 	 */
-	private Integer createBy;
+	private String createBy;
 
 	/**
 	 * 更新时间
@@ -97,7 +97,7 @@ public class SysMenuResp {
 	/**
 	 * 更新人
 	 */
-	private Integer updateBy;
+	private String updateBy;
 
 	private List<SysMenuResp> childrenList;
 

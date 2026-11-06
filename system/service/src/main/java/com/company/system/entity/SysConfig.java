@@ -60,7 +60,7 @@ public class SysConfig extends AuditableModel<SysConfig> {
 //	 * 创建人
 //	 */
 //	@TableField(fill = FieldFill.INSERT)
-//	private Integer createBy;
+//	private String createBy;
 //
 //	/**
 //	 * 更新时间
@@ -72,6 +72,6 @@ public class SysConfig extends AuditableModel<SysConfig> {
 //	 * 更新人
 //	 */
 //	@TableField(fill = FieldFill.INSERT_UPDATE)
-//	private Integer updateBy;
+//	private String updateBy;
 
 }

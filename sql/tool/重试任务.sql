@@ -12,7 +12,7 @@ CREATE TABLE `retry_task` (
 
   `trace_id` varchar(32) DEFAULT NULL COMMENT '追踪ID',
 
-  `remark` varchar(255) DEFAULT NULL COMMENT '备注',
+  `remark` varchar(255) NOT NULL DEFAULT '' COMMENT '备注',
   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `create_by` varchar(32) NOT NULL DEFAULT '' COMMENT '创建人',
   `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',

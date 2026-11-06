@@ -11,9 +11,11 @@ CREATE TABLE `device_info` (
  `request_user_agent` varchar(255) DEFAULT NULL COMMENT '请求UserAgent',
  `time` datetime DEFAULT NULL COMMENT '时间',
 
- `remark` varchar(255) DEFAULT NULL COMMENT '备注',
+ `remark` varchar(255) NOT NULL DEFAULT '' COMMENT '备注',
  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+ `create_by` varchar(32) NOT NULL DEFAULT '' COMMENT '创建人',
  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+ `update_by` varchar(32) NOT NULL DEFAULT '' COMMENT '更新人',
  PRIMARY KEY (`id`) USING BTREE,
  UNIQUE KEY `uk_deviceid_appcode` (`deviceid`,`app_code`),
  KEY `idx_appcode` (`app_code`)
@@ -28,9 +30,11 @@ CREATE TABLE `user_device` (
  `last_login_time` datetime DEFAULT NULL COMMENT '最后登录时间',
  `last_logout_time` datetime DEFAULT NULL COMMENT '最后登出时间',
 
- `remark` varchar(255) DEFAULT NULL COMMENT '备注',
+ `remark` varchar(255) NOT NULL DEFAULT '' COMMENT '备注',
  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+ `create_by` varchar(32) NOT NULL DEFAULT '' COMMENT '创建人',
  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+ `update_by` varchar(32) NOT NULL DEFAULT '' COMMENT '更新人',
  PRIMARY KEY (`id`) USING BTREE,
  unique KEY `uniq_userid_deviceid` (`user_id`,`deviceid`),
  KEY `idx_deviceid` (`deviceid`)

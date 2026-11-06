@@ -13,9 +13,11 @@ CREATE TABLE `ali_activity_pay` (
   `order_no` varchar(64) NOT NULL DEFAULT '' COMMENT '购买商家兑换券的营销订单号',
   `gmt_payment` varchar(32) NOT NULL DEFAULT '' COMMENT '交易支付时间',
   
-  `remark` varchar(255) NOT NULL DEFAULT '' COMMENT '备注信息',
+  `remark` varchar(255) NOT NULL DEFAULT '' COMMENT '备注',
   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `create_by` varchar(32) NOT NULL DEFAULT '' COMMENT '创建人',
   `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `update_by` varchar(32) NOT NULL DEFAULT '' COMMENT '更新人',
   PRIMARY KEY (`id`),
   UNIQUE KEY `uniq_otn` (`out_order_no`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='支付宝活动支付表';
@@ -33,9 +35,11 @@ CREATE TABLE `ali_activity_pay_refund` (
   `order_no` varchar(64) NOT NULL DEFAULT '' COMMENT '购买商家兑换券的营销订单号',
   `refund_type` varchar(32) NOT NULL DEFAULT '' COMMENT '退款场景',
   
-  `remark` varchar(255) NOT NULL DEFAULT '' COMMENT '备注信息',
+  `remark` varchar(255) NOT NULL DEFAULT '' COMMENT '备注',
   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `create_by` varchar(32) NOT NULL DEFAULT '' COMMENT '创建人',
   `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `update_by` varchar(32) NOT NULL DEFAULT '' COMMENT '更新人',
   PRIMARY KEY (`id`),
   UNIQUE KEY `uniq_oon` (`out_order_no`) USING BTREE,
   KEY `idx_obn` (`out_biz_no`)
@@ -48,9 +52,11 @@ CREATE TABLE `ali_activity_notify` (
   `method` varchar(16) NOT NULL DEFAULT '' COMMENT '消息(spiordersend:订单券发放,from:FROM消息)',
   `notify_data` varchar(2048) NOT NULL DEFAULT '' COMMENT '通知数据',
   
-  `remark` varchar(255) NOT NULL DEFAULT '' COMMENT '备注信息',
+  `remark` varchar(255) NOT NULL DEFAULT '' COMMENT '备注',
   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `create_by` varchar(32) NOT NULL DEFAULT '' COMMENT '创建人',
   `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `update_by` varchar(32) NOT NULL DEFAULT '' COMMENT '更新人',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='支付宝活动通知表';
 
@@ -64,9 +70,11 @@ CREATE TABLE `ali_activity_coupon` (
   `voucher_code` varchar(64) NOT NULL COMMENT '用户领取的券码code,支付宝商家券活动才会返回券码，其他优惠券活动该值为空',
   `receive_user_id` varchar(64) NOT NULL COMMENT '领券的支付宝user_id账号',
   
-  `remark` varchar(255) NOT NULL DEFAULT '' COMMENT '备注信息',
+  `remark` varchar(255) NOT NULL DEFAULT '' COMMENT '备注',
   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `create_by` varchar(32) NOT NULL DEFAULT '' COMMENT '创建人',
   `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `update_by` varchar(32) NOT NULL DEFAULT '' COMMENT '更新人',
   PRIMARY KEY (`id`),
   UNIQUE KEY `uniq_eventid` (`event_id`),
   KEY `idx_ai_rui` (`activity_id`,`receive_user_id`) USING BTREE

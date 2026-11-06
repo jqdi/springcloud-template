@@ -16,9 +16,11 @@ CREATE TABLE `order_pay` (
   `notify_attach` varchar(256) DEFAULT NULL COMMENT '通知地址的附加数据',
   `pay_time` datetime DEFAULT NULL COMMENT '关闭/支付时间',
   
-  `remark` varchar(255) DEFAULT NULL COMMENT '备注(多个使用/分隔)',
+  `remark` varchar(255) NOT NULL DEFAULT '' COMMENT '备注',
   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `create_by` varchar(32) NOT NULL DEFAULT '' COMMENT '创建人',
   `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `update_by` varchar(32) NOT NULL DEFAULT '' COMMENT '更新人',
   PRIMARY KEY (`id`),
   UNIQUE KEY `uniq_order_code` (`order_code`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COMMENT='订单支付表';
@@ -39,9 +41,11 @@ CREATE TABLE `order_pay_refund` (
   `notify_url` varchar(128) DEFAULT NULL COMMENT '通知地址(关闭/支付订单都会通知)',
   `notify_attach` varchar(256) DEFAULT NULL COMMENT '通知地址的附加数据',
   
-  `remark` varchar(255) DEFAULT NULL COMMENT '备注(多个使用/分隔)',
+  `remark` varchar(255) NOT NULL DEFAULT '' COMMENT '备注',
   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `create_by` varchar(32) NOT NULL DEFAULT '' COMMENT '创建人',
   `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `update_by` varchar(32) NOT NULL DEFAULT '' COMMENT '更新人',
   PRIMARY KEY (`id`),
   UNIQUE KEY `uniq_refundordercode` (`refund_order_code`) USING BTREE,
   KEY `idx_ordercode` (`order_code`) USING HASH
@@ -56,9 +60,11 @@ CREATE TABLE `pay_notify` (
   `method` varchar(8) NOT NULL COMMENT '支付方式(ali:支付宝,wx:微信,ios:苹果,quick:云闪付)',
   `notify_data` varchar(2048) DEFAULT NULL COMMENT '通知数据',
   
-  `remark` varchar(255) DEFAULT NULL COMMENT '备注信息',
+  `remark` varchar(255) NOT NULL DEFAULT '' COMMENT '备注',
   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `create_by` varchar(32) NOT NULL DEFAULT '' COMMENT '创建人',
   `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `update_by` varchar(32) NOT NULL DEFAULT '' COMMENT '更新人',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='支付通知表';
 
@@ -75,9 +81,11 @@ CREATE TABLE `financial_flow` (
   `trade_way` varchar(32) NOT NULL COMMENT '交易方式(wx_pay:微信支付,ali_pay:支付宝支付,mch_pay:微信企业打款)',
   `merchant_no` varchar(32) NOT NULL COMMENT '商户号',
   
-  `remarks` varchar(255) NOT NULL COMMENT '备注信息',
+  `remark` varchar(255) NOT NULL DEFAULT '' COMMENT '备注',
   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `create_by` varchar(32) NOT NULL DEFAULT '' COMMENT '创建人',
   `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `update_by` varchar(32) NOT NULL DEFAULT '' COMMENT '更新人',
   PRIMARY KEY (`id`),
   UNIQUE KEY `uniq_order_code` (`order_code`),
   KEY `idx_trade_way` (`trade_way`),
@@ -99,9 +107,11 @@ CREATE TABLE `pay_refund_apply` (
   `reason` varchar(64) NOT NULL COMMENT '退款原因',
   `attach` varchar(256) NOT NULL COMMENT '通知地址的附加数据',
   
-  `remark` varchar(255) NOT NULL COMMENT '备注',
+  `remark` varchar(255) NOT NULL DEFAULT '' COMMENT '备注',
   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `create_by` varchar(32) NOT NULL DEFAULT '' COMMENT '创建人',
   `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `update_by` varchar(32) NOT NULL DEFAULT '' COMMENT '更新人',
   PRIMARY KEY (`id`),
   UNIQUE KEY `uniq_ordercode` (`order_code`),
   KEY `idx_rs_vs` (`refund_status`,`verify_status`)
@@ -125,9 +135,11 @@ CREATE TABLE `inner_callback` (
   `failure` int(11) NOT NULL DEFAULT '0' COMMENT '当前失败次数',
   `trace_id` varchar(32) DEFAULT NULL COMMENT '追踪ID',
   
-  `remark` varchar(255) DEFAULT NULL COMMENT '备注',
+  `remark` varchar(255) NOT NULL DEFAULT '' COMMENT '备注',
   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `create_by` varchar(32) NOT NULL DEFAULT '' COMMENT '创建人',
   `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `update_by` varchar(32) NOT NULL DEFAULT '' COMMENT '更新人',
   PRIMARY KEY (`id`),
   KEY `idx_status_ndt` (`status`,`next_dispose_time`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COMMENT='内部回调表';

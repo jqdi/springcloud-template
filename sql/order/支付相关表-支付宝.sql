@@ -16,9 +16,11 @@ CREATE TABLE `ali_pay` (
   `trade_no` varchar(64) DEFAULT NULL COMMENT '支付宝交易凭证号',
   `gmt_payment` varchar(32) DEFAULT NULL COMMENT '交易支付时间(yyyy-MM-dd HH:mm:ss)',
   
-  `remark` varchar(255) DEFAULT NULL COMMENT '备注信息',
+  `remark` varchar(255) NOT NULL DEFAULT '' COMMENT '备注',
   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `create_by` varchar(32) NOT NULL DEFAULT '' COMMENT '创建人',
   `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `update_by` varchar(32) NOT NULL DEFAULT '' COMMENT '更新人',
   PRIMARY KEY (`id`),
   UNIQUE KEY `uni_otn` (`out_trade_no`) USING HASH
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COMMENT='支付宝支付表';
@@ -37,9 +39,11 @@ CREATE TABLE `ali_pay_refund` (
   `trade_no` varchar(64) DEFAULT NULL COMMENT '支付宝交易凭证号',
   `refund_status` varchar(20) DEFAULT NULL COMMENT '退款状态(REFUND_SUCCESS:退款成功)',
   
-  `remark` varchar(255) DEFAULT NULL COMMENT '备注信息',
+  `remark` varchar(255) NOT NULL DEFAULT '' COMMENT '备注',
   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `create_by` varchar(32) NOT NULL DEFAULT '' COMMENT '创建人',
   `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `update_by` varchar(32) NOT NULL DEFAULT '' COMMENT '更新人',
   PRIMARY KEY (`id`),
   UNIQUE KEY `uni_rn` (`out_request_no`) USING HASH,
   KEY `idx_otn` (`out_trade_no`) USING BTREE

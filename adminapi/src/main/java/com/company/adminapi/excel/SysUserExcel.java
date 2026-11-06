@@ -1,7 +1,7 @@
 package com.company.adminapi.excel;
 
 import com.alibaba.excel.annotation.ExcelProperty;
-import com.company.adminapi.easyexcel.converter.SysUserConverter;
+import com.company.adminapi.easyexcel.converter.SysUserAuditConverter;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -90,8 +90,8 @@ public class SysUserExcel {
 	/**
 	 * 创建人
 	 */
-	@ExcelProperty(value = "创建人", converter = SysUserConverter.class)
-	private Integer createBy;
+	@ExcelProperty(value = "创建人", converter = SysUserAuditConverter.class)
+	private String createBy;
 
 	/**
 	 * 更新时间
@@ -102,7 +102,7 @@ public class SysUserExcel {
 	/**
 	 * 更新人
 	 */
-	@ExcelProperty(value = "更新人", converter = SysUserConverter.class)
-	private Integer updateBy;
+	@ExcelProperty(value = "更新人", converter = SysUserAuditConverter.class)
+	private String updateBy;
 
 }

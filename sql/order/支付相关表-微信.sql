@@ -25,9 +25,11 @@ CREATE TABLE `wx_pay` (
   `transaction_id` varchar(32) DEFAULT NULL COMMENT '微信支付订单号',
   `time_end` varchar(16) DEFAULT NULL COMMENT '支付完成时间(yyyyMMddHHmmss)',
   
-  `remark` varchar(255) DEFAULT NULL COMMENT '备注信息',
+  `remark` varchar(255) NOT NULL DEFAULT '' COMMENT '备注',
   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `create_by` varchar(32) NOT NULL DEFAULT '' COMMENT '创建人',
   `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `update_by` varchar(32) NOT NULL DEFAULT '' COMMENT '更新人',
   PRIMARY KEY (`id`),
   UNIQUE KEY `uni_otn` (`out_trade_no`) USING HASH
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COMMENT='微信支付表';
@@ -52,9 +54,11 @@ CREATE TABLE `wx_pay_refund` (
   
   `refund_status` varchar(16) DEFAULT NULL COMMENT '退款状态(PROCESSING/SUCCESS/CHANGE/REFUNDCLOSE)',
   
-  `remark` varchar(255) DEFAULT NULL COMMENT '备注信息',
+  `remark` varchar(255) NOT NULL DEFAULT '' COMMENT '备注',
   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `create_by` varchar(32) NOT NULL DEFAULT '' COMMENT '创建人',
   `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `update_by` varchar(32) NOT NULL DEFAULT '' COMMENT '更新人',
   PRIMARY KEY (`id`),
   UNIQUE KEY `uni_orn` (`out_refund_no`) USING HASH,
   KEY `idx_otn` (`out_trade_no`) USING BTREE

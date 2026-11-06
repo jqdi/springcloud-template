@@ -19,9 +19,11 @@ CREATE TABLE `order` (
   `sub_order_url` varchar(128) NOT NULL DEFAULT '' COMMENT '子订单查询地址',
   `attach` varchar(255) DEFAULT null COMMENT '附加参数',
 
-  `remark` varchar(255) DEFAULT NULL COMMENT '备注(多个使用/分隔)',
+  `remark` varchar(255) NOT NULL DEFAULT '' COMMENT '备注',
   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `create_by` varchar(32) NOT NULL DEFAULT '' COMMENT '创建人',
   `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `update_by` varchar(32) NOT NULL DEFAULT '' COMMENT '更新人',
   PRIMARY KEY (`id`),
   UNIQUE KEY `uniq_ordercode` (`order_code`),
   KEY `idx_ui_substatus` (`user_id`,`sub_status`),
@@ -41,9 +43,11 @@ CREATE TABLE `order_product` (
   `product_image` varchar(255) NOT NULL DEFAULT '' COMMENT '商品小图',
   `attach` varchar(255) DEFAULT null COMMENT '附加参数',
   
-  `remark` varchar(255) DEFAULT NULL COMMENT '备注(多个使用/分隔)',
+  `remark` varchar(255) NOT NULL DEFAULT '' COMMENT '备注',
   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `create_by` varchar(32) NOT NULL DEFAULT '' COMMENT '创建人',
   `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `update_by` varchar(32) NOT NULL DEFAULT '' COMMENT '更新人',
   PRIMARY KEY (`id`),
   KEY `idx_ordercode` (`order_code`)
 ) ENGINE=InnoDB AUTO_INCREMENT=49 DEFAULT CHARSET=utf8mb4 COMMENT='订单商品表';

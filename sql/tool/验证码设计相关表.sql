@@ -7,7 +7,7 @@ CREATE TABLE `verify_code` (
   `status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '状态(1:未使用,2:已使用)',
   `max_err_count` int(11) NOT NULL DEFAULT '0' COMMENT '最大错误次数',
   `err_count` int(11) NOT NULL DEFAULT '0' COMMENT '错误次数',
-  `remark` varchar(255) DEFAULT NULL COMMENT '备注',
+  `remark` varchar(255) NOT NULL DEFAULT '' COMMENT '备注',
   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `create_by` varchar(32) NOT NULL DEFAULT '' COMMENT '创建人',
   `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',

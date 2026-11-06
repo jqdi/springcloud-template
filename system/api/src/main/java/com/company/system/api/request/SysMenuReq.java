@@ -86,7 +86,7 @@ public class SysMenuReq {
 	/**
 	 * 创建人
 	 */
-	private Integer createBy;
+	private String createBy;
 
 	/**
 	 * 更新时间
@@ -96,6 +96,6 @@ public class SysMenuReq {
 	/**
 	 * 更新人
 	 */
-	private Integer updateBy;
+	private String updateBy;
 
 }
