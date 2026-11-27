@@ -1,5 +1,6 @@
 package com.company.web.easylogin.repository;
 
+import com.company.user.api.enums.UserClientEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -46,6 +47,7 @@ public class MysqlOauthRepository implements OauthRepository {
 	@Override
 	public String registerUser(String identityType, String identifier, String nickname, String avatar) {
 		UserInfoReq userInfoReq = new UserInfoReq();
+        userInfoReq.setClientType(UserClientEnum.ClientType.USER);
 		userInfoReq.setIdentityType(UserOauthEnum.IdentityType.of(identityType));
 		userInfoReq.setIdentifier(identifier);
 		// userInfoReq.setCertificate(certificate);

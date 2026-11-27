@@ -36,3 +36,17 @@ CREATE TABLE `user_oauth` (
   UNIQUE KEY `uniq_ui_it` (`user_id`,`identity_type`),
   UNIQUE KEY `uniq_identifier_it` (`identifier`,`identity_type`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COMMENT='用户认证表';
+
+
+CREATE TABLE `user_client` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'id',
+  `user_id` int(11) NOT NULL COMMENT 'user_info.id',
+  `client_type` varchar(16) DEFAULT NULL COMMENT '客户端类型(MANAGE:管理端,USER:用户端,MERCHANT:商户端,RIDER:骑手端)',
+  `remark` varchar(255) NOT NULL DEFAULT '' COMMENT '备注',
+  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `create_by` varchar(32) NOT NULL DEFAULT '' COMMENT '创建人',
+  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `update_by` varchar(32) NOT NULL DEFAULT '' COMMENT '更新人',
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE KEY `uniq_ui_ct` (`user_id`,`client_type`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COMMENT='用户客户端表';

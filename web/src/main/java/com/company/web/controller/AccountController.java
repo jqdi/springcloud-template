@@ -8,6 +8,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 
 import com.company.framework.context.SpringContextUtil;
+import com.company.user.api.enums.UserClientEnum;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -112,6 +113,7 @@ public class AccountController {
 		// TODO 密码复杂度校验
 
 		UserInfoReq userInfoReq = new UserInfoReq();
+        userInfoReq.setClientType(UserClientEnum.ClientType.USER);
 		userInfoReq.setIdentityType(UserOauthEnum.IdentityType.EMAIL);
 		userInfoReq.setIdentifier(email);
 		userInfoReq.setCertificate(regByEmailReq.getCode());
@@ -161,6 +163,7 @@ public class AccountController {
 		// TODO 密码复杂度校验
 
 		UserInfoReq userInfoReq = new UserInfoReq();
+        userInfoReq.setClientType(UserClientEnum.ClientType.USER);
 		userInfoReq.setIdentityType(UserOauthEnum.IdentityType.MOBILE);
 		userInfoReq.setIdentifier(identifier);
 		userInfoReq.setCertificate(regByMobileReq.getCode());
